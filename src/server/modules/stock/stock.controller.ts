@@ -104,6 +104,7 @@ export class StockController implements BaseController {
 	 */
 	public getRouteMapping = (): RouteMapping => ({
 		get: [["get", this.getStock]],
+		post: [["add", this.addStock]],
 	});
 
 	/**

@@ -16,7 +16,12 @@
 		"ecmaVersion": "latest",
 		"sourceType": "module"
 	},
-	"ignorePatterns": ["/build", "build/**/*.js", "build/**/*.js.map"],
+	"ignorePatterns": [
+		"/build",
+		"build/**/*.js",
+		"build/**/*.js.map",
+		"webpack.config.js"
+	],
 	"plugins": [
 		"@typescript-eslint",
 		"node",
