@@ -7,6 +7,9 @@ import { ERROR_CODE_ENUM } from "server/common/api/errorcodes";
 import type { StockMongoClient } from "server/mongo";
 import { StockService } from "./stock.service";
 
+/**
+ * Handles all incoming requests related to the "stock" endpoint
+ */
 export class StockController implements BaseController {
 	private readonly ROUTE_PREFIX = "stock/";
 	private readonly stockService: StockService;
@@ -17,6 +20,12 @@ export class StockController implements BaseController {
 		this.client = client;
 	}
 
+	/**
+	 * Gets a stock with the supplied `stockId` that is added into the query string
+	 *
+	 * @param request - The request sent to the server
+	 * @param response - The response from the server
+	 */
 	public getStock = async (
 		request: Request,
 		response: Response,
@@ -44,6 +53,12 @@ export class StockController implements BaseController {
 		}
 	};
 
+	/**
+	 * Adds a stock via the supplied body that is converted into a Stock type, if it's malformed then an error occurs and is caught to avoid exceptions.
+	 *
+	 * @param request - The server request
+	 * @param response - The server response
+	 */
 	public addStock = async (
 		request: Request,
 		response: Response,
@@ -68,10 +83,20 @@ export class StockController implements BaseController {
 		}
 	};
 
+	/**
+	 * Fetches the route mapping for this controller, which will be used in app.ts
+	 *
+	 * @returns - The route mapping, basically an object that will be utilized by the app in making it easier to dynamically generate endpoints dependent on each of the controllers
+	 */
 	public getRouteMapping = (): RouteMapping => ({
 		get: [["get", this.getStock]],
 	});
 
+	/**
+	 * Adds all routes in the route mapping to the router instance, instead of putting this logic in app.ts, put the logic in the controller
+	 *
+	 * @param _router - The router instance from app.ts
+	 */
 	public addRoutes = (_router: Router) => {
 		const routeMapping: RouteMapping = this.getRouteMapping();
 		for (const eachKey of Object.keys(routeMapping)) {

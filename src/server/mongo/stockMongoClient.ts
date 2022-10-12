@@ -1,6 +1,9 @@
 import { MongoClient } from "mongodb";
 import { SECRETS } from "server/secrets";
 
+/**
+ * MongoClient wrapper, used to provide an hopeful easier interface into using the client, only has to be instantiated once (in app.ts) then is passed down into all requirements
+ */
 export class StockMongoClient {
 	private readonly client: MongoClient = new MongoClient(SECRETS.MONGO);
 	private connected = false;

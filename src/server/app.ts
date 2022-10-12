@@ -3,6 +3,9 @@ import express from "express";
 import { AppController } from "./controller";
 import { StockMongoClient } from "./mongo";
 
+/**
+ * The main application class, handles the setup of the express server, and the startup of the express server
+ */
 class Application {
 	public app: express.Application;
 	public port: number;

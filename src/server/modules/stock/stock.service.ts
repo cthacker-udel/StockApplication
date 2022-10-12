@@ -3,6 +3,9 @@ import type { Stock } from "server/@types";
 import { BaseService } from "server/common/api/baseservice";
 import { MONGO_COMMON, type StockMongoClient } from "server/mongo";
 
+/**
+ * Executes all database logic dependent on which request is sent to the server
+ */
 export class StockService extends BaseService {
 	public constructor() {
 		super("stock");
