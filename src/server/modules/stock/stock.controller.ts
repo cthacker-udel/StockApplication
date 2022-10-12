@@ -1,9 +1,10 @@
 import type { Request, Response, Router } from "express";
-import type { RouteMapping, Stock } from "server/@types";
-import type { Route } from "server/@types/api/common/Route";
-import { generateApiMessage } from "server/common";
-import type { BaseController } from "server/common/api/basecontroller";
-import { ERROR_CODE_ENUM } from "server/common/api/errorcodes";
+import type { Route, RouteMapping, Stock } from "server/@types";
+import {
+	type BaseController,
+	ERROR_CODE_ENUM,
+	generateApiMessage,
+} from "server/common";
 import type { StockMongoClient } from "server/mongo";
 import { StockService } from "./stock.service";
 
@@ -14,7 +15,7 @@ export class StockController implements BaseController {
 	/**
 	 * Prefix for the route
 	 */
-	private readonly ROUTE_PREFIX = "stock/";
+	private readonly ROUTE_PREFIX = "/stock/";
 	/**
 	 * The service instance
 	 */
@@ -51,7 +52,11 @@ export class StockController implements BaseController {
 					request.query?.id as string,
 				);
 			response.status(200);
-			response.send(JSON.stringify(foundStock));
+			response.send(
+				foundStock
+					? JSON.stringify(foundStock)
+					: generateApiMessage("No stocks available"),
+			);
 		} catch (error: unknown) {
 			console.error(
 				`Error occurred finding stock ${(error as Error).message}`,
@@ -116,7 +121,6 @@ export class StockController implements BaseController {
 		const routeMapping: RouteMapping = this.getRouteMapping();
 		for (const eachKey of Object.keys(routeMapping)) {
 			const routes: Route = routeMapping[eachKey];
-			console.log("adding route", routes);
 			switch (eachKey) {
 				case "get": {
 					for (const eachRoute of routes) {

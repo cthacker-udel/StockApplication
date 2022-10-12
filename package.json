@@ -9,7 +9,7 @@
 		"build": "rimraf build && tsc",
 		"lint": "eslint ./",
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"alt-build": "npx webpack && node dist/main.js"
+		"alt-build": "rimraf dist && npx webpack && node dist/app.js"
 	},
 	"repository": {
 		"type": "git",

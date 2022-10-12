@@ -21,7 +21,6 @@ export class StockMongoClient {
 		this.client
 			.connect()
 			.then((_result: MongoClient) => {
-				console.log("Connected to database");
 				this.connected = true;
 			})
 			.catch((error: unknown) => {

@@ -11,7 +11,7 @@ import { ERROR_CODES } from "./errorcodes";
  */
 export const generateApiMessage = (
 	message: string,
-	success = true,
+	success = false,
 	code = 0,
 ): ApiMessage => ({
 	errorCode: ERROR_CODES[code] ?? ERROR_CODES[0],
