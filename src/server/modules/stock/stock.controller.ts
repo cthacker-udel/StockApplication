@@ -1,10 +1,10 @@
 import type { Request, Response, Router } from "express";
-import type { RouteMapping, Stock } from "src/server/@types";
-import type { Route } from "src/server/@types/api/common/Route";
-import { generateApiMessage } from "src/server/common";
-import type { BaseController } from "src/server/common/api/basecontroller";
-import { ERROR_CODE_ENUM } from "src/server/common/api/errorcodes";
-import type { StockMongoClient } from "src/server/mongo";
+import type { RouteMapping, Stock } from "server/@types";
+import type { Route } from "server/@types/api/common/Route";
+import { generateApiMessage } from "server/common";
+import type { BaseController } from "server/common/api/basecontroller";
+import { ERROR_CODE_ENUM } from "server/common/api/errorcodes";
+import type { StockMongoClient } from "server/mongo";
 import { StockService } from "./stock.service";
 
 export class StockController implements BaseController {

@@ -1,5 +1,5 @@
 import type { Router } from "express";
-import type { RouteMapping } from "src/server/@types";
+import type { RouteMapping } from "server/@types";
 
 export type BaseController = {
 	getRouteMapping: () => RouteMapping;

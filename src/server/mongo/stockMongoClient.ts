@@ -1,5 +1,5 @@
 import { MongoClient } from "mongodb";
-import { SECRETS } from "src/server/secrets";
+import { SECRETS } from "server/secrets";
 
 export class StockMongoClient {
 	private readonly client: MongoClient = new MongoClient(SECRETS.MONGO);

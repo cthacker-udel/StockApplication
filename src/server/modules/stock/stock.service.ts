@@ -1,7 +1,7 @@
 import { type Collection, ObjectId } from "mongodb";
-import type { Stock } from "src/server/@types";
-import { BaseService } from "src/server/common/api/baseservice";
-import { MONGO_COMMON, type StockMongoClient } from "src/server/mongo";
+import type { Stock } from "server/@types";
+import { BaseService } from "server/common/api/baseservice";
+import { MONGO_COMMON, type StockMongoClient } from "server/mongo";
 
 export class StockService extends BaseService {
 	public constructor() {

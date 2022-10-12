@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars -- disabled for enums */
-import type { ErrorCode } from "src/server/@types";
+import type { ErrorCode } from "server/@types";
 
 export enum ERROR_CODE_ENUM {
 	GENERIC_ERROR = 0,
