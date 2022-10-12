@@ -1,4 +1,4 @@
-import type { ApiMessage } from "server/@types/api/common/ApiMessage";
+import type { ApiMessage } from "../../@types/api/common/ApiMessage";
 import { ERROR_CODES } from "./errorcodes";
 
 /**

@@ -1,11 +1,11 @@
 import type { Request, Response, Router } from "express";
-import type { Route, RouteMapping, Stock } from "server/@types";
+import type { Route, RouteMapping, Stock } from "../../@types";
 import {
 	type BaseController,
 	ERROR_CODE_ENUM,
 	generateApiMessage,
-} from "server/common";
-import type { StockMongoClient } from "server/mongo";
+} from "../../common";
+import type { StockMongoClient } from "../../mongo";
 import { StockService } from "./stock.service";
 
 /**
@@ -47,7 +47,7 @@ export class StockController implements BaseController {
 	): Promise<void> => {
 		try {
 			const foundStock: Stock | undefined =
-				await this.stockService.getStock(
+				await this.stockService.getStockById(
 					this.client,
 					request.query?.id as string,
 				);
@@ -72,6 +72,34 @@ export class StockController implements BaseController {
 		}
 	};
 
+	public getStockBySymbol = async (
+		request: Request,
+		response: Response,
+	): Promise<void> => {
+		const { symbol } = request.query;
+		try {
+			response.status(200);
+			response.send(
+				await this.stockService.getStockBySymbol(
+					this.client,
+					symbol as string,
+				),
+			);
+		} catch (error: unknown) {
+			console.error(
+				`Error finding stock by symbol ${(error as Error).message}`,
+			);
+			response.status(400);
+			response.send(
+				generateApiMessage(
+					`Failed to find stock with symbol ${symbol}`,
+					false,
+					ERROR_CODE_ENUM.FIND_STOCK_FAILURE,
+				),
+			);
+		}
+	};
+
 	/**
 	 * Adds a stock via the supplied body that is converted into a Stock type, if it's malformed then an error occurs and is caught to avoid exceptions.
 	 *
@@ -83,10 +111,39 @@ export class StockController implements BaseController {
 		response: Response,
 	): Promise<void> => {
 		try {
-			const payload: Stock = JSON.parse(request.body as string) as Stock;
-			await this.stockService.addStock(this.client, payload);
-			response.status(204);
-			response.send(JSON.stringify({}));
+			const payload: Stock = request.body as Stock;
+			if (payload?.symbol.length > 3) {
+				console.error(
+					"Error occurred adding stock, symbol length must be between 1 and 3 characters",
+				);
+				response.status(400);
+				response.send(
+					generateApiMessage(
+						"Stock symbol must be between 1 and 3 characters",
+						false,
+						ERROR_CODE_ENUM.CREATE_STOCK_VALIDATION_FAILURE_SYMBOL,
+					),
+				);
+			} else if (
+				await this.stockService.getStockBySymbol(
+					this.client,
+					payload.symbol,
+				)
+			) {
+				console.error("Stock with stock symbol already exists");
+				response.status(400);
+				response.send(
+					generateApiMessage(
+						"Stock with stock symbol already exists",
+						false,
+						ERROR_CODE_ENUM.CREATE_STOCK_STOCK_ALREADY_EXISTS,
+					),
+				);
+			} else {
+				await this.stockService.addStock(this.client, payload);
+				response.status(204);
+				response.send(JSON.stringify({}));
+			}
 		} catch (error: unknown) {
 			console.error(
 				`Error occurred adding stock ${(error as Error).message}`,

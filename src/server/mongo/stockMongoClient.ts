@@ -1,5 +1,5 @@
 import { MongoClient } from "mongodb";
-import { SECRETS } from "server/secrets";
+import { SECRETS } from "../secrets";
 
 /**
  * MongoClient wrapper, used to provide an hopeful easier interface into using the client, only has to be instantiated once (in app.ts) then is passed down into all requirements

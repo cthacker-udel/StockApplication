@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars -- disabled for enums */
-import type { ErrorCode } from "server/@types";
+import type { ErrorCode } from "../../@types";
 
 /**
  * The enum values of each error code
@@ -8,6 +8,8 @@ export enum ERROR_CODE_ENUM {
 	GENERIC_ERROR = 0,
 	FIND_STOCK_FAILURE = 1,
 	CREATE_STOCK_FAILURE = 2,
+	CREATE_STOCK_VALIDATION_FAILURE_SYMBOL = 3,
+	CREATE_STOCK_STOCK_ALREADY_EXISTS = 4,
 }
 
 /**
@@ -25,5 +27,13 @@ export const ERROR_CODES: { [key: number]: ErrorCode } = {
 	"2": {
 		code: ERROR_CODE_ENUM.CREATE_STOCK_FAILURE,
 		message: "Failed to create stock",
+	},
+	"3": {
+		code: ERROR_CODE_ENUM.CREATE_STOCK_VALIDATION_FAILURE_SYMBOL,
+		message: "Symbol must be at most 3 characters",
+	},
+	"4": {
+		code: ERROR_CODE_ENUM.CREATE_STOCK_STOCK_ALREADY_EXISTS,
+		message: "Stock with symbol supplied already exists",
 	},
 };

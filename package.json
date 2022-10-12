@@ -8,8 +8,7 @@
 		"full-clean": "rimraf build node_modules package-lock.json dist",
 		"build": "rimraf build && tsc",
 		"lint": "eslint ./",
-		"test": "echo \"Error: no test specified\" && exit 1",
-		"alt-build": "rimraf dist && npx webpack && node dist/app.js"
+		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"repository": {
 		"type": "git",
@@ -24,8 +23,7 @@
 	"homepage": "https://github.com/cthacker-udel/StockApplication#readme",
 	"dependencies": {
 		"express": "^4.18.2",
-		"mongodb": "^4.10.0",
-		"path": "^0.12.7"
+		"mongodb": "^4.10.0"
 	},
 	"devDependencies": {
 		"@types/express": "^4.17.14",
@@ -40,10 +38,6 @@
 		"eslint-plugin-node": "^11.1.0",
 		"eslint-plugin-ramda": "^2.5.1",
 		"eslint-plugin-sonarjs": "^0.16.0",
-		"eslint-plugin-unicorn": "^44.0.2",
-		"ts-loader": "^9.4.1",
-		"webpack": "^5.74.0",
-		"webpack-cli": "^4.10.0",
-		"webpack-node-externals": "^3.0.0"
+		"eslint-plugin-unicorn": "^44.0.2"
 	}
 }
