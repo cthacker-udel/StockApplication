@@ -23,6 +23,7 @@ class Application {
 	}
 
 	public start(): void {
+		this.addController();
 		this.app.listen(this.port, () => {
 			console.log(`Server listening on port ${this.port} !`);
 		});
