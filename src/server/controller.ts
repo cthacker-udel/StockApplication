@@ -1,5 +1,6 @@
 import express from "express";
-import { StockController } from "./modules/stock/stock.controller";
+import { StockController } from "./modules";
+
 import type { StockMongoClient } from "./mongo";
 
 export class AppController {
