@@ -11,6 +11,13 @@ export class StockService extends BaseService {
 		super("stock");
 	}
 
+	/**
+	 * Fetches a stock with matching `stockId` from the database
+	 *
+	 * @param client - The MongoClient instance
+	 * @param stockId - The id of the stock
+	 * @returns - The found stock or undefined if not found
+	 */
 	public getStock = async (
 		client: StockMongoClient,
 		stockId = "",
@@ -29,6 +36,13 @@ export class StockService extends BaseService {
 		return stock;
 	};
 
+	/**
+	 * Adds a stock to the database
+	 *
+	 * @param client - The MongoClient instance
+	 * @param stockPayload - The stock to add to the database
+	 * @returns - Whether or not the stock was added
+	 */
 	public addStock = async (
 		client: StockMongoClient,
 		stockPayload: Stock,

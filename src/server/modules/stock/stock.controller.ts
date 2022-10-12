@@ -11,10 +11,24 @@ import { StockService } from "./stock.service";
  * Handles all incoming requests related to the "stock" endpoint
  */
 export class StockController implements BaseController {
+	/**
+	 * Prefix for the route
+	 */
 	private readonly ROUTE_PREFIX = "stock/";
+	/**
+	 * The service instance
+	 */
 	private readonly stockService: StockService;
+	/**
+	 * The MongoClient instance
+	 */
 	private readonly client: StockMongoClient;
 
+	/**
+	 * Instantiates an instance of the stock controller
+	 *
+	 * @param client - MongoClient instance to pass into the service
+	 */
 	public constructor(client: StockMongoClient) {
 		this.stockService = new StockService();
 		this.client = client;

@@ -7,10 +7,22 @@ import { StockMongoClient } from "./mongo";
  * The main application class, handles the setup of the express server, and the startup of the express server
  */
 class Application {
+	/**
+	 * The application
+	 */
 	public app: express.Application;
+	/**
+	 * The port the application is listening on
+	 */
 	public port: number;
+	/**
+	 * The stock mongo client instance
+	 */
 	public client: StockMongoClient;
 
+	/**
+	 * Constructs the application
+	 */
 	constructor() {
 		this.app = express();
 		this.port =
@@ -22,6 +34,9 @@ class Application {
 		this.client = new StockMongoClient();
 	}
 
+	/**
+	 * Handles all startup/setup methods and starts the server at the end
+	 */
 	public start(): void {
 		this.addController();
 		this.app.listen(this.port, () => {
@@ -29,6 +44,9 @@ class Application {
 		});
 	}
 
+	/**
+	 * Adds the controller to the app
+	 */
 	public addController = (): void => {
 		this.app.use("/api", new AppController(this.client).getRouter());
 	};
