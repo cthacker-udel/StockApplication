@@ -1,8 +1,9 @@
 {
 	"compilerOptions": {
 		"experimentalDecorators": true,
-		"target": "es2016",
-		"module": "commonjs",
+		"target": "ES5",
+		"emitDecoratorMetadata": true,
+		"moduleResolution": "node",
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
 		"strict": true,

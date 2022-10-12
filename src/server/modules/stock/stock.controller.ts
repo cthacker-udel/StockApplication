@@ -52,6 +52,7 @@ export class StockController implements BaseController {
 		const routeMapping: RouteMapping = this.getRouteMapping();
 		for (const eachKey of Object.keys(routeMapping)) {
 			const routes: Route = routeMapping[eachKey];
+			console.log("adding route", routes);
 			switch (eachKey) {
 				case "get": {
 					for (const eachRoute of routes) {
