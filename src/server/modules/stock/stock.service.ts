@@ -1,4 +1,4 @@
-import { type Collection, ObjectId } from "mongodb";
+import { type Collection, ObjectId, type InsertOneResult } from "mongodb";
 import type { Stock } from "server/@types";
 import { BaseService } from "server/common/api/baseservice";
 import { MONGO_COMMON, type StockMongoClient } from "server/mongo";
@@ -24,5 +24,17 @@ export class StockService extends BaseService {
 				})) ?? undefined;
 		}
 		return stock;
+	};
+
+	public addStock = async (
+		client: StockMongoClient,
+		stockPayload: Stock,
+	): Promise<boolean> => {
+		const stockCollection: InsertOneResult = await client
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection(this.COLLECTION_NAME)
+			.insertOne(stockPayload);
+		return stockCollection.acknowledged;
 	};
 }

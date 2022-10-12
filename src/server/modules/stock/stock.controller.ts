@@ -44,6 +44,30 @@ export class StockController implements BaseController {
 		}
 	};
 
+	public addStock = async (
+		request: Request,
+		response: Response,
+	): Promise<void> => {
+		try {
+			const payload: Stock = JSON.parse(request.body as string) as Stock;
+			await this.stockService.addStock(this.client, payload);
+			response.status(204);
+			response.send(JSON.stringify({}));
+		} catch (error: unknown) {
+			console.error(
+				`Error occurred adding stock ${(error as Error).message}`,
+			);
+			response.status(400);
+			response.send(
+				generateApiMessage(
+					"Failed to create stock",
+					false,
+					ERROR_CODE_ENUM.CREATE_STOCK_FAILURE,
+				),
+			);
+		}
+	};
+
 	public getRouteMapping = (): RouteMapping => ({
 		get: [["get", this.getStock]],
 	});
