@@ -10,6 +10,7 @@ export enum ERROR_CODE_ENUM {
 	CREATE_STOCK_FAILURE = 2,
 	CREATE_STOCK_VALIDATION_FAILURE_SYMBOL = 3,
 	CREATE_STOCK_STOCK_ALREADY_EXISTS = 4,
+	FIND_STOCK_BY_PRICE_FAILURE = 5,
 }
 
 /**
@@ -35,5 +36,9 @@ export const ERROR_CODES: { [key: number]: ErrorCode } = {
 	"4": {
 		code: ERROR_CODE_ENUM.CREATE_STOCK_STOCK_ALREADY_EXISTS,
 		message: "Stock with symbol supplied already exists",
+	},
+	"5": {
+		code: ERROR_CODE_ENUM.FIND_STOCK_BY_PRICE_FAILURE,
+		message: "Failed to find stock by the price",
 	},
 };

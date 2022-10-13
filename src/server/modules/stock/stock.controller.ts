@@ -72,6 +72,12 @@ export class StockController implements BaseController {
 		}
 	};
 
+	/**
+	 * Gets a stock by the symbol
+	 *
+	 * @param request - The request sent to the server
+	 * @param response - The response sent back to the client
+	 */
 	public getStockBySymbol = async (
 		request: Request,
 		response: Response,
@@ -95,6 +101,36 @@ export class StockController implements BaseController {
 					`Failed to find stock with symbol ${symbol}`,
 					false,
 					ERROR_CODE_ENUM.FIND_STOCK_FAILURE,
+				),
+			);
+		}
+	};
+
+	public getAllStocksByPrice = async (
+		request: Request,
+		response: Response,
+	) => {
+		try {
+			const { price } = request.query;
+			if (price as unknown as number) {
+				const parsedPrice = Number.parseInt(price as string, 10);
+				response.send(
+					await this.stockService.getAllStocksWithPrice(
+						this.client,
+						parsedPrice,
+					),
+				);
+			}
+		} catch (error: unknown) {
+			console.error(
+				`Error finding stock by symbol ${(error as Error).message}`,
+			);
+			response.status(400);
+			response.send(
+				generateApiMessage(
+					"Failed to fetch all stocks with the price",
+					false,
+					ERROR_CODE_ENUM.FIND_STOCK_BY_PRICE_FAILURE,
 				),
 			);
 		}
