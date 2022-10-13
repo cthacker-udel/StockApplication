@@ -106,6 +106,12 @@ export class StockController implements BaseController {
 		}
 	};
 
+	/**
+	 * Gets all stocks given a price
+	 *
+	 * @param request - The server request
+	 * @param response - The server response
+	 */
 	public getAllStocksByPrice = async (
 		request: Request,
 		response: Response,
@@ -114,6 +120,7 @@ export class StockController implements BaseController {
 			const { price } = request.query;
 			if (price as unknown as number) {
 				const parsedPrice = Number.parseInt(price as string, 10);
+				response.status(200);
 				response.send(
 					await this.stockService.getAllStocksWithPrice(
 						this.client,
@@ -131,6 +138,25 @@ export class StockController implements BaseController {
 					"Failed to fetch all stocks with the price",
 					false,
 					ERROR_CODE_ENUM.FIND_STOCK_BY_PRICE_FAILURE,
+				),
+			);
+		}
+	};
+
+	public getAllStocks = async (request: Request, response: Response) => {
+		try {
+			response.status(200);
+			response.send(await this.stockService.getAllStocks(this.client));
+		} catch (error: unknown) {
+			console.error(
+				`Error fetching all stocks ${(error as Error).message}`,
+			);
+			response.status(400);
+			response.send(
+				generateApiMessage(
+					"Failed to fetch all stocks",
+					false,
+					ERROR_CODE_ENUM.FIND_ALL_STOCKS_FAILURE,
 				),
 			);
 		}
@@ -202,9 +228,10 @@ export class StockController implements BaseController {
 	 */
 	public getRouteMapping = (): RouteMapping => ({
 		get: [
-			["get", this.getStockById],
+			["get/id", this.getStockById],
 			["get/symbol", this.getStockBySymbol],
 			["get/price", this.getAllStocksByPrice],
+			["get/all", this.getAllStocks],
 		],
 		post: [["add", this.addStock]],
 	});

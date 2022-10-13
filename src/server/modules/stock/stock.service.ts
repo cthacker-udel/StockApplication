@@ -75,6 +75,19 @@ export class StockService extends BaseService {
 		return stocks;
 	};
 
+	public getAllStocks = async (
+		client: StockMongoClient,
+	): Promise<Stock[] | undefined> => {
+		// eslint-disable-next-line sonarjs/prefer-immediate-return -- not needed
+		const allStocks = await client
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection(this.COLLECTION_NAME)
+			.find<Stock>({})
+			.toArray();
+		return allStocks;
+	};
+
 	/**
 	 * Adds a stock to the database
 	 *
