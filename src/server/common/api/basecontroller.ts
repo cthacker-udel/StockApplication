@@ -5,6 +5,7 @@ import type { Route, RouteMapping } from "../../@types";
  * The base controller class, meant to enforce a standard for every controller that is made, must contain these 2 methods
  */
 export type BaseController = {
+	ROUTE_PREFIX: string;
 	getRouteMapping: () => RouteMapping;
 	addRoutes: (_router: Router) => void;
 };

@@ -8,7 +8,8 @@
 		"full-clean": "rimraf build node_modules package-lock.json dist",
 		"build": "rimraf build && tsc",
 		"lint": "eslint ./",
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"reset": "npm run build && npm run start"
 	},
 	"repository": {
 		"type": "git",

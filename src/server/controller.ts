@@ -1,5 +1,6 @@
 import express, { type Router } from "express";
 import { StockController } from "./modules";
+import { UserController } from "./modules/user";
 
 import type { StockMongoClient } from "./mongo";
 
@@ -12,6 +13,10 @@ export class AppController {
 	 * The stock controller instance
 	 */
 	private readonly stockController: StockController;
+	/**
+	 * The user controller instance
+	 */
+	private readonly userController: UserController;
 
 	/**
 	 * Constructs a AppController instance, instantiating it's stockController and it's router instance
@@ -20,7 +25,10 @@ export class AppController {
 	 */
 	public constructor(client: StockMongoClient) {
 		this.stockController = new StockController(client);
+		this.userController = new UserController(client);
+
 		this.stockController.addRoutes(this.router);
+		this.userController.addRoutes(this.router);
 	}
 
 	/**

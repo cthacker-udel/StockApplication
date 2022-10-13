@@ -16,7 +16,7 @@ export class StockController implements BaseController {
 	/**
 	 * Prefix for the route
 	 */
-	private readonly ROUTE_PREFIX = "/stock/";
+	public readonly ROUTE_PREFIX = "/stock/";
 	/**
 	 * The service instance
 	 */

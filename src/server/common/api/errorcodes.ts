@@ -5,6 +5,7 @@ import type { ErrorCode } from "../../@types";
  * The enum values of each error code
  */
 export enum ERROR_CODE_ENUM {
+	NO_ERROR = -1,
 	GENERIC_ERROR = 0,
 	FIND_STOCK_FAILURE = 1,
 	CREATE_STOCK_FAILURE = 2,
@@ -18,6 +19,10 @@ export enum ERROR_CODE_ENUM {
  * Uses those enum error code values to index into a dictionary/record/object that returns the error code associated with that number
  */
 export const ERROR_CODES: { [key: number]: ErrorCode } = {
+	"-1": {
+		code: ERROR_CODE_ENUM.NO_ERROR,
+		message: "N/A",
+	},
 	"0": {
 		code: ERROR_CODE_ENUM.GENERIC_ERROR,
 		message: "Encountered an internal error, please try again",

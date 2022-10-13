@@ -305,7 +305,6 @@
 			}
 		],
 		"id-match": "off",
-		"implicit-arrow-linebreak": ["error", "beside"],
 		"key-spacing": [
 			"error",
 			{
