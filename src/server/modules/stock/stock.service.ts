@@ -41,7 +41,7 @@ export class StockService extends BaseService {
 	 *
 	 * @param client - The mongo client
 	 * @param symbol - The symbol of the stock
-	 * @returns
+	 * @returns The found stock
 	 */
 	public getStockBySymbol = async (
 		client: StockMongoClient,
@@ -61,6 +61,13 @@ export class StockService extends BaseService {
 		return stock;
 	};
 
+	/**
+	 * Finds all stocks with the given price
+	 *
+	 * @param client - The mongo client
+	 * @param price - The price to filter the stocks by
+	 * @returns The found stocks
+	 */
 	public getAllStocksWithPrice = async (
 		client: StockMongoClient,
 		price: number,
@@ -75,6 +82,12 @@ export class StockService extends BaseService {
 		return stocks;
 	};
 
+	/**
+	 * Fetches all stocks in the database
+	 *
+	 * @param client - The mongo client
+	 * @returns All stocks in the database
+	 */
 	public getAllStocks = async (
 		client: StockMongoClient,
 	): Promise<Stock[] | undefined> => {

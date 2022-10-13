@@ -143,6 +143,12 @@ export class StockController implements BaseController {
 		}
 	};
 
+	/**
+	 * Gets all stocks from the database
+	 *
+	 * @param request - The server request
+	 * @param response - The server response
+	 */
 	public getAllStocks = async (request: Request, response: Response) => {
 		try {
 			response.status(200);
