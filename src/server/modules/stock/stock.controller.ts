@@ -36,12 +36,12 @@ export class StockController implements BaseController {
 	}
 
 	/**
-	 * Gets a stock with the supplied `stockId` that is added into the query string
+	 * Gets a stock with the supplied `id` that is added into the query string
 	 *
 	 * @param request - The request sent to the server
 	 * @param response - The response from the server
 	 */
-	public getStock = async (
+	public getStockById = async (
 		request: Request,
 		response: Response,
 	): Promise<void> => {
@@ -201,7 +201,11 @@ export class StockController implements BaseController {
 	 * @returns - The route mapping, basically an object that will be utilized by the app in making it easier to dynamically generate endpoints dependent on each of the controllers
 	 */
 	public getRouteMapping = (): RouteMapping => ({
-		get: [["get", this.getStock]],
+		get: [
+			["get", this.getStockById],
+			["get/symbol", this.getStockBySymbol],
+			["get/price", this.getAllStocksByPrice],
+		],
 		post: [["add", this.addStock]],
 	});
 
@@ -213,7 +217,7 @@ export class StockController implements BaseController {
 	public addRoutes = (_router: Router) => {
 		const routeMapping: RouteMapping = this.getRouteMapping();
 		for (const eachKey of Object.keys(routeMapping)) {
-			const routes: Route = routeMapping[eachKey];
+			const routes: Route[] = routeMapping[eachKey];
 			switch (eachKey) {
 				case "get": {
 					for (const eachRoute of routes) {
