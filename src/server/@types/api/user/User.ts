@@ -3,6 +3,7 @@ export type User = {
 	lastName: string;
 	dob: string;
 	username: string;
+	email: string;
 	password: string;
 	lastLogin: string;
 	// pbkdf2 algorithm information

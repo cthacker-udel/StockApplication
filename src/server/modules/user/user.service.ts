@@ -1,5 +1,5 @@
 /* eslint-disable wrap-regex -- not needed*/
-import type { User } from "../../@types";
+import type { FoundUserEmailByUsernameReturn, User } from "../../@types";
 import { BaseService } from "../../common";
 import { MONGO_COMMON, type StockMongoClient } from "../../mongo";
 import { pbkdf2Encryption } from "../encryption";
@@ -14,7 +14,7 @@ export class UserService extends BaseService {
 		client: StockMongoClient,
 		userInformation: User,
 	): Promise<boolean> => {
-		const { username, password, dob, firstName, lastName } =
+		const { username, password, dob, firstName, lastName, email } =
 			userInformation;
 		const userCollection = client
 			.getClient()
@@ -51,6 +51,13 @@ export class UserService extends BaseService {
 		if (!lastName || !/S/giu.test(lastName.trim())) {
 			return false;
 		}
+		if (
+			email !== undefined &&
+			!email.trim() &&
+			!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/giu.test(email.trim())
+		) {
+			return false;
+		}
 		const { hash, iterations, salt } = pbkdf2Encryption(password);
 		const insertionResult = await userCollection.insertOne({
 			...userInformation,
@@ -72,7 +79,9 @@ export class UserService extends BaseService {
 			.collection(this.COLLECTION_NAME);
 		const { username, password } = loginInformation;
 		if (username !== undefined && password !== undefined) {
-			const foundUser = await userCollection.findOne<User>({ username });
+			const foundUser = await userCollection.findOne<User>({
+				username,
+			});
 			if (foundUser !== null) {
 				// user exists, grab hashing information
 				const {
@@ -89,5 +98,21 @@ export class UserService extends BaseService {
 			}
 		}
 		return false;
+	};
+
+	public findUserEmailByUsername = async (
+		client: StockMongoClient,
+		username: string,
+	): Promise<FoundUserEmailByUsernameReturn> => {
+		const userCollection = client
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection(this.COLLECTION_NAME);
+		const foundUser = await userCollection.findOne<User>({ username });
+		if (foundUser) {
+			const { email, ..._rest } = foundUser;
+			return { email };
+		}
+		return { email: undefined };
 	};
 }

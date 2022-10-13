@@ -85,6 +85,34 @@ export class UserController implements BaseController {
 		}
 	};
 
+	public changePassword = async (request: Request, response: Response) => {
+		try {
+			const { username } = request.query;
+			if (username === undefined) {
+				response.status(400);
+				response.send(
+					generateApiMessage(
+						"Failed to change password, username not sent",
+					),
+				);
+			} else {
+				const { email } =
+					await this.userService.findUserEmailByUsername(
+						this.client,
+						username as string,
+					);
+				response.status(200);
+				response.send({ email });
+			}
+		} catch (error: unknown) {
+			console.error(
+				`Failed to change password,  ${(error as Error).message}`,
+			);
+			response.status(400);
+			response.send(generateApiMessage("Failed to change password"));
+		}
+	};
+
 	public getRouteMapping = (): RouteMapping => ({
 		get: [],
 		post: [
