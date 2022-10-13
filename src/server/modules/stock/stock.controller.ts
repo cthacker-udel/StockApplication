@@ -1,5 +1,6 @@
 import type { Request, Response, Router } from "express";
-import type { Route, RouteMapping, Stock } from "../../@types";
+import { updateRoutes } from "../../common/api/basecontroller";
+import type { RouteMapping, Stock } from "../../@types";
 import {
 	type BaseController,
 	ERROR_CODE_ENUM,
@@ -248,50 +249,6 @@ export class StockController implements BaseController {
 	 * @param _router - The router instance from app.ts
 	 */
 	public addRoutes = (_router: Router) => {
-		const routeMapping: RouteMapping = this.getRouteMapping();
-		for (const eachKey of Object.keys(routeMapping)) {
-			const routes: Route[] = routeMapping[eachKey];
-			switch (eachKey) {
-				case "get": {
-					for (const eachRoute of routes) {
-						_router.get(
-							`${this.ROUTE_PREFIX}${eachRoute[0]}`,
-							eachRoute[1],
-						);
-					}
-					break;
-				}
-				case "put": {
-					for (const eachRoute of routes) {
-						_router.put(
-							`${this.ROUTE_PREFIX}${eachRoute[0]}`,
-							eachRoute[1],
-						);
-					}
-					break;
-				}
-				case "post": {
-					for (const eachRoute of routes) {
-						_router.post(
-							`${this.ROUTE_PREFIX}${eachRoute[0]}`,
-							eachRoute[1],
-						);
-					}
-					break;
-				}
-				case "delete": {
-					for (const eachRoute of routes) {
-						_router.delete(
-							`${this.ROUTE_PREFIX}${eachRoute[0]}`,
-							eachRoute[1],
-						);
-					}
-					break;
-				}
-				default: {
-					break;
-				}
-			}
-		}
+		updateRoutes(_router, this.getRouteMapping(), this.ROUTE_PREFIX);
 	};
 }
