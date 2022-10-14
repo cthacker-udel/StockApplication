@@ -1,4 +1,5 @@
-import { pbkdf2Sync, randomBytes, randomInt } from "node:crypto";
+import { pbkdf2Sync, randomBytes, randomInt, webcrypto } from "node:crypto";
+import { SECRETS } from "server/secrets";
 
 /**
  * Local type for the encryption result, only applies to the encryption here
@@ -49,3 +50,51 @@ export const fixedPbkdf2Encryption = (
  * @returns A randomized 64 byte token, used anyplace tokens are involved
  */
 export const generateToken = (): string => randomBytes(64).toString("hex");
+
+/**
+ * AES encrypts the message
+ *
+ * @param message - The message to encrypt
+ * @returns The encrypted message
+ */
+const aesEncrypt = async (message: string): Promise<string> =>
+	new TextDecoder("utf8").decode(
+		await webcrypto.subtle.encrypt(
+			{
+				counter: SECRETS.AES_COUNTER,
+				length: 64,
+				name: "AES-CTR",
+			},
+			{
+				algorithm: { name: "AES-CTR" },
+				extractable: true,
+				type: "secret",
+				usages: ["encrypt"],
+			},
+			new TextEncoder().encode(`${message}:${SECRETS.AES_KEY}`),
+		),
+	);
+
+/**
+ * Decrypts the AES encrypted message
+ *
+ * @param encryptedMessage - The AES encrypted message
+ * @returns The decrypted message
+ */
+const aesDecrypt = async (encryptedMessage: string): Promise<string> =>
+	new TextDecoder("utf8").decode(
+		await webcrypto.subtle.decrypt(
+			{
+				counter: SECRETS.AES_COUNTER,
+				length: 64,
+				name: "AES-CTR",
+			},
+			{
+				algorithm: { name: "AES-CTR" },
+				extractable: true,
+				type: "secret",
+				usages: ["encrypt"],
+			},
+			new TextEncoder().encode(encryptedMessage),
+		),
+	);
