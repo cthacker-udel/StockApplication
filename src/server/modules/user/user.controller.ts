@@ -1,5 +1,5 @@
 import type { Request, Response, Router } from "express";
-import type { RouteMapping, User } from "../../@types";
+import type { ChangeCredentialPayload, RouteMapping, User } from "../../@types";
 import { generateApiMessage, generateEmail } from "../../common";
 import type { StockMongoClient } from "../../mongo";
 import {
@@ -90,7 +90,10 @@ export class UserController implements BaseController {
 		}
 	};
 
-	public changePassword = async (request: Request, response: Response) => {
+	public changePasswordRequest = async (
+		request: Request,
+		response: Response,
+	) => {
 		try {
 			const { username } = request.body as Partial<User>;
 			if (username === undefined) {
@@ -121,7 +124,6 @@ export class UserController implements BaseController {
 						username,
 						token,
 					);
-					console.log("sending email to", email);
 					await this.sendgridClient.send(
 						generateEmail(email, {
 							subject: "Change Password Link",
@@ -138,6 +140,43 @@ export class UserController implements BaseController {
 				`Failed to change password,  ${(error as Error).message}`,
 			);
 			response.status(400);
+			response.send(
+				generateApiMessage(
+					"Failed to complete change password request",
+				),
+			);
+		}
+	};
+
+	public changePassword = async (
+		request: Request,
+		response: Response,
+	): Promise<void> => {
+		try {
+			const { username, token, newPassword } =
+				request.body as ChangeCredentialPayload;
+			if (
+				username === undefined ||
+				token === undefined ||
+				newPassword === undefined
+			) {
+				response.status(400);
+				response.send(generateApiMessage("Failed to change password"));
+			} else {
+				await this.userService.changePassword(
+					this.client,
+					username,
+					token,
+					newPassword,
+				);
+				response.status(200);
+				response.send(generateApiMessage("Changed password!", true));
+			}
+		} catch (error: unknown) {
+			console.error(
+				`Failed to change password ${(error as Error).message}`,
+			);
+			response.status(400);
 			response.send(generateApiMessage("Failed to change password"));
 		}
 	};
@@ -147,6 +186,7 @@ export class UserController implements BaseController {
 		post: [
 			["signup", this.signUp],
 			["login", this.login],
+			["forgot/password", this.changePasswordRequest],
 			["change/password", this.changePassword],
 		],
 	});

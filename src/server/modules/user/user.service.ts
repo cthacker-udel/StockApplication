@@ -127,8 +127,34 @@ export class UserService extends BaseService {
 			.collection(this.COLLECTION_NAME);
 		const foundUser = await userCollection.findOneAndUpdate(
 			{ username },
-			{ token },
+			{ $set: { token } },
 		);
 		return foundUser.ok > 0;
+	};
+
+	public changePassword = async (
+		client: StockMongoClient,
+		username: string,
+		requestToken: string,
+		newPassword: string,
+	): Promise<boolean> => {
+		const userCollection = client
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection(this.COLLECTION_NAME);
+		const foundUser = await userCollection.findOne<User>({ username });
+		if (foundUser === null) {
+			return false;
+		}
+		const { token } = foundUser;
+		if (token === requestToken) {
+			const { hash, iterations, salt } = pbkdf2Encryption(newPassword);
+			await userCollection.findOneAndUpdate(
+				{ username },
+				{ $set: { iterations, password: hash, salt, token: "" } },
+			);
+			return true;
+		}
+		return false;
 	};
 }
