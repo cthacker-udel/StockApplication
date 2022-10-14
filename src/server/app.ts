@@ -4,6 +4,7 @@ import express from "express";
 import { AppController } from "./controller";
 import { StockMongoClient } from "./mongo";
 import { SECRETS } from "./secrets";
+import { type RedisClientType, createClient } from "redis";
 
 /**
  * The main application class, handles the setup of the express server, and the startup of the express server
@@ -24,6 +25,8 @@ class Application {
 
 	public sendgridMailClient: MailService;
 
+	public redisClient: RedisClientType;
+
 	/**
 	 * Constructs the application
 	 */
@@ -38,6 +41,10 @@ class Application {
 		this.client = new StockMongoClient();
 		this.sendgridMailClient = new MailService();
 		this.sendgridMailClient.setApiKey(SECRETS.SENDGRID);
+		this.redisClient = createClient({
+			url: `${SECRETS.REDIS_BASE_URL}${SECRETS.REDIS_USERNAME}:${SECRETS.REDIS_PASSWORD}@${SECRETS.REDIS_URI}:${SECRETS.REDIS_PORT}`,
+		});
+		this.redisClient.connect();
 	}
 
 	/**
@@ -54,7 +61,14 @@ class Application {
 	 * Adds the controller to the app
 	 */
 	public addController = (): void => {
-		this.app.use("/api", new AppController(this.client, this.sendgridMailClient).getRouter());
+		this.app.use(
+			"/api",
+			new AppController(
+				this.client,
+				this.sendgridMailClient,
+				this.redisClient,
+			).getRouter(),
+		);
 	};
 }
 

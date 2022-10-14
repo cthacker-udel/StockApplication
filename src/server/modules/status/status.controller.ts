@@ -1,13 +1,10 @@
 import type { Request, Response, Router } from "express";
 import type { RouteMapping } from "../../@types";
-import {
-	type BaseController,
-	ERROR_CODE_ENUM,
-	generateApiMessage,
-} from "../../common";
+import { type BaseController } from "../../common";
 import { updateRoutes } from "../../common/api/basecontroller";
 import type { StockMongoClient } from "../../mongo";
 import { StatusService } from "./status.service";
+import type { RedisClientType } from "redis";
 
 export class StatusController implements BaseController {
 	public ROUTE_PREFIX = "/status/";
@@ -16,9 +13,12 @@ export class StatusController implements BaseController {
 
 	private readonly client: StockMongoClient;
 
-	public constructor(client: StockMongoClient) {
+	private readonly redisClient: RedisClientType;
+
+	public constructor(client: StockMongoClient, redisClient: RedisClientType) {
 		this.statusService = new StatusService();
 		this.client = client;
+		this.redisClient = redisClient;
 	}
 
 	/**
@@ -27,21 +27,21 @@ export class StatusController implements BaseController {
 	 * @param request - The client request
 	 * @param response - The server response
 	 */
-	public getStatus = (request: Request, response: Response): void => {
+	public getStatus = async (
+		_request: Request,
+		response: Response,
+	): Promise<void> => {
 		try {
-			const status = this.statusService.getStatus(this.client);
+			const status = await this.statusService.getStatus(
+				this.client,
+				this.redisClient,
+			);
 			response.status(200);
 			response.send(status);
 		} catch (error: unknown) {
-			console.error(`Failed to get status ${(error as Error).message}`);
+			console.error(`Failed to get status ${(error as Error).stack}`);
 			response.status(400);
-			response.send(
-				generateApiMessage(
-					"Failed to get status",
-					false,
-					ERROR_CODE_ENUM.GENERIC_ERROR,
-				),
-			);
+			response.send(this.statusService.getOfflineStatus());
 		}
 	};
 
