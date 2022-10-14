@@ -1,3 +1,4 @@
+import type { MailService } from "@sendgrid/mail";
 import express, { type Router } from "express";
 import { StockController } from "./modules";
 import { StatusController } from "./modules/status";
@@ -28,9 +29,9 @@ export class AppController {
 	 *
 	 * @param client - the stock mongo client instance passed from app.ts
 	 */
-	public constructor(client: StockMongoClient) {
+	public constructor(client: StockMongoClient, _mailClient: MailService) {
 		this.stockController = new StockController(client);
-		this.userController = new UserController(client);
+		this.userController = new UserController(client, _mailClient);
 		this.statusController = new StatusController(client);
 
 		this.stockController.addRoutes(this.router);

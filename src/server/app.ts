@@ -38,7 +38,6 @@ class Application {
 		this.client = new StockMongoClient();
 		this.sendgridMailClient = new MailService();
 		this.sendgridMailClient.setApiKey(SECRETS.SENDGRID);
-		this.sendgridMailClient.send()
 	}
 
 	/**
@@ -55,7 +54,7 @@ class Application {
 	 * Adds the controller to the app
 	 */
 	public addController = (): void => {
-		this.app.use("/api", new AppController(this.client).getRouter());
+		this.app.use("/api", new AppController(this.client, this.sendgridMailClient).getRouter());
 	};
 }
 

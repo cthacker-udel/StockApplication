@@ -1,12 +1,14 @@
 import type { Request, Response, Router } from "express";
 import type { RouteMapping, User } from "../../@types";
-import { generateApiMessage } from "../../common";
+import { generateApiMessage, generateEmail } from "../../common";
 import type { StockMongoClient } from "../../mongo";
 import {
 	type BaseController,
 	updateRoutes,
 } from "../../common/api/basecontroller";
 import { UserService } from "./user.service";
+import type { MailService } from "@sendgrid/mail";
+import { generateToken } from "../encryption/encryption";
 
 export class UserController implements BaseController {
 	public ROUTE_PREFIX = "/user/";
@@ -15,9 +17,12 @@ export class UserController implements BaseController {
 
 	private readonly client: StockMongoClient;
 
-	public constructor(client: StockMongoClient) {
+	private readonly sendgridClient: MailService;
+
+	public constructor(client: StockMongoClient, sendgridClient: MailService) {
 		this.userService = new UserService();
 		this.client = client;
+		this.sendgridClient = sendgridClient;
 	}
 
 	public signUp = async (
@@ -87,7 +92,7 @@ export class UserController implements BaseController {
 
 	public changePassword = async (request: Request, response: Response) => {
 		try {
-			const { username } = request.query;
+			const { username } = request.body as Partial<User>;
 			if (username === undefined) {
 				response.status(400);
 				response.send(
@@ -99,10 +104,33 @@ export class UserController implements BaseController {
 				const { email } =
 					await this.userService.findUserEmailByUsername(
 						this.client,
-						username as string,
+						username,
 					);
-				response.status(200);
-				response.send({ email });
+				if (email === undefined) {
+					response.status(400);
+					response.send(
+						generateApiMessage(
+							"Failed to add token, no user found with username",
+						),
+					);
+				} else {
+					response.status(200);
+					const token = generateToken();
+					await this.userService.addToken(
+						this.client,
+						username,
+						token,
+					);
+					await this.sendgridClient.send(
+						generateEmail(email, {
+							subject: "Change Password Link",
+							templateArgs: { token },
+							templateId: "forgotPassword",
+							title: "Change Password",
+						}),
+					);
+					response.send({ token, username });
+				}
 			}
 		} catch (error: unknown) {
 			console.error(

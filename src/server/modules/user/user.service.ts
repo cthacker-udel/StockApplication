@@ -115,4 +115,20 @@ export class UserService extends BaseService {
 		}
 		return { email: undefined };
 	};
+
+	public addToken = async (
+		client: StockMongoClient,
+		username: string,
+		token: string,
+	): Promise<boolean> => {
+		const userCollection = client
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection(this.COLLECTION_NAME);
+		const foundUser = await userCollection.findOneAndUpdate(
+			{ username },
+			{ token },
+		);
+		return foundUser.ok > 0;
+	};
 }

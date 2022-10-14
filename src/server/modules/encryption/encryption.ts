@@ -25,3 +25,5 @@ export const fixedPbkdf2Encryption = (
 	salt: string,
 ): string =>
 	pbkdf2Sync(message, salt, iterations, 512, "sha256").toString("hex");
+
+export const generateToken = (): string => randomBytes(64).toString("hex");
