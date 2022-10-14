@@ -121,6 +121,7 @@ export class UserController implements BaseController {
 						username,
 						token,
 					);
+					console.log("sending email to", email);
 					await this.sendgridClient.send(
 						generateEmail(email, {
 							subject: "Change Password Link",
@@ -146,6 +147,7 @@ export class UserController implements BaseController {
 		post: [
 			["signup", this.signUp],
 			["login", this.login],
+			["change/password", this.changePassword],
 		],
 	});
 

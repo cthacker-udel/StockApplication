@@ -6,6 +6,8 @@ export type User = {
 	email: string;
 	password: string;
 	lastLogin: string;
+	token: string;
+
 	// pbkdf2 algorithm information
 	salt: string;
 	iterations: number;
