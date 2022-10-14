@@ -1,11 +1,13 @@
-import type { RedisClientType } from "@redis/client";
+import type { RedisClientType } from "redis";
+import type { Response } from "express";
 import type { Collection } from "mongodb";
-import { User } from "server/@types";
+import type { User } from "server/@types";
 import type { Session } from "server/@types/api/session";
-import { RedisSession } from "server/@types/api/session/RedisSession";
+import type { RedisSession } from "server/@types/api/session/RedisSession";
 import { BaseService } from "server/common";
 import { MONGO_COMMON, type StockMongoClient } from "server/mongo";
-import { validate } from "uuid";
+import { SECRETS } from "server/secrets";
+import { validate, v4 } from "uuid";
 
 export class SessionService extends BaseService {
 	private readonly redisClient: RedisClientType;
@@ -23,6 +25,7 @@ export class SessionService extends BaseService {
 	public validateSession = async (
 		username: string,
 		id: string,
+		// eslint-disable-next-line sonarjs/cognitive-complexity -- refactor later, off by 1
 	): Promise<boolean> => {
 		if (validate(id)) {
 			const sessionCollection: Collection = this.stockMongoClient
@@ -30,8 +33,8 @@ export class SessionService extends BaseService {
 				.db(MONGO_COMMON.DATABASE_NAME)
 				.collection(this.COLLECTION_NAME);
 			const foundSession = sessionCollection.findOne<Session>({
-				username,
 				id,
+				username,
 			});
 			if (foundSession !== null) {
 				const redisSession = await this.redisClient.get(id);
@@ -43,17 +46,17 @@ export class SessionService extends BaseService {
 						const { sessionToken } = parsedRedisSession;
 						const matchedUser =
 							await sessionCollection.findOne<User>({
-								username,
 								sessionToken,
+								username,
 							});
 						if (
 							matchedUser !== null &&
 							matchedUser.sessionToken === sessionToken
 						) {
 							// re-enter session into cache to restart expiration
-							this.redisClient.setEx(
+							await this.redisClient.setEx(
 								id,
-								60 * 30,
+								SECRETS.REDIS_EXPIRATION,
 								JSON.stringify(parsedRedisSession),
 							);
 						}
@@ -63,6 +66,37 @@ export class SessionService extends BaseService {
 				return false;
 			}
 			return false;
+		}
+		return false;
+	};
+
+	public addSession = async (
+		username: string,
+		sessionToken: string,
+		response: Response,
+	): Promise<boolean> => {
+		const userCollection: Collection = this.stockMongoClient
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection(this.COLLECTION_NAME);
+
+		const foundUser = await userCollection.findOne<User>({
+			sessionToken,
+			username,
+		});
+
+		if (foundUser !== null) {
+			const id = v4();
+			response.cookie(
+				SECRETS.STOCK_APP_SESSION_COOKIE_ID,
+				JSON.stringify({ id, username }),
+			);
+			await this.redisClient.setEx(
+				id,
+				SECRETS.REDIS_EXPIRATION,
+				JSON.stringify({ sessionToken, username }),
+			);
+			return true;
 		}
 		return false;
 	};

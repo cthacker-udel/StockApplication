@@ -6,6 +6,7 @@ import { UserController } from "./modules/user";
 
 import type { StockMongoClient } from "./mongo";
 import type { RedisClientType } from "redis";
+import { SessionService } from "./modules/session/session.service";
 
 export class AppController {
 	/**
@@ -24,6 +25,10 @@ export class AppController {
 	 * The status controller instance
 	 */
 	private readonly statusController: StatusController;
+	/**
+	 * The session service instance
+	 */
+	private readonly sessionService: SessionService;
 
 	/**
 	 * Constructs a AppController instance, instantiating it's stockController and it's router instance
@@ -38,6 +43,7 @@ export class AppController {
 		this.stockController = new StockController(client);
 		this.userController = new UserController(client, _mailClient);
 		this.statusController = new StatusController(client, _redisClient);
+		this.sessionService = new SessionService(client, _redisClient);
 
 		this.stockController.addRoutes(this.router);
 		this.userController.addRoutes(this.router);
