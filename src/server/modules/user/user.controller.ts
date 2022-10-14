@@ -1,6 +1,11 @@
 import type { Request, Response, Router } from "express";
 import type { ChangeCredentialPayload, RouteMapping, User } from "../../@types";
-import { generateApiMessage, generateEmail } from "../../common";
+import {
+	EMAIL_CONSTANTS,
+	EMAIL_TEMPLATES,
+	generateApiMessage,
+	generateEmail,
+} from "../../common";
 import type { StockMongoClient } from "../../mongo";
 import {
 	type BaseController,
@@ -144,10 +149,12 @@ export class UserController implements BaseController {
 					);
 					await this.sendgridClient.send(
 						generateEmail(email, {
-							subject: "Change Password Link",
-							templateArgs: { token },
-							templateId: "forgotPassword",
-							title: "Change Password",
+							templateArgs: {
+								buttonLink:
+									EMAIL_CONSTANTS.forgotPassword.buttonLink,
+								token,
+							},
+							templateId: EMAIL_TEMPLATES.forgotPassword,
 						}),
 					);
 					response.send({ token, username });
@@ -155,7 +162,9 @@ export class UserController implements BaseController {
 			}
 		} catch (error: unknown) {
 			console.error(
-				`Failed to change password,  ${(error as Error).message}`,
+				`Failed to change password,  ${
+					((error as Error).message, (error as Error).stack)
+				}`,
 			);
 			response.status(400);
 			response.send(
