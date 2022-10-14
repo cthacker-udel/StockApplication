@@ -1,7 +1,9 @@
 /* eslint-disable no-undef -- process is defined, it's server-side code */
+import { MailService } from "@sendgrid/mail";
 import express from "express";
 import { AppController } from "./controller";
 import { StockMongoClient } from "./mongo";
+import { SECRETS } from "./secrets";
 
 /**
  * The main application class, handles the setup of the express server, and the startup of the express server
@@ -20,6 +22,8 @@ class Application {
 	 */
 	public client: StockMongoClient;
 
+	public sendgridMailClient: MailService;
+
 	/**
 	 * Constructs the application
 	 */
@@ -32,6 +36,8 @@ class Application {
 		this.app.use(express.urlencoded({ extended: false }));
 		this.app.use(express.json());
 		this.client = new StockMongoClient();
+		this.sendgridMailClient = new MailService();
+		this.sendgridMailClient.setApiKey(SECRETS.SENDGRID);
 	}
 
 	/**
@@ -48,7 +54,7 @@ class Application {
 	 * Adds the controller to the app
 	 */
 	public addController = (): void => {
-		this.app.use("/api", new AppController(this.client).getRouter());
+		this.app.use("/api", new AppController(this.client, this.sendgridMailClient).getRouter());
 	};
 }
 

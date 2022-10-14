@@ -1,12 +1,14 @@
 import type { Request, Response, Router } from "express";
-import type { RouteMapping, User } from "../../@types";
-import { generateApiMessage } from "../../common";
+import type { ChangeCredentialPayload, RouteMapping, User } from "../../@types";
+import { generateApiMessage, generateEmail } from "../../common";
 import type { StockMongoClient } from "../../mongo";
 import {
 	type BaseController,
 	updateRoutes,
 } from "../../common/api/basecontroller";
 import { UserService } from "./user.service";
+import type { MailService } from "@sendgrid/mail";
+import { generateToken } from "../encryption/encryption";
 
 export class UserController implements BaseController {
 	public ROUTE_PREFIX = "/user/";
@@ -15,11 +17,20 @@ export class UserController implements BaseController {
 
 	private readonly client: StockMongoClient;
 
-	public constructor(client: StockMongoClient) {
+	private readonly sendgridClient: MailService;
+
+	public constructor(client: StockMongoClient, sendgridClient: MailService) {
 		this.userService = new UserService();
 		this.client = client;
+		this.sendgridClient = sendgridClient;
 	}
 
+	/**
+	 * The controller method for handling a sign up request
+	 *
+	 * @param request - The client request
+	 * @param response - The server response
+	 */
 	public signUp = async (
 		request: Request,
 		response: Response,
@@ -47,6 +58,12 @@ export class UserController implements BaseController {
 		}
 	};
 
+	/**
+	 * The controller method for handling a login request
+	 *
+	 * @param request - The client request
+	 * @param response - The server response
+	 */
 	public login = async (
 		request: Request,
 		response: Response,
@@ -85,9 +102,18 @@ export class UserController implements BaseController {
 		}
 	};
 
-	public changePassword = async (request: Request, response: Response) => {
+	/**
+	 * The controller method for handling a change password request
+	 *
+	 * @param request - The client request
+	 * @param response - The server response
+	 */
+	public changePasswordRequest = async (
+		request: Request,
+		response: Response,
+	) => {
 		try {
-			const { username } = request.query;
+			const { username } = request.body as Partial<User>;
 			if (username === undefined) {
 				response.status(400);
 				response.send(
@@ -99,28 +125,106 @@ export class UserController implements BaseController {
 				const { email } =
 					await this.userService.findUserEmailByUsername(
 						this.client,
-						username as string,
+						username,
 					);
-				response.status(200);
-				response.send({ email });
+				if (email === undefined) {
+					response.status(400);
+					response.send(
+						generateApiMessage(
+							"Failed to add token, no user found with username",
+						),
+					);
+				} else {
+					response.status(200);
+					const token = generateToken();
+					await this.userService.addToken(
+						this.client,
+						username,
+						token,
+					);
+					await this.sendgridClient.send(
+						generateEmail(email, {
+							subject: "Change Password Link",
+							templateArgs: { token },
+							templateId: "forgotPassword",
+							title: "Change Password",
+						}),
+					);
+					response.send({ token, username });
+				}
 			}
 		} catch (error: unknown) {
 			console.error(
 				`Failed to change password,  ${(error as Error).message}`,
 			);
 			response.status(400);
+			response.send(
+				generateApiMessage(
+					"Failed to complete change password request",
+				),
+			);
+		}
+	};
+
+	/**
+	 * The controller method for handling a change password request
+	 *
+	 * @param request - The client request
+	 * @param response - The server response
+	 */
+	public changePassword = async (
+		request: Request,
+		response: Response,
+	): Promise<void> => {
+		try {
+			const { username, token, newPassword } =
+				request.body as ChangeCredentialPayload;
+			if (
+				username === undefined ||
+				token === undefined ||
+				newPassword === undefined
+			) {
+				response.status(400);
+				response.send(generateApiMessage("Failed to change password"));
+			} else {
+				await this.userService.changePassword(
+					this.client,
+					username,
+					token,
+					newPassword,
+				);
+				response.status(200);
+				response.send(generateApiMessage("Changed password!", true));
+			}
+		} catch (error: unknown) {
+			console.error(
+				`Failed to change password ${(error as Error).message}`,
+			);
+			response.status(400);
 			response.send(generateApiMessage("Failed to change password"));
 		}
 	};
 
+	/**
+	 * Fetches all the routes and their methods
+	 *
+	 * @returns The routes all mapped to their proper get numbers
+	 */
 	public getRouteMapping = (): RouteMapping => ({
 		get: [],
 		post: [
 			["signup", this.signUp],
 			["login", this.login],
+			["forgot/password", this.changePasswordRequest],
+			["change/password", this.changePassword],
 		],
 	});
 
+	/**
+	 * Adds all routes to the router passed in
+	 *
+	 * @param _router - the router instance
+	 */
 	public addRoutes = (_router: Router) => {
 		updateRoutes(_router, this.getRouteMapping(), this.ROUTE_PREFIX);
 	};

@@ -5,8 +5,10 @@ export type User = {
 	username: string;
 	email: string;
 	password: string;
+
+	// Un-required fields for signup
+	token: string;
 	lastLogin: string;
-	// pbkdf2 algorithm information
 	salt: string;
 	iterations: number;
 };
