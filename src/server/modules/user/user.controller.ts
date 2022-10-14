@@ -14,6 +14,7 @@ import {
 import { UserService } from "./user.service";
 import type { MailService } from "@sendgrid/mail";
 import { generateToken } from "../encryption/encryption";
+import type { SessionService } from "../session";
 
 export class UserController implements BaseController {
 	public ROUTE_PREFIX = "/user/";
@@ -24,10 +25,17 @@ export class UserController implements BaseController {
 
 	private readonly sendgridClient: MailService;
 
-	public constructor(client: StockMongoClient, sendgridClient: MailService) {
+	private readonly sessionService: SessionService;
+
+	public constructor(
+		client: StockMongoClient,
+		sendgridClient: MailService,
+		_sessionService: SessionService,
+	) {
 		this.userService = new UserService();
 		this.client = client;
 		this.sendgridClient = sendgridClient;
+		this.sessionService = _sessionService;
 	}
 
 	/**
@@ -79,23 +87,29 @@ export class UserController implements BaseController {
 				loginInformation?.username !== undefined &&
 				loginInformation?.password !== undefined
 			) {
-				const { username, password } = loginInformation;
-				const canLogin = await this.userService.login(this.client, {
-					password,
+				const { username, password, sessionToken } = loginInformation;
+				const result = await this.sessionService.validateSession(
 					username,
-				});
-				if (canLogin) {
-					response.status(200);
-					response.send(
-						generateApiMessage("Successful login!", true),
-					);
+					sessionToken as string,
+				);
+				if (result) {
+					const canLogin = await this.userService.login(this.client, {
+						password,
+						username,
+					});
+					if (canLogin) {
+						response.status(200);
+						response.send(
+							generateApiMessage("Successful login!", true),
+						);
+					} else {
+						response.status(400);
+						response.send(generateApiMessage("Failed to login"));
+					}
 				} else {
 					response.status(400);
 					response.send(generateApiMessage("Failed to login"));
 				}
-			} else {
-				response.status(200);
-				response.send(generateApiMessage("Failed to login"));
 			}
 		} catch (error: unknown) {
 			response.status(400);

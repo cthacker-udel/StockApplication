@@ -4,6 +4,7 @@ import { BaseService } from "../../common";
 import { MONGO_COMMON, type StockMongoClient } from "../../mongo";
 import { pbkdf2Encryption } from "../encryption";
 import { fixedPbkdf2Encryption } from "../encryption/encryption";
+import { v4 } from "uuid";
 
 export class UserService extends BaseService {
 	public constructor() {
@@ -108,7 +109,14 @@ export class UserService extends BaseService {
 					iterations,
 					salt,
 				);
-				return generatedLoginInformationHash === foundUserPassword;
+				const addSessionTokenResult = await userCollection.updateOne(
+					{ username },
+					{ sessionToken: v4() },
+				);
+				return (
+					addSessionTokenResult.modifiedCount > 0 &&
+					generatedLoginInformationHash === foundUserPassword
+				);
 			}
 		}
 		return false;

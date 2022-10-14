@@ -8,6 +8,7 @@ import {
 } from "../../common";
 import type { StockMongoClient } from "../../mongo";
 import { StockService } from "./stock.service";
+import type { SessionService } from "../session";
 
 /**
  * Handles all incoming requests related to the "stock" endpoint
@@ -26,14 +27,20 @@ export class StockController implements BaseController {
 	 */
 	private readonly client: StockMongoClient;
 
+	private readonly sessionService: SessionService;
+
 	/**
 	 * Instantiates an instance of the stock controller
 	 *
 	 * @param client - MongoClient instance to pass into the service
 	 */
-	public constructor(client: StockMongoClient) {
+	public constructor(
+		client: StockMongoClient,
+		_sessionService: SessionService,
+	) {
 		this.stockService = new StockService();
 		this.client = client;
+		this.sessionService = _sessionService;
 	}
 
 	/**

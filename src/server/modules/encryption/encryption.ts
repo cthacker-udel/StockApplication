@@ -1,5 +1,5 @@
 import { pbkdf2Sync, randomBytes, randomInt, webcrypto } from "node:crypto";
-import { SECRETS } from "server/secrets";
+import { SECRETS } from "../../secrets";
 
 /**
  * Local type for the encryption result, only applies to the encryption here

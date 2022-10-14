@@ -40,10 +40,14 @@ export class AppController {
 		_mailClient: MailService,
 		_redisClient: RedisClientType,
 	) {
-		this.stockController = new StockController(client);
-		this.userController = new UserController(client, _mailClient);
-		this.statusController = new StatusController(client, _redisClient);
 		this.sessionService = new SessionService(client, _redisClient);
+		this.stockController = new StockController(client, this.sessionService);
+		this.userController = new UserController(
+			client,
+			_mailClient,
+			this.sessionService,
+		);
+		this.statusController = new StatusController(client, _redisClient);
 
 		this.stockController.addRoutes(this.router);
 		this.userController.addRoutes(this.router);
