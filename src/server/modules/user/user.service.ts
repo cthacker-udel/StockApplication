@@ -10,6 +10,13 @@ export class UserService extends BaseService {
 		super("user");
 	}
 
+	/**
+	 * Signs a user up
+	 *
+	 * @param client - The mongo client
+	 * @param userInformation - The user information
+	 * @returns Whether the user has been signed up or not
+	 */
 	public signUp = async (
 		client: StockMongoClient,
 		userInformation: User,
@@ -69,6 +76,13 @@ export class UserService extends BaseService {
 		return insertionResult.acknowledged;
 	};
 
+	/**
+	 * Logs a user in
+	 *
+	 * @param client - The mongo client
+	 * @param loginInformation - The login information the user supplies
+	 * @returns Whether the user is logged in or not
+	 */
 	public login = async (
 		client: StockMongoClient,
 		loginInformation: Partial<User>,
@@ -100,6 +114,13 @@ export class UserService extends BaseService {
 		return false;
 	};
 
+	/**
+	 * Finds a user's email given their username
+	 *
+	 * @param client - The mongo client
+	 * @param username - The user's username we are using to find their email
+	 * @returns The user's email
+	 */
 	public findUserEmailByUsername = async (
 		client: StockMongoClient,
 		username: string,
@@ -116,6 +137,14 @@ export class UserService extends BaseService {
 		return { email: undefined };
 	};
 
+	/**
+	 * Adds a token to the user, returns true if it succeeds, false otherwise
+	 *
+	 * @param client - The mongo client
+	 * @param username - The username to add the token to
+	 * @param token - The token to add to the user
+	 * @returns Whether the token was added or not
+	 */
 	public addToken = async (
 		client: StockMongoClient,
 		username: string,
@@ -132,6 +161,15 @@ export class UserService extends BaseService {
 		return foundUser.ok > 0;
 	};
 
+	/**
+	 * Changes the password of the user
+	 *
+	 * @param client - The mongo client
+	 * @param username - The username of the requester
+	 * @param requestToken - The change password token
+	 * @param newPassword - The new password the user is
+	 * @returns Whether the password was changed or not
+	 */
 	public changePassword = async (
 		client: StockMongoClient,
 		username: string,
@@ -144,6 +182,14 @@ export class UserService extends BaseService {
 			.collection(this.COLLECTION_NAME);
 		const foundUser = await userCollection.findOne<User>({ username });
 		if (foundUser === null) {
+			return false;
+		}
+		if (
+			/[ ]+/giu.test(newPassword) ||
+			/^\w{0,6}$/giu.test(newPassword) ||
+			!/\d/giu.test(newPassword) ||
+			!/\W/giu.test(newPassword)
+		) {
 			return false;
 		}
 		const { token } = foundUser;

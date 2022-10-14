@@ -25,6 +25,12 @@ export class UserController implements BaseController {
 		this.sendgridClient = sendgridClient;
 	}
 
+	/**
+	 * The controller method for handling a sign up request
+	 *
+	 * @param request - The client request
+	 * @param response - The server response
+	 */
 	public signUp = async (
 		request: Request,
 		response: Response,
@@ -52,6 +58,12 @@ export class UserController implements BaseController {
 		}
 	};
 
+	/**
+	 * The controller method for handling a login request
+	 *
+	 * @param request - The client request
+	 * @param response - The server response
+	 */
 	public login = async (
 		request: Request,
 		response: Response,
@@ -90,6 +102,12 @@ export class UserController implements BaseController {
 		}
 	};
 
+	/**
+	 * The controller method for handling a change password request
+	 *
+	 * @param request - The client request
+	 * @param response - The server response
+	 */
 	public changePasswordRequest = async (
 		request: Request,
 		response: Response,
@@ -148,6 +166,12 @@ export class UserController implements BaseController {
 		}
 	};
 
+	/**
+	 * The controller method for handling a change password request
+	 *
+	 * @param request - The client request
+	 * @param response - The server response
+	 */
 	public changePassword = async (
 		request: Request,
 		response: Response,
@@ -181,6 +205,11 @@ export class UserController implements BaseController {
 		}
 	};
 
+	/**
+	 * Fetches all the routes and their methods
+	 *
+	 * @returns The routes all mapped to their proper get numbers
+	 */
 	public getRouteMapping = (): RouteMapping => ({
 		get: [],
 		post: [
@@ -191,6 +220,11 @@ export class UserController implements BaseController {
 		],
 	});
 
+	/**
+	 * Adds all routes to the router passed in
+	 *
+	 * @param _router - the router instance
+	 */
 	public addRoutes = (_router: Router) => {
 		updateRoutes(_router, this.getRouteMapping(), this.ROUTE_PREFIX);
 	};

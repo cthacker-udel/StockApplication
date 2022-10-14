@@ -21,6 +21,12 @@ export class StatusController implements BaseController {
 		this.client = client;
 	}
 
+	/**
+	 * Gets the status of the database connections within the application
+	 *
+	 * @param request - The client request
+	 * @param response - The server response
+	 */
 	public getStatus = (request: Request, response: Response): void => {
 		try {
 			const status = this.statusService.getStatus(this.client);
@@ -39,10 +45,20 @@ export class StatusController implements BaseController {
 		}
 	};
 
+	/**
+	 * Gets all the routes mapped to their respective methods
+	 *
+	 * @returns All routes for all endpoints for all methods
+	 */
 	public getRouteMapping = (): RouteMapping => ({
 		get: [["", this.getStatus]],
 	});
 
+	/**
+	 * Adds all routes to the router instance
+	 *
+	 * @param _router - the router instance
+	 */
 	public addRoutes = (_router: Router) => {
 		updateRoutes(_router, this.getRouteMapping(), this.ROUTE_PREFIX);
 	};
