@@ -432,7 +432,6 @@
 		"unicode-bom": "error",
 		"wrap-regex": "error",
 		"arrow-body-style": ["error", "as-needed"],
-		"arrow-parens": ["error", "as-needed"],
 		"arrow-spacing": [
 			"error",
 			{

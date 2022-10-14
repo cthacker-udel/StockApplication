@@ -5,6 +5,8 @@ import { StatusController } from "./modules/status";
 import { UserController } from "./modules/user";
 
 import type { StockMongoClient } from "./mongo";
+import type { RedisClientType } from "redis";
+import { SessionService } from "./modules/session/session.service";
 
 export class AppController {
 	/**
@@ -23,16 +25,25 @@ export class AppController {
 	 * The status controller instance
 	 */
 	private readonly statusController: StatusController;
+	/**
+	 * The session service instance
+	 */
+	private readonly sessionService: SessionService;
 
 	/**
 	 * Constructs a AppController instance, instantiating it's stockController and it's router instance
 	 *
 	 * @param client - the stock mongo client instance passed from app.ts
 	 */
-	public constructor(client: StockMongoClient, _mailClient: MailService) {
+	public constructor(
+		client: StockMongoClient,
+		_mailClient: MailService,
+		_redisClient: RedisClientType,
+	) {
 		this.stockController = new StockController(client);
 		this.userController = new UserController(client, _mailClient);
-		this.statusController = new StatusController(client);
+		this.statusController = new StatusController(client, _redisClient);
+		this.sessionService = new SessionService(client, _redisClient);
 
 		this.stockController.addRoutes(this.router);
 		this.userController.addRoutes(this.router);

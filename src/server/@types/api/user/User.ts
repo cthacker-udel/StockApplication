@@ -11,4 +11,5 @@ export type User = {
 	lastLogin: string;
 	salt: string;
 	iterations: number;
+	sessionToken: string;
 };
