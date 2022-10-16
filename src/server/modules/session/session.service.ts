@@ -1,12 +1,12 @@
 import type { RedisClientType } from "redis";
 import type { Response } from "express";
 import type { Collection } from "mongodb";
-import type { User } from "server/@types";
-import type { Session } from "server/@types/api/session";
-import type { RedisSession } from "server/@types/api/session/RedisSession";
-import { BaseService } from "server/common";
-import { MONGO_COMMON, type StockMongoClient } from "server/mongo";
-import { SECRETS } from "server/secrets";
+import type { User } from "../../@types";
+import type { Session } from "../../@types/api/session";
+import type { RedisSession } from "../../@types/api/session/RedisSession";
+import { BaseService } from "../../common";
+import { MONGO_COMMON, type StockMongoClient } from "../../mongo";
+import { SECRETS } from "../../secrets";
 import { validate, v4 } from "uuid";
 
 export class SessionService extends BaseService {
