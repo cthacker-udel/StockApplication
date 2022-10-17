@@ -51,9 +51,8 @@ export class SessionService extends BaseService {
 			iterations,
 			salt,
 		);
-		response.clearCookie(SECRETS.STOCK_APP_SESSION_COOKIE_ID);
 		response.cookie(SECRETS.STOCK_APP_SESSION_COOKIE_ID, hashedKey, {
-			maxAge: SECRETS.REDIS_EXPIRATION,
+			maxAge: SECRETS.STOCK_APP_SESSION_COOKIE_EXPIRATION,
 		});
 		return true;
 	};
@@ -86,7 +85,7 @@ export class SessionService extends BaseService {
 		);
 		const acquiredHash =
 			request.cookies === undefined
-				? "NULL"
+				? ""
 				: (request.cookies as { [key: string]: string })[
 						SECRETS.STOCK_APP_SESSION_COOKIE_ID
 				  ];
@@ -125,12 +124,19 @@ export class SessionService extends BaseService {
 				SECRETS.STOCK_APP_SESSION_COOKIE_ID,
 				fixedPbkdf2Encryption(`${username}${id}`, iterations, salt),
 				{
-					maxAge: SECRETS.REDIS_EXPIRATION,
+					maxAge: SECRETS.STOCK_APP_SESSION_COOKIE_EXPIRATION,
+				},
+			);
+			response.cookie(
+				SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_ID,
+				foundUser.username,
+				{
+					maxAge: SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_EXPIRATION,
 				},
 			);
 			await userCollection.updateOne(
 				{ username },
-				{ ...foundUser, sessionToken: id },
+				{ $set: { ...foundUser, sessionToken: id } },
 			);
 			return true;
 		}
@@ -161,7 +167,7 @@ export class SessionService extends BaseService {
 
 		await userCollection.updateOne(
 			{ username },
-			{ sessionToken: undefined },
+			{ $set: { sessionToken: undefined } },
 		);
 		response.clearCookie(SECRETS.STOCK_APP_SESSION_COOKIE_ID);
 		return true;

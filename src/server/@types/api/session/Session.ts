@@ -1,4 +1,4 @@
 export type Session = {
 	username: string;
-	id: string;
+	sessionToken: string;
 };

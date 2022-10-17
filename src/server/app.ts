@@ -5,6 +5,9 @@ import { AppController } from "./controller";
 import { StockMongoClient } from "./mongo";
 import { SECRETS } from "./secrets";
 import cookieParser from "cookie-parser";
+import { cookieValidator } from "./middleware/cookieValidator/cookieValidator";
+import { SessionService } from "./modules/session";
+import { asyncMiddlewareHandler } from "./middleware/asyncMiddlewareHandler";
 
 /**
  * The main application class, handles the setup of the express server, and the startup of the express server
@@ -25,6 +28,8 @@ class Application {
 
 	public sendgridMailClient: MailService;
 
+	private readonly sessionService: SessionService;
+
 	/**
 	 * Constructs the application
 	 */
@@ -38,6 +43,10 @@ class Application {
 		this.app.use(express.json());
 		this.app.use(cookieParser());
 		this.client = new StockMongoClient();
+		this.sessionService = new SessionService(this.client);
+		this.app.use(
+			asyncMiddlewareHandler(cookieValidator, this.sessionService),
+		);
 		this.sendgridMailClient = new MailService();
 		this.sendgridMailClient.setApiKey(SECRETS.SENDGRID);
 	}
