@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment -- can be ignored */
 import type { MailDataRequired } from "@sendgrid/mail";
 import type { EmailPayload } from "../../@types/api/email/EmailPayload";
 import { EMAIL_CONSTANTS } from "./emailConstants";
