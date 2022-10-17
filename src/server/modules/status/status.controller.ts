@@ -4,7 +4,6 @@ import { type BaseController } from "../../common";
 import { updateRoutes } from "../../common/api/basecontroller";
 import type { StockMongoClient } from "../../mongo";
 import { StatusService } from "./status.service";
-import type { RedisClientType } from "redis";
 
 export class StatusController implements BaseController {
 	public ROUTE_PREFIX = "/status/";
@@ -13,29 +12,20 @@ export class StatusController implements BaseController {
 
 	private readonly client: StockMongoClient;
 
-	private readonly redisClient: RedisClientType;
-
-	public constructor(client: StockMongoClient, redisClient: RedisClientType) {
+	public constructor(client: StockMongoClient) {
 		this.statusService = new StatusService();
 		this.client = client;
-		this.redisClient = redisClient;
 	}
 
 	/**
 	 * Gets the status of the database connections within the application
 	 *
-	 * @param request - The client request
+	 * @param _request - The client request
 	 * @param response - The server response
 	 */
-	public getStatus = async (
-		_request: Request,
-		response: Response,
-	): Promise<void> => {
+	public getStatus = (_request: Request, response: Response): void => {
 		try {
-			const status = await this.statusService.getStatus(
-				this.client,
-				this.redisClient,
-			);
+			const status = this.statusService.getStatus(this.client);
 			response.status(200);
 			response.send(status);
 		} catch (error: unknown) {

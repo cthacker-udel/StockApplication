@@ -4,7 +4,6 @@ import express from "express";
 import { AppController } from "./controller";
 import { StockMongoClient } from "./mongo";
 import { SECRETS } from "./secrets";
-import { type RedisClientType, createClient } from "redis";
 import cookieParser from "cookie-parser";
 
 /**
@@ -26,8 +25,6 @@ class Application {
 
 	public sendgridMailClient: MailService;
 
-	public redisClient: RedisClientType;
-
 	/**
 	 * Constructs the application
 	 */
@@ -43,17 +40,6 @@ class Application {
 		this.client = new StockMongoClient();
 		this.sendgridMailClient = new MailService();
 		this.sendgridMailClient.setApiKey(SECRETS.SENDGRID);
-		this.redisClient = createClient({
-			url: `${SECRETS.REDIS_BASE_URL}${SECRETS.REDIS_USERNAME}:${SECRETS.REDIS_PASSWORD}@${SECRETS.REDIS_URI}:${SECRETS.REDIS_PORT}`,
-		});
-		this.redisClient
-			.connect()
-			.then((_) => {
-				console.log("Redis Connected!");
-			})
-			.catch((_) => {
-				console.log("Redis failed to connect!");
-			});
 	}
 
 	/**
@@ -72,11 +58,7 @@ class Application {
 	public addController = (): void => {
 		this.app.use(
 			"/api",
-			new AppController(
-				this.client,
-				this.sendgridMailClient,
-				this.redisClient,
-			).getRouter(),
+			new AppController(this.client, this.sendgridMailClient).getRouter(),
 		);
 	};
 }

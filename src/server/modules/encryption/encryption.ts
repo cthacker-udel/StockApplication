@@ -1,4 +1,4 @@
-import { pbkdf2Sync, randomBytes, randomInt, webcrypto } from "node:crypto";
+import { pbkdf2Sync, randomBytes, randomInt } from "node:crypto";
 import { SECRETS } from "../../secrets";
 
 /**
@@ -18,10 +18,17 @@ type EncryptionResult = {
  */
 export const pbkdf2Encryption = (message: string): EncryptionResult => {
 	const salt = randomBytes(128).toString("base64");
-	const iterations = randomInt(1000, 10_000);
-	const hash = pbkdf2Sync(message, salt, iterations, 512, "sha256").toString(
-		"hex",
+	const iterations = randomInt(
+		SECRETS.PBKDF2_ITERATION_MIN,
+		SECRETS.PBKDF2_ITERATION_MAX,
 	);
+	const hash = pbkdf2Sync(
+		message,
+		salt,
+		iterations,
+		SECRETS.PBKDF2_GEN_LENGTH,
+		SECRETS.PBKDF2_ALGORITHM,
+	).toString("hex");
 	return {
 		hash,
 		iterations,
@@ -42,7 +49,13 @@ export const fixedPbkdf2Encryption = (
 	iterations: number,
 	salt: string,
 ): string =>
-	pbkdf2Sync(message, salt, iterations, 512, "sha256").toString("hex");
+	pbkdf2Sync(
+		message,
+		salt,
+		iterations,
+		SECRETS.PBKDF2_GEN_LENGTH,
+		SECRETS.PBKDF2_ALGORITHM,
+	).toString("hex");
 
 /**
  * Generates a random 64 byte token
@@ -51,50 +64,52 @@ export const fixedPbkdf2Encryption = (
  */
 export const generateToken = (): string => randomBytes(64).toString("hex");
 
-/**
- * AES encrypts the message
- *
- * @param message - The message to encrypt
- * @returns The encrypted message
- */
-const aesEncrypt = async (message: string): Promise<string> =>
-	new TextDecoder("utf8").decode(
-		await webcrypto.subtle.encrypt(
-			{
-				counter: SECRETS.AES_COUNTER,
-				length: 64,
-				name: "AES-CTR",
-			},
-			{
-				algorithm: { name: "AES-CTR" },
-				extractable: true,
-				type: "secret",
-				usages: ["encrypt"],
-			},
-			new TextEncoder().encode(`${message}:${SECRETS.AES_KEY}`),
-		),
-	);
+// MIGHT NEED LATER ON
 
-/**
- * Decrypts the AES encrypted message
- *
- * @param encryptedMessage - The AES encrypted message
- * @returns The decrypted message
- */
-const aesDecrypt = async (encryptedMessage: string): Promise<string> =>
-	new TextDecoder("utf8").decode(
-		await webcrypto.subtle.decrypt(
-			{
-				counter: SECRETS.AES_COUNTER,
-				length: 64,
-				name: "AES-CTR",
-			},
-			{
-				algorithm: { name: "AES-CTR" },
-				extractable: true,
-				type: "secret",
-				usages: ["encrypt"],
-			},
-			new TextEncoder().encode(encryptedMessage),
-		),
-	);
+// /**
+//  * AES encrypts the message
+//  *
+//  * @param message - The message to encrypt
+//  * @returns The encrypted message
+//  */
+// const aesEncrypt = async (message: string): Promise<string> =>
+// 	new TextDecoder("utf8").decode(
+// 		await webcrypto.subtle.encrypt(
+// 			{
+// 				counter: SECRETS.AES_COUNTER,
+// 				length: 64,
+// 				name: "AES-CTR",
+// 			},
+// 			{
+// 				algorithm: { name: "AES-CTR" },
+// 				extractable: true,
+// 				type: "secret",
+// 				usages: ["encrypt"],
+// 			},
+// 			new TextEncoder().encode(`${message}:${SECRETS.AES_KEY}`),
+// 		),
+// 	);
+
+// /**
+//  * Decrypts the AES encrypted message
+//  *
+//  * @param encryptedMessage - The AES encrypted message
+//  * @returns The decrypted message
+//  */
+// const aesDecrypt = async (encryptedMessage: string): Promise<string> =>
+// 	new TextDecoder("utf8").decode(
+// 		await webcrypto.subtle.decrypt(
+// 			{
+// 				counter: SECRETS.AES_COUNTER,
+// 				length: 64,
+// 				name: "AES-CTR",
+// 			},
+// 			{
+// 				algorithm: { name: "AES-CTR" },
+// 				extractable: true,
+// 				type: "secret",
+// 				usages: ["encrypt"],
+// 			},
+// 			new TextEncoder().encode(encryptedMessage),
+// 		),
+// 	);
