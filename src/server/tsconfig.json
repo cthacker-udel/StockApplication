@@ -101,7 +101,7 @@
 		"skipLibCheck": true /* Skip type checking all .d.ts files. */,
 		"sourceMap": true,
 		"outDir": "./build",
-		"rootDir": "./src",
-		"baseUrl": "./src"
+		"rootDir": "./",
+		"baseUrl": "./"
 	}
 }
