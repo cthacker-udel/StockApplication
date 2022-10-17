@@ -124,7 +124,9 @@ export class SessionService extends BaseService {
 			response.cookie(
 				SECRETS.STOCK_APP_SESSION_COOKIE_ID,
 				fixedPbkdf2Encryption(`${username}${id}`, iterations, salt),
-				{ maxAge: SECRETS.REDIS_EXPIRATION },
+				{
+					maxAge: SECRETS.REDIS_EXPIRATION,
+				},
 			);
 			await userCollection.updateOne(
 				{ username },
