@@ -1,4 +1,4 @@
-import { type Collection, ObjectId, type InsertOneResult } from "mongodb";
+import { type Collection, ObjectId, type InsertOneResult, type DeleteOneModel, DeleteResult } from "mongodb";
 import type { Stock } from "../../@types";
 import { BaseService } from "../../common/api/baseservice";
 import { MONGO_COMMON, type StockMongoClient } from "../../mongo";
@@ -118,5 +118,25 @@ export class StockService extends BaseService {
 			.collection(this.COLLECTION_NAME)
 			.insertOne(stockPayload);
 		return stockCollection.acknowledged;
+	};
+
+/**
+	 * Deletes a stock to the database
+	 *
+	 * @param client - The MongoClient instance
+	 * @param stockPayload - The stock to add to the database
+	 * @returns - Whether or not the stock was deleted
+	 */
+
+	public deleteStock = async (
+		client: StockMongoClient,
+		stockPayload: Stock,
+	): Promise<boolean> => {
+		const stockCollection: DeleteResult = await client
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection(this.COLLECTION_NAME)
+			.deleteOne(stockPayload);
+			return stockCollection.acknowledged;
 	};
 }

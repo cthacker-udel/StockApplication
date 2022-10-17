@@ -188,14 +188,14 @@ export class StockController implements BaseController {
 	): Promise<void> => {
 		try {
 			const payload: Stock = request.body as Stock;
-			if (payload?.symbol.length > 3) {
+			if (payload?.symbol.length > 5) {
 				console.error(
-					"Error occurred adding stock, symbol length must be between 1 and 3 characters",
+					"Error occurred adding stock, symbol length must be between 1 and 5 characters",
 				);
 				response.status(400);
 				response.send(
 					generateApiMessage(
-						"Stock symbol must be between 1 and 3 characters",
+						"Stock symbol must be between 1 and 5 characters",
 						false,
 						ERROR_CODE_ENUM.CREATE_STOCK_VALIDATION_FAILURE_SYMBOL,
 					),
@@ -235,6 +235,59 @@ export class StockController implements BaseController {
 		}
 	};
 
+	public deleteStock = async (
+		request: Request,
+		response: Response,
+	): Promise<void> => {
+		try {
+			const payload: Stock = request.body as Stock;
+			if (payload?.symbol.length > 5) {
+				console.error(
+					"Error occurred deleting stock, symbol length must be between 1 and 5 characters",
+				);
+				response.status(400);
+				response.send(
+					generateApiMessage(
+						"Stock symbol must be between 1 and 5 characters",
+						false,
+						ERROR_CODE_ENUM.DELETE_STOCK_VALIDATION_FAILURE_SYMBOL,
+					),
+				);
+			} else if (
+				await this.stockService.getStockBySymbol(
+					this.client,
+					payload.symbol,
+				)
+			) {
+				console.error("Stock with stock symbol doesn't exists");
+				response.status(400);
+				response.send(
+					generateApiMessage(
+						"Stock with stock symbol already exists",
+						false,
+						ERROR_CODE_ENUM.DELETE_STOCK_STOCK_DOESNT_EXIST,
+					),
+				);
+			} else {
+				await this.stockService.deleteStock(this.client, payload);
+				response.status(204);
+				response.send(JSON.stringify({}));
+			} 
+		} catch (error: unknown) {
+			console.error(
+				`Error occurred deleting stock ${(error as Error).message}`,
+			);
+			response.status(400);
+			response.send(
+				generateApiMessage(
+					"Failed to delete stock",
+					false,
+					ERROR_CODE_ENUM.DELETE_STOCK_FAILURE,
+				),
+			);
+		}
+	};
+
 	/**
 	 * Fetches the route mapping for this controller, which will be used in app.ts
 	 *
@@ -248,6 +301,7 @@ export class StockController implements BaseController {
 			["get/all", this.getAllStocks],
 		],
 		post: [["add", this.addStock]],
+		delete: [["delete", this.deleteStock]],
 	});
 
 	/**
