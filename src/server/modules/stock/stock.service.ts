@@ -1,5 +1,5 @@
 import { type Collection, ObjectId, type InsertOneResult } from "mongodb";
-import type { Stock } from "../../@types";
+import type { Stock, User } from "../../@types";
 import { BaseService } from "../../common/api/baseservice";
 import { MONGO_COMMON, type StockMongoClient } from "../../mongo";
 
@@ -120,8 +120,8 @@ export class StockService extends BaseService {
 		return stockCollection.acknowledged;
 	};
 }
-
-/*function buyStock(stock: Stock, user: User, buyAmount: number) {
+/*
+function buyStock(stock: Stock, user: User, buyAmount: number) {
     let buyPrice = stock.price;
     // let currentAmount = user.portfolio.get(stock)
     // if (currentAmount+buyAmount) > totalShares:
@@ -157,4 +157,5 @@ function calculateStockPrice(stock: Stock) {
     let percentTraded = volume/totalShares;
     let change = percentTraded*risk;
     return change;
-}*/
+}
+*/

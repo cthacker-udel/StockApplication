@@ -177,6 +177,39 @@ export class StockController implements BaseController {
 	};
 
 	/**
+	 * Buys stock for a user
+	 *
+	 * @param request - The server request
+	 * @param response - The server response
+	 */
+	public buyStock = async (request: Request, response: Response) => {
+		try {
+			let data = request.body
+			let stockid = data["stockid"];
+			let username = data["username"];
+			response.status(200);
+			let stock = await this.stockService.getStockById(this.client, stockid);
+			let price = stock?.price;
+			/*TODO: Get user portfolio from the database. Try to see if user has the cash to buy stock and if possibe update
+			portfolio with the stocks added, cash subtracted, and update portfolio in database. If not possible, send
+			error message
+			*/
+		} catch (error: unknown) {
+			console.error(
+				`Error buying stock ${(error as Error).message}`,
+			);
+			response.status(400);
+			response.send(
+				generateApiMessage(
+					"Failed to buy stock",
+					false,
+					ERROR_CODE_ENUM.FIND_ALL_STOCKS_FAILURE,
+				),
+			);
+		}
+	};
+
+	/**
 	 * Adds a stock via the supplied body that is converted into a Stock type, if it's malformed then an error occurs and is caught to avoid exceptions.
 	 *
 	 * @param request - The server request
@@ -247,7 +280,9 @@ export class StockController implements BaseController {
 			["get/price", this.getAllStocksByPrice],
 			["get/all", this.getAllStocks],
 		],
-		post: [["add", this.addStock]],
+		post: [["add", this.addStock],
+				["buyStock", this.buyStock]
+		],
 	});
 
 	/**
