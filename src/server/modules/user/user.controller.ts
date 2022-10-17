@@ -87,17 +87,28 @@ export class UserController implements BaseController {
 				loginInformation?.username !== undefined &&
 				loginInformation?.password !== undefined
 			) {
-				const { username, password, sessionToken } = loginInformation;
-				const result = await this.sessionService.validateSession(
-					username,
-					sessionToken as string,
-				);
-				if (result) {
+				const { username, password } = loginInformation;
+				const doesSessionExist =
+					await this.sessionService.validateSession(
+						username,
+						request,
+						response,
+					);
+				if (doesSessionExist) {
+					response.status(200);
+					response.send(
+						generateApiMessage("Successful login!", true),
+					);
+				} else {
 					const canLogin = await this.userService.login(this.client, {
 						password,
 						username,
 					});
 					if (canLogin) {
+						await this.sessionService.updateSession(
+							username,
+							response,
+						);
 						response.status(200);
 						response.send(
 							generateApiMessage("Successful login!", true),
@@ -106,16 +117,13 @@ export class UserController implements BaseController {
 						response.status(400);
 						response.send(generateApiMessage("Failed to login"));
 					}
-				} else {
-					response.status(400);
-					response.send(generateApiMessage("Failed to login"));
 				}
 			}
 		} catch (error: unknown) {
 			response.status(400);
 			response.send(
 				generateApiMessage(
-					`Failed to login ${(error as Error).message}`,
+					`Failed to login ${(error as Error).stack}`,
 				),
 			);
 		}

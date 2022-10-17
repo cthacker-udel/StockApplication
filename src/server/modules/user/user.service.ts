@@ -98,7 +98,6 @@ export class UserService extends BaseService {
 				username,
 			});
 			if (foundUser !== null) {
-				// user exists, grab hashing information
 				const {
 					iterations,
 					password: foundUserPassword,
@@ -111,7 +110,7 @@ export class UserService extends BaseService {
 				);
 				const addSessionTokenResult = await userCollection.updateOne(
 					{ username },
-					{ sessionToken: v4() },
+					{ $set: { sessionToken: v4() } },
 				);
 				return (
 					addSessionTokenResult.modifiedCount > 0 &&
