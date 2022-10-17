@@ -83,6 +83,55 @@ export class StockService extends BaseService {
 	};
 
 	/**
+	 * Finds a stock given the stock symbol
+	 *
+	 * @param client - The mongo client
+	 * @param name - The name of the stock
+	 * @returns The found stock
+	 */
+
+	public getStocksByName = async (
+		client: StockMongoClient,
+		name: string,
+	): Promise<Stock | undefined> => {
+		let stock: Stock | undefined;
+		if (name && client.isConnected()) {
+			const stockCollection: Collection = client
+				.getClient()
+				.db(MONGO_COMMON.DATABASE_NAME)
+				.collection(this.COLLECTION_NAME);
+			const stock = await stockCollection.findOne<Stock>({ name });
+			if (stock) {
+				return stock;
+			}
+		}
+		return stock;
+
+	};
+
+	/**
+	 * Finds a stock given the stock symbol
+	 *
+	 * @param client - The mongo client
+	 * @param shares - The number of shares to filter the stocks by
+	 * @returns The found stock
+	 */
+
+	public getStocksWithShares = async (
+		client: StockMongoClient,
+		shares: number,
+	): Promise<Stock[] | undefined> => {
+		// eslint-disable-next-line sonarjs/prefer-immediate-return -- not needed
+		const stocks = await client
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection(this.COLLECTION_NAME)
+			.find<Stock>({ shares })
+			.toArray();
+		return stocks;
+	};
+
+	/**
 	 * Fetches all stocks in the database
 	 *
 	 * @param client - The mongo client
@@ -130,13 +179,13 @@ export class StockService extends BaseService {
 
 	public deleteStock = async (
 		client: StockMongoClient,
-		stockPayload: Stock,
+		symbol: string,
 	): Promise<boolean> => {
 		const stockCollection: DeleteResult = await client
 			.getClient()
 			.db(MONGO_COMMON.DATABASE_NAME)
 			.collection(this.COLLECTION_NAME)
-			.deleteOne(stockPayload);
+			.deleteOne(Symbol);
 			return stockCollection.acknowledged;
 	};
 }

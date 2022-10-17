@@ -1,4 +1,4 @@
-import type { Request, Response, Router } from "express";
+import { request, Request, Response, Router } from "express";
 import { updateRoutes } from "../../common/api/basecontroller";
 import type { RouteMapping, Stock } from "../../@types";
 import {
@@ -152,6 +152,79 @@ export class StockController implements BaseController {
 	};
 
 	/**
+	 * Gets stocks by a given name
+	 *
+	 * @param request - The server request
+	 * @param response - The server response
+	 */
+
+	public getStocksByName = async (
+		request: Request,
+		response: Response,
+	): Promise<void> => {
+		const { name } = request.query;
+		try {
+			response.status(200);
+			response.send(
+				await this.stockService.getStocksByName(
+					this.client,
+					name as string,
+				),
+			);
+		} catch (error: unknown) {
+			console.error(
+				`Error finding stock by symbol ${(error as Error).message}`,
+			);
+			response.status(400);
+			response.send(
+				generateApiMessage(
+					`Failed to find stock with Name ${name}`,
+					false,
+					ERROR_CODE_ENUM.FIND_STOCK_FAILURE,
+				),
+			);
+		}
+	};
+
+	/**
+	 * Gets all stocks given a number of shares
+	 *
+	 * @param request - The server request
+	 * @param response - The server response
+	 */
+
+	public getStocksWithShares = async (
+		request: Request,
+		response: Response,
+	) => {
+		try {
+			const { shares } = request.query;
+			if (shares as unknown as number) {
+				const parsedPrice = Number.parseInt(shares as string, 10);
+				response.status(200);
+				response.send(
+					await this.stockService.getAllStocksWithPrice(
+						this.client,
+						parsedPrice,
+					),
+				);
+			}
+		} catch (error: unknown) {
+			console.error(
+				`Error finding stock by symbol ${(error as Error).message}`,
+			);
+			response.status(400);
+			response.send(
+				generateApiMessage(
+					"Failed to fetch all stocks with the number of shares",
+					false,
+					ERROR_CODE_ENUM.FIND_STOCK_BY_SHARES_FAILURE,
+				),
+			);
+		}
+	};
+
+	/**
 	 * Gets all stocks from the database
 	 *
 	 * @param request - The server request
@@ -235,6 +308,13 @@ export class StockController implements BaseController {
 		}
 	};
 
+	/**
+	 * Deletes a stock via the supplied body that is converted into a Stock type, if it's malformed then an error occurs and is caught to avoid exceptions.
+	 *
+	 * @param request - The server request
+	 * @param response - The server response
+	 */
+
 	public deleteStock = async (
 		request: Request,
 		response: Response,
@@ -257,7 +337,7 @@ export class StockController implements BaseController {
 				await this.stockService.getStockBySymbol(
 					this.client,
 					payload.symbol,
-				)
+				) === null
 			) {
 				console.error("Stock with stock symbol doesn't exists");
 				response.status(400);
@@ -269,7 +349,7 @@ export class StockController implements BaseController {
 					),
 				);
 			} else {
-				await this.stockService.deleteStock(this.client, payload);
+				await this.stockService.deleteStock(this.client, payload.symbol);
 				response.status(204);
 				response.send(JSON.stringify({}));
 			} 
@@ -298,6 +378,8 @@ export class StockController implements BaseController {
 			["get/id", this.getStockById],
 			["get/symbol", this.getStockBySymbol],
 			["get/price", this.getAllStocksByPrice],
+			["get/name", this.getStocksByName],
+			["get/shares", this.getStocksWithShares],
 			["get/all", this.getAllStocks],
 		],
 		post: [["add", this.addStock]],

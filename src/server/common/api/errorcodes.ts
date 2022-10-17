@@ -16,6 +16,7 @@ export enum ERROR_CODE_ENUM {
 	DELETE_STOCK_VALIDATION_FAILURE_SYMBOL = 7,
 	DELETE_STOCK_STOCK_DOESNT_EXIST = 8,
 	DELETE_STOCK_FAILURE = 9,
+	FIND_STOCK_BY_SHARES_FAILURE = 10,
 }
 
 /**
@@ -65,5 +66,9 @@ export const ERROR_CODES: { [key: number]: ErrorCode } = {
 	"9": {
 		code: ERROR_CODE_ENUM.DELETE_STOCK_FAILURE,
 		message: "Failed to delete stock",
+	},
+	"10": {
+		code: ERROR_CODE_ENUM.FIND_STOCK_BY_SHARES_FAILURE,
+		message: "Failed to find stock by the number of shares",
 	},
 };
