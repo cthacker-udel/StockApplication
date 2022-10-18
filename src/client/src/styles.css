@@ -11,3 +11,8 @@
     text-align: center;
     cursor: pointer;
 }
+
+.validation_fixed_width {
+    width: fit-content;
+    font-size: .75em;
+}
