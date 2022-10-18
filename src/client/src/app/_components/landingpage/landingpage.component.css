@@ -1,0 +1,7 @@
+#landing_page_signup_inputs > div > input {
+    float: right;
+}
+
+.landing_page_already_member_link {
+    width: fit-content;
+}

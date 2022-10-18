@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 :host {
     font-family: Tahoma, sans-serif;    
     font-size: 14px;
@@ -294,4 +295,11 @@ svg#rocket-smoke {
     display: none;
     visibility: hidden;
 }
+=======
+.main_component {
+    height: 100vh;
+    width: 100vw;
+    background-image: url('https://cdn.mos.cms.futurecdn.net/avQoSGU9uTjFCgtCW3Rrhk.jpg');
+    background-size: 100%;
+>>>>>>> 44aa289 ([landing_page] Added landing page)
 }
