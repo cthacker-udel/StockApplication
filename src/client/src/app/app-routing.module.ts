@@ -1,15 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AppComponent } from './app.component';
+import { LandingPageComponent } from './_components/landingpage/landingpage.component';
 
 const routes: Routes = [
   {
+    component: LandingPageComponent,
     path: '',
-    redirectTo: '/home',
-    pathMatch: 'full',
-  },
-  {
-    path: 'login',
-    component: LoginComponent,
+    outlet: 'landing-page',
   },
 ];
 
