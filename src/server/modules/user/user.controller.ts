@@ -234,30 +234,43 @@ export class UserController implements BaseController {
 		}
 	};
 
-	public doesUserExistWithUsername = async (
+	public doesUserWithUsernameExist = async (
 		request: Request,
 		response: Response,
 	): Promise<void> => {
 		try {
-			const { username } = request.body as Partial<User>;
+			const { username } = request.query;
 			if (username === undefined) {
 				response.status(400);
-				response.send(generateApiMessage("Failed to locate user"));
-			} else {
-				const result = await this.userService.doesUserExistWithUsername(
-					this.client,
-					username,
+				response.send(
+					generateApiMessage("Failed to fetch user by username"),
 				);
-				response.status(200);
-				response.send({ userExists: result });
+			} else {
+				const result = await this.userService.doesUserWithUsernameExist(
+					this.client,
+					username as string,
+				);
+				if (result) {
+					response.status(200);
+					response.send(
+						generateApiMessage("User with username exists!", true),
+					);
+				} else {
+					response.status(400);
+					response.send(
+						generateApiMessage("Failed to fetch user by username"),
+					);
+				}
 			}
 		} catch (error: unknown) {
 			console.error(
-				`Failed to find user with username ${(error as Error).message}`,
+				`Failed to validate user by username ${
+					(error as Error).message
+				}`,
 			);
 			response.status(400);
 			response.send(
-				generateApiMessage("Failed to find user with username"),
+				generateApiMessage("Failed to validate user by username"),
 			);
 		}
 	};
@@ -268,7 +281,7 @@ export class UserController implements BaseController {
 	 * @returns The routes all mapped to their proper get numbers
 	 */
 	public getRouteMapping = (): RouteMapping => ({
-		get: [],
+		get: [["exist/username", this.doesUserWithUsernameExist]],
 		post: [
 			["signup", this.signUp],
 			["login", this.login],

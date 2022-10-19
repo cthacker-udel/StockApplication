@@ -211,10 +211,13 @@ export class UserService extends BaseService {
 		return false;
 	};
 
-	public doesUserExistWithUsername = async (
+	public doesUserWithUsernameExist = async (
 		client: StockMongoClient,
 		username: string,
 	): Promise<boolean> => {
+		if (username === undefined) {
+			return false;
+		}
 		const userCollection = client
 			.getClient()
 			.db(MONGO_COMMON.DATABASE_NAME)

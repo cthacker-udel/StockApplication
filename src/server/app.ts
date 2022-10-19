@@ -8,6 +8,7 @@ import cookieParser from "cookie-parser";
 import { cookieValidator } from "./middleware/cookieValidator/cookieValidator";
 import { SessionService } from "./modules/session";
 import { asyncMiddlewareHandler } from "./middleware/asyncMiddlewareHandler";
+import { corsInjector } from "./middleware/corsInjector/corsInjector";
 
 /**
  * The main application class, handles the setup of the express server, and the startup of the express server
@@ -47,6 +48,7 @@ class Application {
 		this.app.use(
 			asyncMiddlewareHandler(cookieValidator, this.sessionService),
 		);
+		this.app.use(corsInjector);
 		this.sendgridMailClient = new MailService();
 		this.sendgridMailClient.setApiKey(SECRETS.SENDGRID);
 	}
