@@ -200,12 +200,12 @@ export class StockController implements BaseController {
 		try {
 			const { shares } = request.query;
 			if (shares as unknown as number) {
-				const parsedPrice = Number.parseInt(shares as string, 10);
+				const parsedShares = Number.parseInt(shares as string, 10);
 				response.status(200);
 				response.send(
-					await this.stockService.getAllStocksWithPrice(
+					await this.stockService.getStocksWithShares(
 						this.client,
-						parsedPrice,
+						parsedShares,
 					),
 				);
 			}
