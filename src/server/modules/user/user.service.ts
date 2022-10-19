@@ -32,9 +32,11 @@ export class UserService extends BaseService {
 			username,
 		});
 		if (doesUserAlreadyExist) {
+			console.log("failed user already exists");
 			return false;
 		}
 		if (/\W+/giu.test(username)) {
+			console.log("failed username");
 			return false;
 		}
 		if (
@@ -43,6 +45,7 @@ export class UserService extends BaseService {
 			!/\d/giu.test(password) ||
 			!/\W/giu.test(password)
 		) {
+			console.log("failed password");
 			return false;
 		}
 		if (
@@ -51,19 +54,22 @@ export class UserService extends BaseService {
 				-21 ||
 			Number.isNaN(Date.parse(dob))
 		) {
+			console.log("failed dob");
 			return false;
 		}
-		if (!firstName || !/\S/giu.test(firstName.trim())) {
+		if (firstName && !/\S/giu.test(firstName.trim())) {
+			console.log("failed firstname");
 			return false;
 		}
-		if (!lastName || !/S/giu.test(lastName.trim())) {
+		if (lastName && !/S/giu.test(lastName.trim())) {
+			console.log("failed lastname");
 			return false;
 		}
 		if (
-			email !== undefined &&
-			!email.trim() &&
+			email?.trim() &&
 			!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/giu.test(email.trim())
 		) {
+			console.log("failed email");
 			return false;
 		}
 		const { hash, iterations, salt } = pbkdf2Encryption(password);

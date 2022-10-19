@@ -29,6 +29,12 @@ export class ConfigService {
     });
   }
 
+  postConfig<T>(endpoint: string, body: any) {
+    return this.http.post<T>(`${this.configUrl}${endpoint}`, body, {
+      headers: this.corsHeaders,
+    });
+  }
+
   private handleError(error: HttpErrorResponse) {
     if (error.status === 0) {
       console.error('Client-side error occurred ', error.error);

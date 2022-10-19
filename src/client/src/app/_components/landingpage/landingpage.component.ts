@@ -10,6 +10,8 @@ import {
 import { REGEX_EXPRESSIONS } from 'src/shared/constants/regex';
 import { User } from 'src/app/_models/User';
 import { ROUTE_PREFIXES } from 'src/shared/constants/api';
+import { ApiMessage } from 'src/app/_models/ApiMessage';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'landing-page',
@@ -17,8 +19,19 @@ import { ROUTE_PREFIXES } from 'src/shared/constants/api';
   styleUrls: ['./landingpage.component.css'],
 })
 export class LandingPageComponent implements OnInit {
-  constructor(public configService: ConfigService) {}
-
+  constructor(
+    public configService: ConfigService,
+    private toastr: ToastrService
+  ) {}
+  controlNames = [
+    'username',
+    'firstName',
+    'lastName',
+    'dateOfBirth',
+    'email',
+    'password',
+    'confirmPassword',
+  ];
   landingPageFormGroup: FormGroup = new FormGroup({});
 
   usernameAlreadyExists = async (
@@ -75,6 +88,7 @@ export class LandingPageComponent implements OnInit {
         Validators.maxLength(35),
         Validators.pattern(REGEX_EXPRESSIONS.NO_SPACES),
       ]),
+      dateOfBirth: new FormControl(new Date(Date.now()), [Validators.required]),
       email: new FormControl('', [Validators.maxLength(70), Validators.email]),
       password: new FormControl('', [
         Validators.required,
@@ -102,6 +116,10 @@ export class LandingPageComponent implements OnInit {
     return this.landingPageFormGroup.get('lastName');
   }
 
+  get dateofbirth() {
+    return this.landingPageFormGroup.get('dateOfBirth');
+  }
+
   get email() {
     return this.landingPageFormGroup.get('email');
   }
@@ -114,7 +132,30 @@ export class LandingPageComponent implements OnInit {
     return this.landingPageFormGroup.get('confirmPassword');
   }
 
-  printValue() {
-    console.log(this.landingPageFormGroup);
+  signUp() {
+    if (this.landingPageFormGroup.valid) {
+      console.log('in if');
+      const { controls } = this.landingPageFormGroup;
+      this.configService
+        .postConfig<ApiMessage>(`${ROUTE_PREFIXES.user}signup`, {
+          firstName: controls['firstName']?.value,
+          lastName: controls['lastName']?.value,
+          dob: new Date(controls['dateOfBirth'].value).toUTCString(),
+          email: controls['email']?.value,
+          username: controls['username'].value,
+          password: controls['password'].value,
+        })
+        .subscribe((result: ApiMessage) => {
+          if (result.success) {
+            this.toastr.success('Signed up Successfully!');
+            this.controlNames.forEach((eachName: string) => {
+              this.landingPageFormGroup.controls[eachName].setValue('');
+              this.landingPageFormGroup.controls[eachName].setErrors(null);
+            });
+          } else {
+            this.toastr.error('Failed to sign up, please try again later.');
+          }
+        });
+    }
   }
 }
