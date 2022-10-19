@@ -1,0 +1,18 @@
+.stock_navbar {
+    font-family: 'Roboto Condensed', sans-serif
+}
+
+.stock_navbar > div:hover {
+    background-color: aliceblue;
+}
+
+.stock_navbar > div {
+    width: 100%;
+    text-align: center;
+    cursor: pointer;
+}
+
+.validation_fixed_width {
+    width: fit-content;
+    font-size: .75em;
+}

@@ -1,0 +1,24 @@
+#landing_page_signup_inputs > div > input {
+    float: right;
+}
+
+.landing_page_already_member_link {
+    width: fit-content;
+}
+
+#background {
+    background-color: #28a745;
+    height: 100vh;
+    overflow-y: hidden;
+}
+
+#row_for_cards {
+    margin-top: 5%;
+}
+
+.landing_page_main {
+    background-image: url('https://cdn.mos.cms.futurecdn.net/avQoSGU9uTjFCgtCW3Rrhk.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
