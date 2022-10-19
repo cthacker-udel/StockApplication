@@ -1,7 +1,5 @@
 .main_component {
-    height: 82vw;
     width: 100vw;
     background-image: url('https://wallpaperaccess.com/full/1393719.jpg');
     overflow-y: hidden;
-    object-fit: cover;
 }
