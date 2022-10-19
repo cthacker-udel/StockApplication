@@ -45,10 +45,12 @@ export class LandingPageComponent implements OnInit {
     return null;
   };
 
-  passwordsDoNotMatch = (control: AbstractControl): ValidationErrors | null => {
+  confirmPasswordDoesNotMatch = (
+    control: AbstractControl
+  ): ValidationErrors | null => {
     const { value } = control;
-    if (this.landingPageFormGroup.get('password') !== value) {
-      return { confirmPassword: { value: value } };
+    if (this.landingPageFormGroup.get('password')?.value !== value) {
+      return { passwordsDoNotMatch: true };
     }
     return null;
   };
@@ -83,7 +85,7 @@ export class LandingPageComponent implements OnInit {
       confirmPassword: new FormControl('', [
         Validators.required,
         Validators.maxLength(35),
-        this.passwordsDoNotMatch,
+        this.confirmPasswordDoesNotMatch,
       ]),
     });
   }
