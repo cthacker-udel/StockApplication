@@ -6,6 +6,7 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
+import { ConfigService } from 'src/app/config/config.service';
 import { REGEX_EXPRESSIONS } from 'src/shared/constants/regex';
 
 @Component({
@@ -15,6 +16,8 @@ import { REGEX_EXPRESSIONS } from 'src/shared/constants/regex';
 })
 export class LandingPageComponent implements OnInit {
   landingPageFormGroup: FormGroup = new FormGroup({});
+
+  constructor(configService: ConfigService) {}
 
   usernameAlreadyExists = async (
     control: AbstractControl

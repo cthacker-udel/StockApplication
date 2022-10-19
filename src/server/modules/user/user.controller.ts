@@ -122,9 +122,7 @@ export class UserController implements BaseController {
 		} catch (error: unknown) {
 			response.status(400);
 			response.send(
-				generateApiMessage(
-					`Failed to login ${(error as Error).stack}`,
-				),
+				generateApiMessage(`Failed to login ${(error as Error).stack}`),
 			);
 		}
 	};
@@ -233,6 +231,34 @@ export class UserController implements BaseController {
 			);
 			response.status(400);
 			response.send(generateApiMessage("Failed to change password"));
+		}
+	};
+
+	public doesUserExistWithUsername = async (
+		request: Request,
+		response: Response,
+	): Promise<void> => {
+		try {
+			const { username } = request.body as Partial<User>;
+			if (username === undefined) {
+				response.status(400);
+				response.send(generateApiMessage("Failed to locate user"));
+			} else {
+				const result = await this.userService.doesUserExistWithUsername(
+					this.client,
+					username,
+				);
+				response.status(200);
+				response.send({ userExists: result });
+			}
+		} catch (error: unknown) {
+			console.error(
+				`Failed to find user with username ${(error as Error).message}`,
+			);
+			response.status(400);
+			response.send(
+				generateApiMessage("Failed to find user with username"),
+			);
 		}
 	};
 
