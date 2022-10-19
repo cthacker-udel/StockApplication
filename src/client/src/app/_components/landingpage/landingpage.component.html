@@ -138,8 +138,8 @@
             </div>
             <div class="d-flex flex-row justify-content-between">
               <label class="m-2 fw-light" for="date_of_birth_landing_input"
-                ><span class="text-danger fw-semibold pe-1">*</span
-                  >Date of Birth</label
+                ><span class="text-danger fw-semibold pe-1">*</span>Date of
+                Birth</label
               >
               <div class="d-flex flex-column">
                 <input
@@ -151,8 +151,8 @@
                 />
                 <div
                   *ngIf="
-                  dateofbirth &&
-                  dateofbirth.invalid &&
+                    dateofbirth &&
+                    dateofbirth.invalid &&
                     (dateofbirth.dirty || dateofbirth.touched)
                   "
                   className="alert alert-danger validation_fixed_width p-1 mx-auto"
@@ -274,7 +274,8 @@
             </button>
             <a
               class="fw-lighter mt-3 opacity-75 landing_page_already_member_link mx-auto link-secondary"
-              href="/"
+              routerLink="/signin"
+              routerLinkActive="active"
               >Already a member?</a
             >
           </div>
