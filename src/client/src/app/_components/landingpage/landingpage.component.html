@@ -6,7 +6,13 @@
       class="d-flex flex-column bg-light rounded bg-gradient p-2 justify-content-around"
     >
       <div class="d-flex flex-column">
-        <span class="fw-bold fs-1"><i class="fa-solid fa-money-bill me-2" style="color: green;"></i>Welcome to StockTrader!<i class="fa-solid fa-money-bill ms-2" style="color: green;"></i></span>
+        <span class="fw-bold fs-1"
+          ><i class="fa-solid fa-money-bill me-2" style="color: green"></i
+          >Welcome to StockTrader!<i
+            class="fa-solid fa-money-bill ms-2"
+            style="color: green"
+          ></i
+        ></span>
         <span class="fs-4 fw-semibold"
           >The StockTrading playground where you can simulate a real stock
           trading experience!</span
@@ -65,6 +71,11 @@
                   <div *ngIf="username && username.errors?.['pattern']">
                     Username cannot contain spaces
                   </div>
+                  <div
+                    *ngIf="username && username.errors?.['usernameAlreadyExists']"
+                  >
+                    Username already exists
+                  </div>
                 </div>
               </div>
             </div>
@@ -116,12 +127,12 @@
                   "
                   className="alert alert-danger validation_fixed_width p-1 mx-auto"
                 >
-                    <div *ngIf="lastName && lastName.errors?.['maxlength']">
-                        Last name must be at most 35 characters
-                    </div>
-                    <div *ngIf="lastName && lastName.errors?.['pattern']">
-                        Last name must not have spaces in it
-                    </div>
+                  <div *ngIf="lastName && lastName.errors?.['maxlength']">
+                    Last name must be at most 35 characters
+                  </div>
+                  <div *ngIf="lastName && lastName.errors?.['pattern']">
+                    Last name must not have spaces in it
+                  </div>
                 </div>
               </div>
             </div>
@@ -130,22 +141,27 @@
                 >Email Address</label
               >
               <div class="d-flex flex-column">
-              <input
-                class="m-2"
-                formControlName="email"
-                id="email_address_landing_input"
-                tabindex="1"
-                type="email"
-              />
-              <div *ngIf="email && email.invalid && (email.dirty || email.touched)" class="alert alert-danger validation_fixed_width p-1 mx-auto">
-                <div *ngIf="email && email.errors?.['maxlength']">
+                <input
+                  class="m-2"
+                  formControlName="email"
+                  id="email_address_landing_input"
+                  tabindex="1"
+                  type="email"
+                />
+                <div
+                  *ngIf="
+                    email && email.invalid && (email.dirty || email.touched)
+                  "
+                  class="alert alert-danger validation_fixed_width p-1 mx-auto"
+                >
+                  <div *ngIf="email && email.errors?.['maxlength']">
                     Email must be at most 35 characters
-                </div>
-                <div *ngIf="email && email.errors?.['email']">
+                  </div>
+                  <div *ngIf="email && email.errors?.['email']">
                     Email is invalid
+                  </div>
                 </div>
               </div>
-            </div>
             </div>
             <div class="d-flex flex-row justify-content-between">
               <label class="m-2 fw-light" for="password_landing_input"
@@ -154,27 +170,34 @@
               >
               <div class="d-flex flex-column">
                 <input
-                    class="m-2"
-                    formControlName="password"
-                    id="password_landing_input"
-                    tabindex="2"
-                    type="password"
+                  class="m-2"
+                  formControlName="password"
+                  id="password_landing_input"
+                  tabindex="2"
+                  type="password"
                 />
-                <div *ngIf="password && password.invalid && (password.dirty || password.touched)" class="alert alert-danger validation_fixed_width p-1 mx-auto">
-                    <div *ngIf="password && password.errors?.['required']">
-                        Password is required
-                    </div>
-                    <div *ngIf="password && password.errors?.['maxlength']">
-                        Password must be at most 35 characters
-                    </div>
-                    <div *ngIf="password && password.errors?.['pattern']">
-                        Password must contain no spaces
-                    </div>
-                    <div *ngIf="password && password.errors?.['minlength']">
-                        Password must be at least 7 characters
-                    </div>
+                <div
+                  *ngIf="
+                    password &&
+                    password.invalid &&
+                    (password.dirty || password.touched)
+                  "
+                  class="alert alert-danger validation_fixed_width p-1 mx-auto"
+                >
+                  <div *ngIf="password && password.errors?.['required']">
+                    Password is required
+                  </div>
+                  <div *ngIf="password && password.errors?.['maxlength']">
+                    Password must be at most 35 characters
+                  </div>
+                  <div *ngIf="password && password.errors?.['pattern']">
+                    Password must contain no spaces
+                  </div>
+                  <div *ngIf="password && password.errors?.['minlength']">
+                    Password must be at least 7 characters
+                  </div>
                 </div>
-            </div>
+              </div>
             </div>
             <div class="d-flex flex-row justify-content-between">
               <label class="m-2 fw-light" for="confirm_password_landing_input"
@@ -182,25 +205,38 @@
                 Password</label
               >
               <div class="d-flex flex-column">
-              <input
-                class="m-2"
-                formControlName="confirmPassword"
-                id="confirm_password_landing_input"
-                tabindex="3"
-                type="password"
-              />
-              <div *ngIf="confirmPassword && confirmPassword.invalid && (confirmPassword.dirty || confirmPassword.touched)">
-                <div *ngIf="confirmPassword && confirmPassword.errors?.['required']">
+                <input
+                  class="m-2"
+                  formControlName="confirmPassword"
+                  id="confirm_password_landing_input"
+                  tabindex="3"
+                  type="password"
+                />
+                <div
+                  *ngIf="
+                    confirmPassword &&
+                    confirmPassword.invalid &&
+                    (confirmPassword.dirty || confirmPassword.touched)
+                  "
+                  class="alert alert-danger validation_fixed_width p-1 mx-auto"
+                >
+                  <div
+                    *ngIf="confirmPassword && confirmPassword.errors?.['required']"
+                  >
                     Confirm password is required
-                </div>
-                <div *ngIf="confirmPassword && confirmPassword.errors?.['maxlength']">
+                  </div>
+                  <div
+                    *ngIf="confirmPassword && confirmPassword.errors?.['maxlength']"
+                  >
                     Confirm password must be at most 35 characters
-                </div>
-                <div *ngIf="confirmPassword && confirmPassword.errors?.['passwordsDoNotMatch']">
+                  </div>
+                  <div
+                    *ngIf="confirmPassword && confirmPassword.errors?.['passwordsDoNotMatch']"
+                  >
                     Passwords must match
+                  </div>
                 </div>
               </div>
-            </div>
             </div>
             <button
               class="w-25 mx-auto btn btn-outline-success mt-3"

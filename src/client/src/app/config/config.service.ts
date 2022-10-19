@@ -4,13 +4,20 @@ import { catchError, retry, throwError } from 'rxjs';
 
 @Injectable()
 export class ConfigService {
-  configUrl = 'api/';
+  configUrl = 'http://localhost:3000/api';
+
+  corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET,POST,PATCH,DELETE,PUT,OPTIONS',
+    'Access-Control-Allow-Headers':
+      'Origin, Content-Type, X-Auth-Token, content-type',
+  };
 
   constructor(private http: HttpClient) {}
 
   getConfig<T>(endpoint: string) {
     return this.http
-      .get<T>(`${this.configUrl}${endpoint}`)
+      .get<T>(`${this.configUrl}${endpoint}`, { headers: this.corsHeaders })
       .pipe(retry(3), catchError(this.handleError));
   }
 
@@ -18,6 +25,7 @@ export class ConfigService {
     return this.http.get<T>(`${this.configUrl}${endpoint}`, {
       observe: 'body',
       responseType: 'json',
+      headers: this.corsHeaders,
     });
   }
 

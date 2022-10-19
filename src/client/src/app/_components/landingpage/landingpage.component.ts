@@ -1,3 +1,4 @@
+import { ConfigService } from './../../config/config.service';
 import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
@@ -7,6 +8,8 @@ import {
   Validators,
 } from '@angular/forms';
 import { REGEX_EXPRESSIONS } from 'src/shared/constants/regex';
+import { User } from 'src/app/_models/User';
+import { ROUTE_PREFIXES } from 'src/shared/constants/api';
 
 @Component({
   selector: 'landing-page',
@@ -14,13 +17,32 @@ import { REGEX_EXPRESSIONS } from 'src/shared/constants/regex';
   styleUrls: ['./landingpage.component.css'],
 })
 export class LandingPageComponent implements OnInit {
+  constructor(public configService: ConfigService) {}
+
   landingPageFormGroup: FormGroup = new FormGroup({});
 
   usernameAlreadyExists = async (
     control: AbstractControl
   ): Promise<ValidationErrors | null> => {
     const { value } = control;
-    // check database for username
+    console.log('sending request', value);
+    this.configService
+      .getConfig<boolean>(
+        `${ROUTE_PREFIXES.user}exist/username?username=${value}`
+      )
+      .subscribe((doesExist: boolean) => {
+        if (doesExist) {
+          this.landingPageFormGroup.setErrors(
+            { username: undefined },
+            { emitEvent: false }
+          );
+        } else {
+          this.landingPageFormGroup.setErrors(
+            { username: true },
+            { emitEvent: true }
+          );
+        }
+      });
     return null;
   };
 

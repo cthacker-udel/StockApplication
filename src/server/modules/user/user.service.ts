@@ -210,4 +210,18 @@ export class UserService extends BaseService {
 		}
 		return false;
 	};
+
+	public doesUserWithUsernameExist = async (
+		client: StockMongoClient,
+		username: string,
+	): Promise<boolean> => {
+		if (username === undefined) {
+			return false;
+		}
+		const userCollection = client
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection(this.COLLECTION_NAME);
+		return (await userCollection.findOne<User>({ username })) !== null;
+	};
 }
