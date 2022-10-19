@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call -- not needed */
 /* eslint-disable no-undef -- process is defined, it's server-side code */
 import { MailService } from "@sendgrid/mail";
 import express from "express";
@@ -8,6 +9,8 @@ import cookieParser from "cookie-parser";
 import { cookieValidator } from "./middleware/cookieValidator/cookieValidator";
 import { SessionService } from "./modules/session";
 import { asyncMiddlewareHandler } from "./middleware/asyncMiddlewareHandler";
+import { corsInjector } from "./middleware/corsInjector/corsInjector";
+import cors from "cors";
 
 /**
  * The main application class, handles the setup of the express server, and the startup of the express server
@@ -47,6 +50,8 @@ class Application {
 		this.app.use(
 			asyncMiddlewareHandler(cookieValidator, this.sessionService),
 		);
+		this.app.use(cors());
+		this.app.use(corsInjector);
 		this.sendgridMailClient = new MailService();
 		this.sendgridMailClient.setApiKey(SECRETS.SENDGRID);
 	}
