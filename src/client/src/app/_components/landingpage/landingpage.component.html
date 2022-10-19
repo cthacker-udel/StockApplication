@@ -7,12 +7,13 @@
   class="text-center d-flex flex-row w-75 h-75 mx-auto">
     <div
       class="d-flex flex-column bg-light rounded bg-gradient p-2 justify-content-around"
-    >
+      style="min-width: 300px;">
       <div class="d-flex flex-column">
-        <span class="fw-bold fs-1"><img src="assets/bullStocksLogo.png" width="100px"/>
+        <span class="fw-bold fs-1">
+          <img src="assets/bullStocksLogo.png" width="150px" style="margin-bottom: 20px;"/>
           BullStocks
         </span>
-        <span class="fs-4 fw-semibold">
+        <span class="fs-4 fw-semibold" style="margin-top: 0px; margin: 10px">
           The stock trading playground where you can simulate a real stock
           trading experience!
         </span>
@@ -37,7 +38,7 @@
       [formGroup]="landingPageFormGroup"
     >
       <div class="d-flex flex-column">
-        <span class="fw-semibold"
+        <span class="fw-semibold" style="padding: 10px; padding-bottom: 0px;"
           >Sign up now to start trading stocks and become a stock master!</span
         >
         <div class="d-flex flex-row mt-3">
@@ -240,7 +241,7 @@
               </div>
             </div>
             <button
-              class="w-25 mx-auto btn btn-success mt-3"
+              class="w-50 mx-auto btn btn-success mt-3"
               (click)="printValue()"
               [disabled]="!landingPageFormGroup.valid"
             >
