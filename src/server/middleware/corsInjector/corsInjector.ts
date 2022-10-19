@@ -6,9 +6,17 @@ export const corsInjector = (
 	response: Response,
 	next: NextFunction,
 ): void => {
-	console.log("cors injector");
-	response.header(corsHeaders["Access-Control-Allow-Origin"]);
-	response.header(corsHeaders["Access-Control-Allow-Headers"]);
-	response.header(corsHeaders["Access-Control-Allow-Methods"]);
+	response.header({
+		"Access-Control-Allow-Origin":
+			corsHeaders["Access-Control-Allow-Origin"],
+	});
+	response.header({
+		"Access-Control-Allow-Headers":
+			corsHeaders["Access-Control-Allow-Headers"],
+	});
+	response.header({
+		"Access-Control-Allow-Methods":
+			corsHeaders["Access-Control-Allow-Methods"],
+	});
 	next();
 };

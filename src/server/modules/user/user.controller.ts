@@ -250,17 +250,8 @@ export class UserController implements BaseController {
 					this.client,
 					username as string,
 				);
-				if (result) {
-					response.status(200);
-					response.send(
-						generateApiMessage("User with username exists!", true),
-					);
-				} else {
-					response.status(400);
-					response.send(
-						generateApiMessage("Failed to fetch user by username"),
-					);
-				}
+				response.status(200);
+				response.send({ result });
 			}
 		} catch (error: unknown) {
 			console.error(

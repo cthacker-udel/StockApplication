@@ -7,7 +7,6 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
-import { ConfigService } from 'src/app/config/config.service';
 import { REGEX_EXPRESSIONS } from 'src/shared/constants/regex';
 import { User } from 'src/app/_models/User';
 import { ROUTE_PREFIXES } from 'src/shared/constants/api';
@@ -22,30 +21,27 @@ export class LandingPageComponent implements OnInit {
 
   landingPageFormGroup: FormGroup = new FormGroup({});
 
-  constructor(configService: ConfigService) {}
-
   usernameAlreadyExists = async (
     control: AbstractControl
   ): Promise<ValidationErrors | null> => {
     const { value } = control;
-    console.log('sending request', value);
-    this.configService
-      .getConfig<boolean>(
-        `${ROUTE_PREFIXES.user}exist/username?username=${value}`
-      )
-      .subscribe((doesExist: boolean) => {
-        if (doesExist) {
-          this.landingPageFormGroup.setErrors(
-            { username: undefined },
-            { emitEvent: false }
-          );
-        } else {
-          this.landingPageFormGroup.setErrors(
-            { username: true },
-            { emitEvent: true }
-          );
+    const getUsername = this.configService.getConfig<boolean>(
+      `${ROUTE_PREFIXES.user}exist/username?username=${value}`
+    );
+    getUsername.subscribe((doesExist: any) => {
+      const { result } = doesExist;
+      if (result) {
+        this.landingPageFormGroup.controls['username'].setErrors({
+          usernameAlreadyExists: true,
+        });
+      } else {
+        if (this.landingPageFormGroup.controls['username'].errors) {
+          delete this.landingPageFormGroup.controls['username'].errors[
+            'usernameAlreadyExists'
+          ];
         }
-      });
+      }
+    });
     return null;
   };
 
