@@ -239,8 +239,9 @@
               </div>
             </div>
             <button
-              class="w-25 mx-auto btn btn-outline-success mt-3"
+              class="w-25 mx-auto btn btn-success mt-3"
               (click)="printValue()"
+              [disabled]="!landingPageFormGroup.valid"
             >
               Sign Up
             </button>
