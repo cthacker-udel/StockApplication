@@ -211,4 +211,30 @@ export class UserService extends BaseService {
 		}
 		return false;
 	};
+
+	/**
+	 * Gets a users portfolio
+	 *
+	 * @param client - The mongo client
+	 * @param username - The username to add the token to
+	 * @returns Returns the user's portfolio
+	 */
+	/**
+	TODO: Fetch user's portfolio from database
+	public getPortfolio = async (
+		client: StockMongoClient,
+		username: string,
+	): Promise<Boolean> => {
+		const userCollection = client
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection(this.COLLECTION_NAME);
+		
+			const foundUser = await userCollection.findOne<User>({ username });
+			if (foundUser) {
+				//return { [1, 2, 3] };
+			}
+		return true;
+	};
+	*/
 }

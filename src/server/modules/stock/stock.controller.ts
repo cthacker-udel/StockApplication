@@ -209,6 +209,38 @@ export class StockController implements BaseController {
 		}
 	};
 
+		/**
+	 * Sells stock for a user
+	 *
+	 * @param request - The server request
+	 * @param response - The server response
+	 */
+		 public sellStock = async (request: Request, response: Response) => {
+			try {
+				let data = request.body
+				let stockid = data["stockid"];
+				let username = data["username"];
+				response.status(200);
+				let stock = await this.stockService.getStockById(this.client, stockid);
+				let price = stock?.price;
+				/*TODO: Get user portfolio from the database. Try to see if they can sell the amount and if they can, then
+				sell the stocks and update their and update portfolio in database.
+				*/
+			} catch (error: unknown) {
+				console.error(
+					`Error selling stock ${(error as Error).message}`,
+				);
+				response.status(400);
+				response.send(
+					generateApiMessage(
+						"Failed to sell stock",
+						false,
+						ERROR_CODE_ENUM.FIND_ALL_STOCKS_FAILURE,
+					),
+				);
+			}
+		};
+
 	/**
 	 * Adds a stock via the supplied body that is converted into a Stock type, if it's malformed then an error occurs and is caught to avoid exceptions.
 	 *
@@ -281,7 +313,8 @@ export class StockController implements BaseController {
 			["get/all", this.getAllStocks],
 		],
 		post: [["add", this.addStock],
-				["buyStock", this.buyStock]
+			   ["buyStock", this.buyStock],
+			   ["sellStock", this.sellStock]
 		],
 	});
 

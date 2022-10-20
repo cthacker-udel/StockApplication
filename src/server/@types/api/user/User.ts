@@ -12,4 +12,5 @@ export type User = {
 	salt: string;
 	iterations: number;
 	sessionToken: string;
+	portfolio: [];
 };
