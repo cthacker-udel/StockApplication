@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { ConfigService } from 'src/app/config/config.service';
 import { ROUTE_PREFIXES } from 'src/shared/constants/api';
+import { REGEX_EXPRESSIONS } from 'src/shared/constants/regex';
 
 @Component({
   selector: 'sign-in',
@@ -22,10 +23,14 @@ export class SignInComponent implements OnInit {
       username: new FormControl('', [
         Validators.minLength(7),
         Validators.maxLength(35),
+        Validators.required,
+        Validators.pattern(REGEX_EXPRESSIONS.NO_SPACES),
       ]),
       password: new FormControl('', [
         Validators.minLength(7),
         Validators.maxLength(35),
+        Validators.required,
+        Validators.pattern(REGEX_EXPRESSIONS.NO_SPACES),
       ]),
     });
   }
@@ -54,5 +59,9 @@ export class SignInComponent implements OnInit {
           }
         });
     }
+  }
+
+  printValue() {
+    console.log(this.signInFormGroup);
   }
 }

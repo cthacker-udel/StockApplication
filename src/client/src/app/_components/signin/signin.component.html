@@ -11,15 +11,15 @@
             <label for="signin_username"
               ><i class="fa-solid fa-user me-1"></i><span>Username</span></label
             >
-            <input class="rounded" id="signin_username" type="text" />
+            <input class="rounded w-75 p-1" formControlName="username" id="signin_username" type="text" />
           </div>
-          <div class="d-flex flex-row justify-content-between mt-3">
+          <div class="d-flex flex-row justify-content-between mt-4" (click)="printValue()">
             <label for="signin_password"
               ><i class="fa-sharp fa-solid fa-key me-1"></i
               ><span class="fw-lighter">Password</span></label
             >
             <input
-              class="rounded"
+              class="rounded w-75 p-1"
               id="signin_password"
               formControlName="password"
               type="password"
