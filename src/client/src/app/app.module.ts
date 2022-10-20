@@ -11,9 +11,15 @@ import { ConfigService } from './config/config.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { SignInComponent } from './_components/signin/signin.component';
+import { StockDashboardComponent } from './_components/stockdashboard/stockdashboard.component';
 
 @NgModule({
-  declarations: [AppComponent, LandingPageComponent, SignInComponent],
+  declarations: [
+    AppComponent,
+    LandingPageComponent,
+    SignInComponent,
+    StockDashboardComponent,
+  ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,

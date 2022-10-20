@@ -1,6 +1,6 @@
 import type { Request, Response, Router } from "express";
 import { updateRoutes } from "../../common/api/basecontroller";
-import type { RouteMapping, Stock } from "../../@types";
+import type { RouteMapping, SortByOptions, Stock } from "../../@types";
 import {
 	type BaseController,
 	ERROR_CODE_ENUM,
@@ -159,8 +159,14 @@ export class StockController implements BaseController {
 	 */
 	public getAllStocks = async (request: Request, response: Response) => {
 		try {
+			const { amt } = request.query;
 			response.status(200);
-			response.send(await this.stockService.getAllStocks(this.client));
+			response.send(
+				await this.stockService.getAllStocks(
+					this.client,
+					amt as unknown as number,
+				),
+			);
 		} catch (error: unknown) {
 			console.error(
 				`Error fetching all stocks ${(error as Error).message}`,
@@ -171,6 +177,41 @@ export class StockController implements BaseController {
 					"Failed to fetch all stocks",
 					false,
 					ERROR_CODE_ENUM.FIND_ALL_STOCKS_FAILURE,
+				),
+			);
+		}
+	};
+
+	/**
+	 * Gets all stocks for the stock dashboard page
+	 *
+	 * @param _request - The client request
+	 * @param response - The server response
+	 */
+	public getStockDashboardStocks = async (
+		request: Request,
+		response: Response,
+	) => {
+		try {
+			const { sortBy } = request.query;
+			const result = await this.stockService.getStockDashboardStocks(
+				this.client,
+				sortBy as SortByOptions,
+			);
+			response.status(200);
+			response.send({ stocks: result });
+		} catch (error: unknown) {
+			console.error(
+				`Error fetching stock dashboard stocks ${
+					(error as Error).message
+				}`,
+			);
+			response.status(400);
+			response.send(
+				generateApiMessage(
+					"Failed to fetch all stock dashboard stocks",
+					false,
+					ERROR_CODE_ENUM.GENERIC_ERROR,
 				),
 			);
 		}
@@ -246,6 +287,7 @@ export class StockController implements BaseController {
 			["get/symbol", this.getStockBySymbol],
 			["get/price", this.getAllStocksByPrice],
 			["get/all", this.getAllStocks],
+			["dashboard", this.getStockDashboardStocks],
 		],
 		post: [["add", this.addStock]],
 	});

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { ConfigService } from 'src/app/config/config.service';
 import { ROUTE_PREFIXES } from 'src/shared/constants/api';
@@ -13,7 +14,8 @@ import { REGEX_EXPRESSIONS } from 'src/shared/constants/regex';
 export class SignInComponent implements OnInit {
   constructor(
     public configService: ConfigService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private _router: Router
   ) {}
   controlNames = ['username', 'password'];
   signInFormGroup: FormGroup = new FormGroup({});
@@ -55,13 +57,9 @@ export class SignInComponent implements OnInit {
           if (result.status === 400) {
             this.toastr.error('Failed to login');
           } else {
-            this.toastr.success('Login Succeeded!');
+            this._router.navigateByUrl('stock-dashboard');
           }
         });
     }
-  }
-
-  printValue() {
-    console.log(this.signInFormGroup);
   }
 }
