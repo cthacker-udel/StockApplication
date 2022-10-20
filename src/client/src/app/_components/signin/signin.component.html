@@ -1,1 +1,41 @@
-<div class="h-100 w-100 d-flex flex-column justify-content-center">Hello</div>
+<div
+  class="h-100 w-100 d-flex flex-column justify-content-center signin_page_main"
+>
+  <div class="card w-50 mx-auto p-3">
+    <div class="fw-bold text-center text-dark fs-4">Bull Stocks Login</div>
+    <div class="border mt-1 mb-3"></div>
+    <div>
+      <form [formGroup]="signInFormGroup">
+        <div class="d-flex flex-column">
+          <div class="d-flex flex-row justify-content-between">
+            <label for="signin_username"
+              ><i class="fa-solid fa-user me-1"></i><span>Username</span></label
+            >
+            <input class="rounded" id="signin_username" type="text" />
+          </div>
+          <div class="d-flex flex-row justify-content-between mt-3">
+            <label for="signin_password"
+              ><i class="fa-sharp fa-solid fa-key me-1"></i
+              ><span class="fw-lighter">Password</span></label
+            >
+            <input
+              class="rounded"
+              id="signin_password"
+              formControlName="password"
+              type="password"
+            />
+          </div>
+          <div class="mx-auto mt-4">
+            <button
+              class="btn btn-primary"
+              [disabled]="!signInFormGroup.valid"
+              type="button"
+            >
+              Sign in
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

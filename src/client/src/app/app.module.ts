@@ -10,9 +10,10 @@ import { LandingPageComponent } from './_components/landingpage/landingpage.comp
 import { ConfigService } from './config/config.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
+import { SignInComponent } from './_components/signin/signin.component';
 
 @NgModule({
-  declarations: [AppComponent, LandingPageComponent],
+  declarations: [AppComponent, LandingPageComponent, SignInComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
