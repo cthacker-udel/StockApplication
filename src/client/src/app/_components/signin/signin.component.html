@@ -6,7 +6,7 @@
     <div class="border mt-1 mb-3"></div>
     <div>
       <form [formGroup]="signInFormGroup">
-        <div class="d-flex flex-column">
+        <div class="d-flex flex-column mt-4">
           <div class="d-flex flex-row justify-content-between">
             <label for="signin_username"
               ><i class="fa-solid fa-user me-1"></i><span>Username</span></label
@@ -29,11 +29,13 @@
             <button
               class="btn btn-primary"
               [disabled]="!signInFormGroup.valid"
+              (click)="signIn()"
               type="button"
             >
               Sign in
             </button>
           </div>
+          <a class="fw-lighter mt-3 opacity-75 mx-auto link-secondary" routerLink="/" routerLinkActive="active">Become a member?</a>
         </div>
       </form>
     </div>
