@@ -1,10 +1,11 @@
 /* eslint-disable wrap-regex -- not needed*/
 import type { FoundUserEmailByUsernameReturn, User } from "../../@types";
-import { BaseService } from "../../common";
+import { BaseService, Roles } from "../../common";
 import { MONGO_COMMON, type StockMongoClient } from "../../mongo";
 import { pbkdf2Encryption } from "../encryption";
 import { fixedPbkdf2Encryption } from "../encryption/encryption";
 import { v4 } from "uuid";
+import { RolesService } from "modules/roles";
 
 export class UserService extends BaseService {
 	public constructor() {
@@ -73,6 +74,7 @@ export class UserService extends BaseService {
 			return false;
 		}
 		const { hash, iterations, salt } = pbkdf2Encryption(password);
+		await RolesService.addRoleToUser(client, Roles.USER, username);
 		const insertionResult = await userCollection.insertOne({
 			...userInformation,
 			iterations,
