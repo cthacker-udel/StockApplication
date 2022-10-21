@@ -14,4 +14,11 @@ export type Route = [
 		Query,
 		{ [key: string]: any }
 	>,
+	middleware?: RequestHandler<
+		ParamsDictionary,
+		any,
+		any,
+		Query,
+		{ [key: string]: any }
+	>,
 ];

@@ -5,7 +5,7 @@ import { MONGO_COMMON, type StockMongoClient } from "../../mongo";
 import { pbkdf2Encryption } from "../encryption";
 import { fixedPbkdf2Encryption } from "../encryption/encryption";
 import { v4 } from "uuid";
-import { RolesService } from "modules/roles";
+import { RolesService } from "../roles";
 
 export class UserService extends BaseService {
 	public constructor() {

@@ -5,6 +5,7 @@ import {
 	EMAIL_TEMPLATES,
 	generateApiMessage,
 	generateEmail,
+	Roles,
 } from "../../common";
 import type { StockMongoClient } from "../../mongo";
 import {
@@ -15,6 +16,7 @@ import { UserService } from "./user.service";
 import type { MailService } from "@sendgrid/mail";
 import { generateToken } from "../encryption/encryption";
 import type { SessionService } from "../session";
+import { rolesInjector } from "../../middleware/rolesValidator/rolesValidator";
 
 export class UserController implements BaseController {
 	public ROUTE_PREFIX = "/user/";
@@ -276,7 +278,11 @@ export class UserController implements BaseController {
 		post: [
 			["signup", this.signUp],
 			["login", this.login],
-			["forgot/password", this.changePasswordRequest],
+			[
+				"forgot/password",
+				this.changePasswordRequest,
+				rolesInjector(Roles.USER, this.client),
+			],
 			["change/password", this.changePassword],
 		],
 	});

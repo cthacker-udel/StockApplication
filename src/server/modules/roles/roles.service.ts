@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-extraneous-class -- not needed */
-import type { Roles } from "common";
-import { MONGO_COMMON, type StockMongoClient } from "mongo";
+import type { Roles } from "../../common";
+import { MONGO_COMMON, type StockMongoClient } from "../../mongo";
 
 export class RolesService {
 	public static addRoleToUser = async (
