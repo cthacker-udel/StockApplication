@@ -5,10 +5,12 @@ import {
 	type BaseController,
 	ERROR_CODE_ENUM,
 	generateApiMessage,
+	Roles,
 } from "../../common";
 import type { StockMongoClient } from "../../mongo";
 import { StockService } from "./stock.service";
 import type { SessionService } from "../session";
+import { rolesValidator } from "../../middleware/rolesValidator/rolesValidator";
 
 /**
  * Handles all incoming requests related to the "stock" endpoint
@@ -199,6 +201,9 @@ export class StockController implements BaseController {
 				sortBy as SortByOptions,
 			);
 			response.status(200);
+			response.header({
+				"Cache-Control": "stale-while-revalidate=60",
+			});
 			response.send({ stocks: result });
 		} catch (error: unknown) {
 			console.error(
@@ -287,7 +292,11 @@ export class StockController implements BaseController {
 			["get/symbol", this.getStockBySymbol],
 			["get/price", this.getAllStocksByPrice],
 			["get/all", this.getAllStocks],
-			["dashboard", this.getStockDashboardStocks],
+			[
+				"dashboard",
+				this.getStockDashboardStocks,
+				rolesValidator(Roles.USER, this.client),
+			],
 		],
 		post: [["add", this.addStock]],
 	});

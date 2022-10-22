@@ -16,7 +16,7 @@ import { UserService } from "./user.service";
 import type { MailService } from "@sendgrid/mail";
 import { generateToken } from "../encryption/encryption";
 import type { SessionService } from "../session";
-import { rolesInjector } from "../../middleware/rolesValidator/rolesValidator";
+import { rolesValidator } from "../../middleware/rolesValidator/rolesValidator";
 
 export class UserController implements BaseController {
 	public ROUTE_PREFIX = "/user/";
@@ -98,6 +98,9 @@ export class UserController implements BaseController {
 					);
 				if (doesSessionExist) {
 					response.status(200);
+					response.header({
+						"Access-Control-Expose-Headers": "474StockAppSessionId",
+					});
 					response.send(
 						generateApiMessage("Successful login!", true),
 					);
@@ -107,7 +110,7 @@ export class UserController implements BaseController {
 						username,
 					});
 					if (canLogin) {
-						await this.sessionService.updateSession(
+						await this.sessionService.addSession(
 							username,
 							response,
 						);
@@ -281,7 +284,7 @@ export class UserController implements BaseController {
 			[
 				"forgot/password",
 				this.changePasswordRequest,
-				rolesInjector(Roles.USER, this.client),
+				rolesValidator(Roles.USER, this.client),
 			],
 			["change/password", this.changePassword],
 		],

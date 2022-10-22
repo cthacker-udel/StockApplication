@@ -52,7 +52,10 @@ export class SessionService extends BaseService {
 			salt,
 		);
 		response.cookie(SECRETS.STOCK_APP_SESSION_COOKIE_ID, hashedKey, {
+			domain: "",
+			httpOnly: false,
 			maxAge: SECRETS.STOCK_APP_SESSION_COOKIE_EXPIRATION,
+			sameSite: "none",
 		});
 		return true;
 	};
@@ -124,14 +127,20 @@ export class SessionService extends BaseService {
 				SECRETS.STOCK_APP_SESSION_COOKIE_ID,
 				fixedPbkdf2Encryption(`${username}${id}`, iterations, salt),
 				{
+					domain: "",
+					httpOnly: false,
 					maxAge: SECRETS.STOCK_APP_SESSION_COOKIE_EXPIRATION,
+					sameSite: "none",
 				},
 			);
 			response.cookie(
 				SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_ID,
 				foundUser.username,
 				{
+					domain: "",
+					httpOnly: false,
 					maxAge: SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_EXPIRATION,
+					sameSite: "none",
 				},
 			);
 			await userCollection.updateOne(

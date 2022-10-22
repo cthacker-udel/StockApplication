@@ -447,6 +447,7 @@ module.exports = {
 			"error",
 			{
 				allowParens: true,
+				onlyOneSimpleParam: true,
 			},
 		],
 		"no-const-assign": "error",

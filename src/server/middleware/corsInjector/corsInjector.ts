@@ -18,5 +18,8 @@ export const corsInjector = (
 		"Access-Control-Allow-Methods":
 			corsHeaders["Access-Control-Allow-Methods"],
 	});
+	response.header({
+		"Access-Control-Allow-Credentials": true,
+	});
 	next();
 };
