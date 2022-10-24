@@ -24,7 +24,7 @@ export class RequestInterceptor implements HttpInterceptor {
       let headers: HttpHeaders = new HttpHeaders();
       headers = requestClone.headers.append(
         SECRETS.STOCK_APP_SESSION_COOKIE_ID,
-        sessionUsername
+        sessionCookie
       );
       headers = headers.append(
         SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_ID,

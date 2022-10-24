@@ -28,11 +28,11 @@ export const updateRoutes = (
 		switch (eachKey) {
 			case "get": {
 				for (const eachRoute of routes) {
-					if (eachRoute[2]) {
+					if (eachRoute[2] && eachRoute[2].length > 0) {
 						// with middleware
-						_router.get(
+						_router.post(
 							`${routePrefix}${eachRoute[0]}`,
-							eachRoute[2],
+							...eachRoute[2],
 							eachRoute[1],
 						);
 					} else {
@@ -47,11 +47,11 @@ export const updateRoutes = (
 			}
 			case "put": {
 				for (const eachRoute of routes) {
-					if (eachRoute[2]) {
+					if (eachRoute[2] && eachRoute[2].length > 0) {
 						// with middleware
-						_router.put(
+						_router.post(
 							`${routePrefix}${eachRoute[0]}`,
-							eachRoute[2],
+							...eachRoute[2],
 							eachRoute[1],
 						);
 					} else {
@@ -66,11 +66,11 @@ export const updateRoutes = (
 			}
 			case "post": {
 				for (const eachRoute of routes) {
-					if (eachRoute[2]) {
+					if (eachRoute[2] && eachRoute[2].length > 0) {
 						// with middleware
 						_router.post(
 							`${routePrefix}${eachRoute[0]}`,
-							eachRoute[2],
+							...eachRoute[2],
 							eachRoute[1],
 						);
 					} else {
@@ -85,11 +85,11 @@ export const updateRoutes = (
 			}
 			case "delete": {
 				for (const eachRoute of routes) {
-					if (eachRoute[2]) {
+					if (eachRoute[2] && eachRoute[2].length > 0) {
 						// with middleware
-						_router.delete(
+						_router.post(
 							`${routePrefix}${eachRoute[0]}`,
-							eachRoute[2],
+							...eachRoute[2],
 							eachRoute[1],
 						);
 					} else {

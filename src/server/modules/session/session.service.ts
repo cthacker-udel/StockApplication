@@ -97,6 +97,7 @@ export class SessionService extends BaseService {
 			return false;
 		}
 		const comparison = parsedCookieDate.getTime() - Date.now();
+		console.log("comparison = ", comparison);
 		if (comparison > 0) {
 			const result = generatedHash === parsedCookie.value;
 			if (result && validate(sessionToken)) {

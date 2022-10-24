@@ -25,7 +25,8 @@ const addCookie = (
 	}
 };
 
-const getCookie = (request: Request, id: string) => request.headers[id];
+const getCookie = (request: Request, id: string): string | undefined =>
+	request.header(id);
 
 const generateExpirationDateUTCString = (expiration: number) =>
 	new Date(Date.now() + expiration).toUTCString();

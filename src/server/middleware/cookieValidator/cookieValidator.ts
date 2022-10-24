@@ -1,9 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access -- disabled for readability of code */
 import type { NextFunction, Request, Response } from "express";
 import { SECRETS } from "../../secrets";
 import type { SessionService } from "../../modules/session";
 import { generateApiMessage } from "../../common";
 import { mockCookieManager } from "../../common/api/mockCookieManager";
+import type { SessionCookie } from "../../@types/api/session/SessionCookie";
 
 export const cookieValidator = async (
 	request: Request,
@@ -11,25 +11,31 @@ export const cookieValidator = async (
 	next: NextFunction,
 	sessionService: SessionService,
 ) => {
-	console.log(
-		"IN COOKIE VALIDATOR , headers = ",
-		request.headers,
-		" and ",
-		request.header(SECRETS.STOCK_APP_SESSION_COOKIE_ID),
-	);
-	if (request.header(SECRETS.STOCK_APP_SESSION_COOKIE_ID) === undefined) {
+	console.log(request.originalUrl);
+	if (
+		request.header(SECRETS.STOCK_APP_SESSION_COOKIE_ID) === undefined ||
+		request.originalUrl.includes("api/user/login")
+	) {
 		next();
 	} else {
 		const sessionUsername = mockCookieManager.getCookie(
 			request,
 			SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_ID,
-		) as string;
+		);
+		if (sessionUsername === undefined) {
+			response.status(401);
+			response.send(
+				generateApiMessage("No username detected in headers"),
+			);
+		}
+		const parsedSessionUsername = JSON.parse(
+			sessionUsername as string,
+		) as SessionCookie;
 		const result = await sessionService.validateSession(
-			sessionUsername,
+			parsedSessionUsername.value,
 			request,
 			response,
 		);
-		console.log("result = ", result);
 		if (result) {
 			next();
 		} else {

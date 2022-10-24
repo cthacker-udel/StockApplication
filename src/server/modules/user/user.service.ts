@@ -74,7 +74,6 @@ export class UserService extends BaseService {
 			return false;
 		}
 		const { hash, iterations, salt } = pbkdf2Encryption(password);
-		await RolesService.addRoleToUser(client, Roles.USER, username);
 		const insertionResult = await userCollection.insertOne({
 			...userInformation,
 			iterations,
@@ -82,6 +81,9 @@ export class UserService extends BaseService {
 			password: hash,
 			salt,
 		});
+		if (insertionResult.acknowledged) {
+			await RolesService.addRoleToUser(client, Roles.USER, username);
+		}
 		return insertionResult.acknowledged;
 	};
 
