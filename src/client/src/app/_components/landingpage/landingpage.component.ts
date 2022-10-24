@@ -134,7 +134,6 @@ export class LandingPageComponent implements OnInit {
 
   signUp() {
     if (this.landingPageFormGroup.valid) {
-      console.log('in if');
       const { controls } = this.landingPageFormGroup;
       this.configService
         .postConfig<ApiMessage>(`${ROUTE_PREFIXES.user}signup`, {

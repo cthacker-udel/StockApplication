@@ -21,5 +21,9 @@ export const corsInjector = (
 	response.header({
 		"Access-Control-Allow-Credentials": true,
 	});
+	response.header({
+		"Access-Control-Expose-Headers":
+			corsHeaders["Access-Control-Expose-Headers"],
+	});
 	next();
 };

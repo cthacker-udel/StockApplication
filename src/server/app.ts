@@ -40,15 +40,14 @@ class Application {
 			process.env?.serverPort === undefined
 				? 3000
 				: Number(process.env.serverPort);
-		this.app.use(cookieParser());
 		this.app.use(express.urlencoded({ extended: false }));
 		this.app.use(express.json());
 		this.client = new StockMongoClient();
 		this.sessionService = new SessionService(this.client);
+		this.app.use(corsInjector);
 		this.app.use(
 			asyncMiddlewareHandler(cookieValidator, this.sessionService),
 		);
-		this.app.use(corsInjector);
 		this.sendgridMailClient = new MailService();
 		this.sendgridMailClient.setApiKey(SECRETS.SENDGRID);
 	}

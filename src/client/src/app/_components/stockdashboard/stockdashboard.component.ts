@@ -19,12 +19,14 @@ export class StockDashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.toastr.success('Welcome to the stock application!', 'Welcome!');
-    this.configService
-      .getConfig<{ stocks: Stock[] }>(`${ROUTE_PREFIXES.stock}dashboard`)
-      .subscribe((result: { stocks: Stock[] }) => {
-        console.log('reuslt = ', result);
-        const { stocks } = result;
-        this.stocks = stocks;
-      });
+    const configCall = this.configService.getConfig<any>(
+      `${ROUTE_PREFIXES.stock}dashboard`
+    );
+    console.log('call = ', configCall);
+    configCall.subscribe((result: any) => {
+      console.log(result);
+      const { stocks } = result;
+      this.stocks = stocks;
+    });
   }
 }

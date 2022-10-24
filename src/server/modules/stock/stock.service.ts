@@ -118,12 +118,12 @@ export class StockService extends BaseService {
 			.getClient()
 			.db(MONGO_COMMON.DATABASE_NAME)
 			.collection(this.COLLECTION_NAME);
+		// eslint-disable-next-line sonarjs/prefer-immediate-return -- not needed
 		const stockCursor = await stockCollection
 			.find<Stock>({})
 			.sort(sortOption, "descending")
 			.limit(3)
 			.toArray();
-		console.log(stockCursor);
 		return stockCursor;
 	};
 

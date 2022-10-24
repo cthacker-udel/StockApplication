@@ -13,6 +13,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { SignInComponent } from './_components/signin/signin.component';
 import { StockDashboardComponent } from './_components/stockdashboard/stockdashboard.component';
 import { RequestInterceptor } from './config/requestInterceptor';
+import { SessionService } from './_services/session.service';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,13 @@ import { RequestInterceptor } from './config/requestInterceptor';
   ],
   providers: [
     ConfigService,
-    { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: RequestInterceptor,
+      multi: true,
+      deps: [SessionService],
+    },
+    SessionService,
   ],
   bootstrap: [AppComponent],
 })

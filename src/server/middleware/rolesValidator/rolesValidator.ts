@@ -35,11 +35,9 @@ export const rolesValidator =
 			const database = client.getClient().db(MONGO_COMMON.DATABASE_NAME);
 			const roleCollection = database.collection("roles");
 			const userCollection = database.collection("user");
-			console.log("cookies = ", request.headers);
 			if (
-				(request.cookies as { [key: string]: string })[
-					SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_ID
-				] === undefined
+				request.header(SECRETS.STOCK_APP_SESSION_COOKIE_ID) ===
+				undefined
 			) {
 				response.status(401);
 				response.send(
@@ -48,9 +46,9 @@ export const rolesValidator =
 					),
 				);
 			} else {
-				const parsedUsername = (
-					request.cookies as { [key: string]: string }
-				)[SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_ID];
+				const parsedUsername = request.header(
+					SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_ID,
+				);
 				const foundUser = await userCollection.findOne<User>({
 					username: parsedUsername,
 				});

@@ -14,7 +14,10 @@ export class ConfigService {
 
   getConfig<T>(endpoint: string) {
     return this.http
-      .get<T>(`${this.configUrl}${endpoint}`, { headers: this.corsHeaders, withCredentials: true })
+      .get<T>(`${this.configUrl}${endpoint}`, {
+        headers: this.corsHeaders,
+        withCredentials: true,
+      })
       .pipe(retry(3), catchError(this.handleError));
   }
 
@@ -34,7 +37,17 @@ export class ConfigService {
     });
   }
 
+  postConfigResponse<T>(endpoint: string, body: any) {
+    return this.http.post<T>(`${this.configUrl}${endpoint}`, body, {
+      headers: this.corsHeaders,
+      withCredentials: true,
+      observe: 'response',
+      responseType: 'json'
+    });
+  }
+
   private handleError(error: HttpErrorResponse) {
+    console.log('error = ', error);
     if (error.status === 0) {
       console.error('Client-side error occurred ', error.error);
     } else {

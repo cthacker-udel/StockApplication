@@ -1,39 +1,37 @@
 import {
   HttpEvent,
   HttpHandler,
+  HttpHeaders,
   HttpInterceptor,
   HttpRequest,
 } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { SECRETS } from 'src/secrets/secrets';
+import { SessionService } from '../_services/session.service';
 
 export class RequestInterceptor implements HttpInterceptor {
+  constructor(private sessionService: SessionService) {}
+
   intercept(
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    console.log(document);
-    const cookies = document.cookie.split(';');
-    if (
-      cookies.includes('474StockAppSessionId') &&
-      cookies.includes('474StockSessionUsername')
-    ) {
-      const stockAppSessionId = cookies.find((eachCookie) =>
-        eachCookie.includes('474StockAppSessionId')
+    const sessionCookie = this.sessionService.getSession();
+    const sessionUsername = this.sessionService.getSessionUsername();
+    if (sessionCookie && sessionUsername) {
+      const requestClone = req.clone();
+      let headers: HttpHeaders = new HttpHeaders();
+      headers = requestClone.headers.append(
+        SECRETS.STOCK_APP_SESSION_COOKIE_ID,
+        sessionUsername
       );
-      const stockAppSessionUsername = cookies.find((eachCookie) =>
-        eachCookie.includes('474StockSessionUsername')
+      headers = headers.append(
+        SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_ID,
+        sessionUsername
       );
-      if (stockAppSessionId && stockAppSessionUsername) {
-        const cookieHeaders = {
-          '474StockAppSessionId': stockAppSessionId.split('=')[1],
-          '474StockSessionUsername': stockAppSessionUsername.split('=')[1],
-        };
-        const requestClone = req.clone({
-          setHeaders: { ...cookieHeaders, ...req.headers },
-        });
-        console.log('set cookie headers');
-        return next.handle(requestClone);
-      }
+      const finalClone = requestClone.clone({ headers });
+      return next.handle(finalClone);
     }
     return next.handle(req);
   }
