@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
 import { LandingPageComponent } from './_components/landingpage/landingpage.component';
-import { PortfolioPageComponent } from './_components/portfoliopage/portfoliopage.component';
+import { PortfolioComponent } from './_components/portfolio/portfolio.component';
 
 const routes: Routes = [
   {
@@ -11,9 +11,9 @@ const routes: Routes = [
     outlet: 'landing-page',
   },
   {
-    component: PortfolioPageComponent,
-    path: '',
-    outlet: 'portfolio-page',
+    component: PortfolioComponent,
+    path: 'portfolio',
+    outlet: 'portfolio',
   },
 ];
 

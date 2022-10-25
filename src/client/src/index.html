@@ -23,11 +23,11 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
   </head>
   <header>
-    <div class="d-flex flex-row justify-content-around border border-bottom-1 stock_navbar">
+    <div class="d-flex flex-row justify-content-around border border-bottom-1 stock_navbar" routerLinkActive="active">
       <div class="p-2">Home Page<i class="fa-solid fa-house ms-2"></i></div>
-      <div class="p-2 border border-bottom-0 border-top-0">Login Page<i class="fa-solid fa-right-to-bracket ms-2"></i></div>
+      <div class="p-2 border border-bottom-0 border-top-0" routerLink="landing-page">Login Page<i class="fa-solid fa-right-to-bracket ms-2"></i></div>
       <div class="p-2 border border-bottom-0 border-top-0 border-left-0">Stocks<i class="fa-solid fa-arrow-trend-up ms-2 fa-beat"></i></div>
-      <div class="p-2 border border-bottom-0 border-top-0 border-left-0">Portfolio<i class="fa-solid fa-folder-open ms-2 fa-flip" style="--fa-animation-duration: 3s;"></i></div>
+      <div class="p-2 border border-bottom-0 border-top-0 border-left-0" routerLink="portfolio">Portfolio<i class="fa-solid fa-folder-open ms-2 fa-flip" style="--fa-animation-duration: 3s;"></i></div>
       <div class="rounded p-2">User Settings<i class="fa-solid fa-gear fa-spin ms-2"></i></div>
     </div>
   </header>

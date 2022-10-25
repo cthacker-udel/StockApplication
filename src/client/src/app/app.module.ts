@@ -6,10 +6,11 @@ import { AppComponent } from './app.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LandingPageComponent } from './_components/landingpage/landingpage.component';
+import { PortfolioComponent } from './_components/portfolio/portfolio.component';
 import { ConfigService } from './config/config.service';
 
 @NgModule({
-  declarations: [AppComponent, LandingPageComponent],
+  declarations: [AppComponent, LandingPageComponent, PortfolioComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
