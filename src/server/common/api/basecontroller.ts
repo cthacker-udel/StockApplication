@@ -30,10 +30,9 @@ export const updateRoutes = (
 				for (const eachRoute of routes) {
 					if (eachRoute[2] && eachRoute[2].length > 0) {
 						// with middleware
-						_router.post(
+						_router.get(
 							`${routePrefix}${eachRoute[0]}`,
-							...eachRoute[2],
-							eachRoute[1],
+							[...eachRoute[2], eachRoute[1]],
 						);
 					} else {
 						// without middleware
@@ -49,11 +48,10 @@ export const updateRoutes = (
 				for (const eachRoute of routes) {
 					if (eachRoute[2] && eachRoute[2].length > 0) {
 						// with middleware
-						_router.post(
-							`${routePrefix}${eachRoute[0]}`,
+						_router.put(`${routePrefix}${eachRoute[0]}`, [
 							...eachRoute[2],
 							eachRoute[1],
-						);
+						]);
 					} else {
 						// without middleware
 						_router.put(
@@ -70,8 +68,7 @@ export const updateRoutes = (
 						// with middleware
 						_router.post(
 							`${routePrefix}${eachRoute[0]}`,
-							...eachRoute[2],
-							eachRoute[1],
+							[...eachRoute[2], eachRoute[1]],
 						);
 					} else {
 						// without middleware
@@ -87,11 +84,10 @@ export const updateRoutes = (
 				for (const eachRoute of routes) {
 					if (eachRoute[2] && eachRoute[2].length > 0) {
 						// with middleware
-						_router.post(
-							`${routePrefix}${eachRoute[0]}`,
+						_router.delete(`${routePrefix}${eachRoute[0]}`, [
 							...eachRoute[2],
 							eachRoute[1],
-						);
+						]);
 					} else {
 						// without middleware
 						_router.delete(

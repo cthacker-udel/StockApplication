@@ -12,10 +12,7 @@ export const cookieValidator = async (
 	sessionService: SessionService,
 ) => {
 	console.log(request.originalUrl);
-	if (
-		request.header(SECRETS.STOCK_APP_SESSION_COOKIE_ID) === undefined ||
-		request.originalUrl.includes("api/user/login")
-	) {
+	if (request.header(SECRETS.STOCK_APP_SESSION_COOKIE_ID) === undefined) {
 		next();
 	} else {
 		const sessionUsername = mockCookieManager.getCookie(

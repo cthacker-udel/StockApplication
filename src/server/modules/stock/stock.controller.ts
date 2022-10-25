@@ -295,7 +295,7 @@ export class StockController implements BaseController {
 			[
 				"dashboard",
 				this.getStockDashboardStocks,
-				rolesValidator(Roles.USER, this.client),
+				[rolesValidator(Roles.USER, this.client)],
 			],
 		],
 		post: [["add", this.addStock]],

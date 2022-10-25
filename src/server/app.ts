@@ -4,10 +4,7 @@ import express from "express";
 import { AppController } from "./controller";
 import { StockMongoClient } from "./mongo";
 import { SECRETS } from "./secrets";
-import cookieParser from "cookie-parser";
-import { cookieValidator } from "./middleware/cookieValidator/cookieValidator";
 import { SessionService } from "./modules/session";
-import { asyncMiddlewareHandler } from "./middleware/asyncMiddlewareHandler";
 import { corsInjector } from "./middleware/corsInjector/corsInjector";
 
 /**
@@ -45,9 +42,6 @@ class Application {
 		this.client = new StockMongoClient();
 		this.sessionService = new SessionService(this.client);
 		this.app.use(corsInjector);
-		this.app.use(
-			asyncMiddlewareHandler(cookieValidator, this.sessionService),
-		);
 		this.sendgridMailClient = new MailService();
 		this.sendgridMailClient.setApiKey(SECRETS.SENDGRID);
 	}

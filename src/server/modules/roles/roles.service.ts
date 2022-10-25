@@ -21,7 +21,7 @@ export class RolesService {
 		if (foundRole) {
 			await userCollection.updateOne(
 				{ username },
-				{ roles: [...userRoles, foundRole._id] },
+				{ $set: { roles: [...userRoles, foundRole._id] } },
 			);
 		}
 	};

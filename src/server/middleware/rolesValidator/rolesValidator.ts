@@ -1,3 +1,4 @@
+/* eslint-disable max-statements -- disabled for now */
 /* eslint-disable sonarjs/cognitive-complexity -- disabled */
 /* eslint-disable indent -- disabled */
 /* eslint-disable @typescript-eslint/indent -- disabled */
@@ -8,6 +9,7 @@ import type { NextFunction, Request, Response } from "express";
 import { MONGO_COMMON, type StockMongoClient } from "../../mongo";
 import { ObjectId } from "mongodb";
 import { SECRETS } from "../../secrets";
+import type { SessionCookie } from "../../@types/api/session/SessionCookie";
 
 /**
  * A function that validates the roles given a required role, and a client, used as middleware.
@@ -30,6 +32,7 @@ export const rolesValidator =
 		response: Response,
 		next: NextFunction,
 	): Promise<void> => {
+		console.log("in roles validator");
 		// access roles from user, see if roles align with requiredRole
 		if (requiredRole) {
 			const database = client.getClient().db(MONGO_COMMON.DATABASE_NAME);
@@ -46,46 +49,62 @@ export const rolesValidator =
 					),
 				);
 			} else {
-				const parsedUsername = request.header(
+				const cookieUsername = request.header(
 					SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_ID,
 				);
-				const foundUser = await userCollection.findOne<User>({
-					username: parsedUsername,
-				});
-				const foundRolePromises = [];
-				if (foundUser?.roles) {
-					for (const eachRoleId of foundUser.roles) {
-						foundRolePromises.push(
-							roleCollection.findOne<Role>({
-								_id: new ObjectId(eachRoleId),
-							}),
+				if (cookieUsername === undefined) {
+					response.status(400);
+					response.send(
+						generateApiMessage(
+							"Invalid request for roles validator",
+						),
+					);
+				} else {
+					const parsedUsername = JSON.parse(
+						cookieUsername,
+					) as SessionCookie;
+					const foundUser = await userCollection.findOne<User>({
+						username: parsedUsername.value,
+					});
+					const foundRolePromises = [];
+					if (foundUser?.roles) {
+						for (const eachRoleId of foundUser.roles) {
+							foundRolePromises.push(
+								roleCollection.findOne<Role>({
+									_id: new ObjectId(eachRoleId),
+								}),
+							);
+						}
+						const foundPromises = await Promise.all(
+							foundRolePromises,
 						);
-					}
-					const foundPromises = await Promise.all(foundRolePromises);
-					if (foundPromises.length > 0) {
-						const mappedRoles = foundPromises.map(
-							(eachRole) => eachRole?.perm,
-						);
-						if (mappedRoles.includes(requiredRole)) {
-							response.status(200);
-							next();
+						if (foundPromises.length > 0) {
+							const mappedRoles = foundPromises.map(
+								(eachRole) => eachRole?.perm,
+							);
+							if (mappedRoles.includes(requiredRole)) {
+								response.status(200);
+								next();
+							} else {
+								response.status(401);
+								response.send(
+									generateApiMessage(
+										"User has invalid perms",
+									),
+								);
+							}
 						} else {
 							response.status(401);
 							response.send(
-								generateApiMessage("User has invalid perms"),
+								generateApiMessage("User has invalid roles"),
 							);
 						}
 					} else {
 						response.status(401);
 						response.send(
-							generateApiMessage("User has invalid roles"),
+							generateApiMessage("User has no roles permitted"),
 						);
 					}
-				} else {
-					response.status(401);
-					response.send(
-						generateApiMessage("User has no roles permitted"),
-					);
 				}
 			}
 		} else {

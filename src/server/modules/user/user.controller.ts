@@ -17,6 +17,8 @@ import type { MailService } from "@sendgrid/mail";
 import { generateToken } from "../encryption/encryption";
 import type { SessionService } from "../session";
 import { rolesValidator } from "../../middleware/rolesValidator/rolesValidator";
+import { asyncMiddlewareHandler } from "../../middleware/asyncMiddlewareHandler";
+import { cookieValidator } from "../../middleware/cookieValidator/cookieValidator";
 
 export class UserController implements BaseController {
 	public ROUTE_PREFIX = "/user/";
@@ -284,9 +286,25 @@ export class UserController implements BaseController {
 			[
 				"forgot/password",
 				this.changePasswordRequest,
-				rolesValidator(Roles.USER, this.client),
+				[
+					rolesValidator(Roles.USER, this.client),
+					asyncMiddlewareHandler(
+						cookieValidator,
+						this.sessionService,
+					),
+				],
 			],
-			["change/password", this.changePassword],
+			[
+				"change/password",
+				this.changePassword,
+				[
+					rolesValidator(Roles.USER, this.client),
+					asyncMiddlewareHandler(
+						cookieValidator,
+						this.sessionService,
+					),
+				],
+			],
 		],
 	});
 
