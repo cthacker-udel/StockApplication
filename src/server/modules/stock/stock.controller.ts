@@ -87,7 +87,9 @@ export class StockController implements BaseController {
 				},
 			);
 		io.on("connection", (_: any) => {
-			console.log("LISTENING TO CHANGES IN STOCK COLLECTION");
+			console.log(
+				`${new Date().toLocaleTimeString()} -- User listening to stock collection socket`,
+			);
 		});
 	}
 

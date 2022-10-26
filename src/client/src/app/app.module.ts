@@ -15,6 +15,7 @@ import { RequestInterceptor } from './config/requestInterceptor';
 import { SessionService } from './_services/session.service';
 import { MatCardModule } from "@angular/material/card";
 import { DashboardService } from './_services/dashboard.service';
+import { ProfileComponent } from './_components/profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { DashboardService } from './_services/dashboard.service';
     LandingPageComponent,
     SignInComponent,
     StockDashboardComponent,
+    ProfileComponent,
   ],
   imports: [
     BrowserModule,

@@ -49,29 +49,40 @@ export class SessionService {
       );
       if (sessionInfo) {
         const parsedSessionInfo = JSON.parse(sessionInfo) as SessionCookie;
-        localStorage.setItem(
-          SECRETS.STOCK_APP_SESSION_COOKIE_ID,
-          JSON.stringify({
-            ...parsedSessionInfo,
-            expiration:
-              parsedSessionInfo.expiration +
-              SECRETS.STOCK_APP_SESSION_COOKIE_EXPIRATION,
-          })
-        );
+        if (
+          new Date(parsedSessionInfo.expiration).getTime() - Date.now() <
+          3000
+        ) {
+          localStorage.setItem(
+            SECRETS.STOCK_APP_SESSION_COOKIE_ID,
+            JSON.stringify({
+              ...parsedSessionInfo,
+              expiration:
+                parsedSessionInfo.expiration +
+                SECRETS.STOCK_APP_SESSION_COOKIE_EXPIRATION,
+            })
+          );
+        }
       }
       if (sessionUsername) {
         const parsedSessionUsernameInfo = JSON.parse(
           sessionUsername
         ) as SessionCookie;
-        localStorage.setItem(
-          SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_ID,
-          JSON.stringify({
-            ...parsedSessionUsernameInfo,
-            expiration:
-              parsedSessionUsernameInfo.expiration +
-              SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_EXPIRATION,
-          })
-        );
+        if (
+          new Date(parsedSessionUsernameInfo.expiration).getTime() -
+            Date.now() <
+          3000
+        ) {
+          localStorage.setItem(
+            SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_ID,
+            JSON.stringify({
+              ...parsedSessionUsernameInfo,
+              expiration:
+                parsedSessionUsernameInfo.expiration +
+                SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_EXPIRATION,
+            })
+          );
+        }
       }
       return true;
     } catch (error: unknown) {
