@@ -14,6 +14,8 @@ import { StockDashboardComponent } from './_components/stockdashboard/stockdashb
 import { RequestInterceptor } from './config/requestInterceptor';
 import { SessionService } from './_services/session.service';
 import { MatCardModule } from "@angular/material/card";
+import { DashboardService } from './_services/dashboard.service';
+import { ProfileComponent } from './_components/profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +23,7 @@ import { MatCardModule } from "@angular/material/card";
     LandingPageComponent,
     SignInComponent,
     StockDashboardComponent,
+    ProfileComponent,
   ],
   imports: [
     BrowserModule,
@@ -34,7 +37,7 @@ import { MatCardModule } from "@angular/material/card";
       timeOut: 20000,
       positionClass: 'toast-bottom-right',
     }),
-    MatCardModule
+    MatCardModule,
   ],
   providers: [
     ConfigService,
@@ -45,6 +48,7 @@ import { MatCardModule } from "@angular/material/card";
       deps: [SessionService],
     },
     SessionService,
+    DashboardService,
   ],
   bootstrap: [AppComponent],
 })

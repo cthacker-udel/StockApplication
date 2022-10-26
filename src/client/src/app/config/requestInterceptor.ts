@@ -17,6 +17,7 @@ export class RequestInterceptor implements HttpInterceptor {
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
+    this.sessionService.updateSessionInfo();
     const sessionCookie = this.sessionService.getSession();
     const sessionUsername = this.sessionService.getSessionUsername();
     if (sessionCookie && sessionUsername) {

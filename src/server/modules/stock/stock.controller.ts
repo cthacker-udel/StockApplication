@@ -2,16 +2,19 @@
 import type { Request, Response, Router } from "express";
 import { updateRoutes } from "../../common/api/basecontroller";
 import type { RouteMapping, SortByOptions, Stock } from "../../@types";
+import { Server } from "socket.io";
 import {
 	type BaseController,
 	ERROR_CODE_ENUM,
 	generateApiMessage,
 	Roles,
 } from "../../common";
-import type { StockMongoClient } from "../../mongo";
+import { MONGO_COMMON, type StockMongoClient } from "../../mongo";
 import { StockService } from "./stock.service";
 import type { SessionService } from "../session";
 import { rolesValidator } from "../../middleware/rolesValidator/rolesValidator";
+import type { ChangeStreamUpdateDocument } from "mongodb";
+import { createServer } from "node:http";
 
 const CONSTANTS = {
 	DELETE_STOCK_ALREADY_EXISTS: "Stock with stock symbol already exists",
@@ -48,6 +51,46 @@ export class StockController implements BaseController {
 		this.stockService = new StockService();
 		this.client = client;
 		this.sessionService = _sessionService;
+		const server = createServer().listen(3001);
+		const io = new Server(server, {
+			cors: {
+				methods: ["GET"],
+				origin: "http://localhost:4200",
+			},
+		});
+		this.client
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection("stock")
+			.watch()
+			.on(
+				"change",
+				(changedDocument: ChangeStreamUpdateDocument): void => {
+					this.stockService
+						.getStockById(
+							this.client,
+							changedDocument.documentKey._id.toString(),
+						)
+						.then((result: Stock | undefined) => {
+							if (result === undefined) {
+								throw new Error("Unable to find updated stock");
+							}
+							io.sockets.emit("stockUpdated", result);
+						})
+						.catch((error: unknown) => {
+							console.error(
+								`Failed finding updated stock ${
+									(error as Error).stack
+								}`,
+							);
+						});
+				},
+			);
+		io.on("connection", (_: any) => {
+			console.log(
+				`${new Date().toLocaleTimeString()} -- User listening to stock collection socket`,
+			);
+		});
 	}
 
 	/**

@@ -104,7 +104,9 @@ export class SessionService extends BaseService {
 			}
 			await this.removeSession(username, response);
 		} else {
-			await this.removeSession(username, response);
+			// has cookie but is outdated, then refresh the token
+			await this.updateSession(username, response);
+			return true;
 		}
 		return false;
 	};
