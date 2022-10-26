@@ -288,9 +288,21 @@ export class StockController implements BaseController {
 	 */
 	public getRouteMapping = (): RouteMapping => ({
 		get: [
-			["get/id", this.getStockById],
-			["get/symbol", this.getStockBySymbol],
-			["get/price", this.getAllStocksByPrice],
+			[
+				"get/id",
+				this.getStockById,
+				[rolesValidator(Roles.USER, this.client)],
+			],
+			[
+				"get/symbol",
+				this.getStockBySymbol,
+				[rolesValidator(Roles.USER, this.client)],
+			],
+			[
+				"get/price",
+				this.getAllStocksByPrice,
+				[rolesValidator(Roles.USER, this.client)],
+			],
 			["get/all", this.getAllStocks],
 			[
 				"dashboard",
@@ -298,7 +310,9 @@ export class StockController implements BaseController {
 				[rolesValidator(Roles.USER, this.client)],
 			],
 		],
-		post: [["add", this.addStock]],
+		post: [
+			["add", this.addStock, [rolesValidator(Roles.ADMIN, this.client)]],
+		],
 	});
 
 	/**
