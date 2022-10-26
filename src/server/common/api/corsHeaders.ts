@@ -6,3 +6,8 @@ export const corsHeaders = {
 	"Access-Control-Allow-Origin": "http://localhost:4200",
 	"Access-Control-Expose-Headers": `${SECRETS.STOCK_APP_SESSION_COOKIE_ID}, ${SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_ID}`,
 };
+
+export const socketCorsHeaders = {
+	methods: ["GET"],
+	origin: "http://localhost:4200",
+};

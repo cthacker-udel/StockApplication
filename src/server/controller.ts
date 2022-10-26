@@ -6,6 +6,7 @@ import { UserController } from "./modules/user";
 
 import type { StockMongoClient } from "./mongo";
 import { SessionService } from "./modules/session/session.service";
+import type { Server } from "socket.io";
 
 export class AppController {
 	/**
@@ -30,13 +31,28 @@ export class AppController {
 	private readonly sessionService: SessionService;
 
 	/**
+	 * The socket instance
+	 */
+	private readonly socketServer: Server;
+
+	/**
 	 * Constructs a AppController instance, instantiating it's stockController and it's router instance
 	 *
 	 * @param client - the stock mongo client instance passed from app.ts
 	 */
-	public constructor(client: StockMongoClient, _mailClient: MailService) {
+	public constructor(
+		client: StockMongoClient,
+		_mailClient: MailService,
+		_socket: Server,
+	) {
+		this.socketServer = _socket;
 		this.sessionService = new SessionService(client);
-		this.stockController = new StockController(client, this.sessionService);
+
+		this.stockController = new StockController(
+			client,
+			this.sessionService,
+			this.socketServer,
+		);
 		this.userController = new UserController(
 			client,
 			_mailClient,

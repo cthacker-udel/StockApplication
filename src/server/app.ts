@@ -6,6 +6,9 @@ import { StockMongoClient } from "./mongo";
 import { SECRETS } from "./secrets";
 import { SessionService } from "./modules/session";
 import { corsInjector } from "./middleware/corsInjector/corsInjector";
+import { Server } from "socket.io";
+import { createServer } from "node:http";
+import { socketCorsHeaders } from "./common/api/corsHeaders";
 
 /**
  * The main application class, handles the setup of the express server, and the startup of the express server
@@ -28,6 +31,10 @@ class Application {
 
 	private readonly sessionService: SessionService;
 
+	private readonly httpServer;
+
+	private readonly socket: Server;
+
 	/**
 	 * Constructs the application
 	 */
@@ -44,6 +51,10 @@ class Application {
 		this.app.use(corsInjector);
 		this.sendgridMailClient = new MailService();
 		this.sendgridMailClient.setApiKey(SECRETS.SENDGRID);
+		this.httpServer = createServer().listen(3001);
+		this.socket = new Server(this.httpServer, {
+			cors: socketCorsHeaders,
+		});
 	}
 
 	/**
@@ -62,7 +73,11 @@ class Application {
 	public addController = (): void => {
 		this.app.use(
 			"/api",
-			new AppController(this.client, this.sendgridMailClient).getRouter(),
+			new AppController(
+				this.client,
+				this.sendgridMailClient,
+				this.socket,
+			).getRouter(),
 		);
 	};
 }
