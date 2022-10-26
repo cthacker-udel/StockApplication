@@ -139,6 +139,33 @@
               </div>
             </div>
             <div class="d-flex flex-row justify-content-between">
+              <label class="m-2 fw-light" for="date_of_birth_landing_input"
+                ><span class="text-danger fw-semibold pe-1">*</span>Date of
+                Birth</label
+              >
+              <div class="d-flex flex-column">
+                <input
+                  class="m-2"
+                  formControlName="dateOfBirth"
+                  id="date_of_birth_landing_input"
+                  tabindex="0"
+                  type="date"
+                />
+                <div
+                  *ngIf="
+                    dateofbirth &&
+                    dateofbirth.invalid &&
+                    (dateofbirth.dirty || dateofbirth.touched)
+                  "
+                  className="alert alert-danger validation_fixed_width p-1 mx-auto"
+                >
+                  <div *ngIf="dateofbirth && dateofbirth.errors?.['required']">
+                    Date of Birth is required
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex flex-row justify-content-between">
               <label class="m-2 fw-light" for="email_address_landing_input"
                 >Email Address</label
               >
@@ -241,15 +268,16 @@
               </div>
             </div>
             <button
-              class="w-50 mx-auto btn btn-success mt-3"
-              (click)="printValue()"
+              class="w-25 mx-auto btn btn-success mt-3"
+              (click)="signUp()"
               [disabled]="!landingPageFormGroup.valid"
             >
               Sign Up
             </button>
             <a
               class="fw-lighter mt-3 opacity-75 landing_page_already_member_link mx-auto link-secondary"
-              href="/"
+              routerLink="/signin"
+              routerLinkActive="active"
               >Already a member?</a
             >
           </div>

@@ -1,14 +1,16 @@
 import { request, Request, Response, Router } from "express";
 import { updateRoutes } from "../../common/api/basecontroller";
-import type { RouteMapping, Stock } from "../../@types";
+import type { RouteMapping, SortByOptions, Stock } from "../../@types";
 import {
 	type BaseController,
 	ERROR_CODE_ENUM,
 	generateApiMessage,
+	Roles,
 } from "../../common";
 import type { StockMongoClient } from "../../mongo";
 import { StockService } from "./stock.service";
 import type { SessionService } from "../session";
+import { rolesValidator } from "../../middleware/rolesValidator/rolesValidator";
 
 /**
  * Handles all incoming requests related to the "stock" endpoint
@@ -232,8 +234,14 @@ export class StockController implements BaseController {
 	 */
 	public getAllStocks = async (request: Request, response: Response) => {
 		try {
+			const { amt } = request.query;
 			response.status(200);
-			response.send(await this.stockService.getAllStocks(this.client));
+			response.send(
+				await this.stockService.getAllStocks(
+					this.client,
+					amt as unknown as number,
+				),
+			);
 		} catch (error: unknown) {
 			console.error(
 				`Error fetching all stocks ${(error as Error).message}`,
@@ -244,6 +252,44 @@ export class StockController implements BaseController {
 					"Failed to fetch all stocks",
 					false,
 					ERROR_CODE_ENUM.FIND_ALL_STOCKS_FAILURE,
+				),
+			);
+		}
+	};
+
+	/**
+	 * Gets all stocks for the stock dashboard page
+	 *
+	 * @param _request - The client request
+	 * @param response - The server response
+	 */
+	public getStockDashboardStocks = async (
+		request: Request,
+		response: Response,
+	) => {
+		try {
+			const { sortBy } = request.query;
+			const result = await this.stockService.getStockDashboardStocks(
+				this.client,
+				sortBy as SortByOptions,
+			);
+			response.status(200);
+			response.header({
+				"Cache-Control": "stale-while-revalidate=60",
+			});
+			response.send({ stocks: result });
+		} catch (error: unknown) {
+			console.error(
+				`Error fetching stock dashboard stocks ${
+					(error as Error).message
+				}`,
+			);
+			response.status(400);
+			response.send(
+				generateApiMessage(
+					"Failed to fetch all stock dashboard stocks",
+					false,
+					ERROR_CODE_ENUM.GENERIC_ERROR,
 				),
 			);
 		}
@@ -375,14 +421,31 @@ export class StockController implements BaseController {
 	 */
 	public getRouteMapping = (): RouteMapping => ({
 		get: [
-			["get/id", this.getStockById],
-			["get/symbol", this.getStockBySymbol],
-			["get/price", this.getAllStocksByPrice],
-			["get/name", this.getStocksByName],
-			["get/shares", this.getStocksWithShares],
+			[
+				"get/id",
+				this.getStockById,
+				[rolesValidator(Roles.USER, this.client)],
+			],
+			[
+				"get/symbol",
+				this.getStockBySymbol,
+				[rolesValidator(Roles.USER, this.client)],
+			],
+			[
+				"get/price",
+				this.getAllStocksByPrice,
+				[rolesValidator(Roles.USER, this.client)],
+			],
 			["get/all", this.getAllStocks],
+			[
+				"dashboard",
+				this.getStockDashboardStocks,
+				[rolesValidator(Roles.USER, this.client)],
+			],
 		],
-		post: [["add", this.addStock]],
+		post: [
+			["add", this.addStock, [rolesValidator(Roles.ADMIN, this.client)]],
+		],
 		delete: [["delete", this.deleteStock]],
 	});
 
