@@ -14,6 +14,7 @@ import { SignInComponent } from './_components/signin/signin.component';
 import { StockDashboardComponent } from './_components/stockdashboard/stockdashboard.component';
 import { RequestInterceptor } from './config/requestInterceptor';
 import { SessionService } from './_services/session.service';
+import { MatCardModule } from "@angular/material/card";
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { SessionService } from './_services/session.service';
       timeOut: 20000,
       positionClass: 'toast-bottom-right',
     }),
+    MatCardModule
   ],
   providers: [
     ConfigService,
