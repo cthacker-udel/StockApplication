@@ -13,4 +13,7 @@ export type User = {
 	iterations: number;
 	sessionToken: string;
 	roles: string[]; // the roleIds
+
+	// profile picture
+	pfpLink?: string;
 };

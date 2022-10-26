@@ -12,6 +12,18 @@
     max-width: 10vw;
 }
 
+#profile_picture_placeholder {
+    height: 15vh;
+    width: 11vw;
+    border: 3px solid black;
+    cursor: pointer;
+}
+
+#profile_picture_placeholder_text {
+    font-size: .65em;
+    font-weight: bold;
+}
+
 .stock_activity_date {
     font-size: .77em;
     opacity: 50%;

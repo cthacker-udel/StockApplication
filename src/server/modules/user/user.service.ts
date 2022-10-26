@@ -290,4 +290,32 @@ export class UserService extends BaseService {
 		} = foundUser;
 		return { ...rest, roles: [maxValue.toString()] };
 	};
+
+	/**
+	 * Adds an image link to the user
+	 *
+	 * @param client - the mongo client
+	 * @param username - the username we are adding the image link to
+	 * @param imageLink - the image link we are appending to the user matching the username
+	 * @returns Whether the link was appended or not
+	 */
+	public addImageLinkToUser = async (
+		client: StockMongoClient,
+		username: string,
+		imageLink: string,
+	): Promise<boolean> => {
+		const userCollection = client
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection(this.COLLECTION_NAME);
+		const foundUser = await userCollection.findOne<User>({ username });
+		if (foundUser === null) {
+			return false;
+		}
+		const updateResult = await userCollection.updateOne(
+			{ username },
+			{ ...foundUser, pfpLink: imageLink },
+		);
+		return updateResult.modifiedCount > 0;
+	};
 }

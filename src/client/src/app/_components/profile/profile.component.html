@@ -8,11 +8,18 @@
         <div
           class="d-flex flex-column p-3 shadow bg-secondary bg-gradient bg-opacity-75 rounded"
         >
-          <img
-            class="img-thumbnail rounded-circle mx-auto"
-            src="https://media.istockphoto.com/photos/male-silhouette-as-avatar-profile-picture-picture-id519078723?k=20&m=519078723&s=170667a&w=0&h=83wBe_Ger9b2UNxzpZI1KcvObqEdvh99v0CgApERoJ4="
-            id="profile_picture"
-          />
+          <div class="mx-auto">
+            <label
+              class="d-flex flex-column rounded-circle img-thumbnail align-items-center justify-content-center"
+              for="profile_picture_input"
+              id="profile_picture_placeholder"
+            >
+              <div><i class="fa-solid fa-camera fa-xl"></i></div>
+              <div class="mt-2" id="profile_picture_placeholder_text">
+                Update Photo
+              </div>
+            </label>
+          </div>
           <div class="d-flex flex-column px-2 mt-3">
             <div class="d-flex flex-row">
               <i class="fa-solid fa-signature me-2 my-auto"></i>
@@ -69,4 +76,10 @@
       of stocks sold, amount of times logged in, created account date, etc.
     </div>
   </div>
+  <input
+    class="visually-hidden"
+    type="file"
+    id="profile_picture_input"
+    (change)="processProfileChange($event)"
+  />
 </div>
