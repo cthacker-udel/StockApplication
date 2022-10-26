@@ -343,7 +343,7 @@ export class StockController implements BaseController {
 				response.status(400);
 				response.send(
 					generateApiMessage(
-						"Stock with stock symbol already exists",
+						"Stock with stock symbol doesn't exists",
 						false,
 						ERROR_CODE_ENUM.DELETE_STOCK_STOCK_DOESNT_EXIST,
 					),
@@ -355,7 +355,7 @@ export class StockController implements BaseController {
 			} 
 		} catch (error: unknown) {
 			console.error(
-				`Error occurred deleting stock ${(error as Error).message}`,
+				`Error occurred deleting stock ${(error as Error).stack}`,
 			);
 			response.status(400);
 			response.send(
