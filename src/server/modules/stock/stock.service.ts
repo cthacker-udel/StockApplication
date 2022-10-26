@@ -1,4 +1,9 @@
-import { type Collection, ObjectId, type InsertOneResult, type DeleteOneModel, DeleteResult } from "mongodb";
+import {
+	type Collection,
+	ObjectId,
+	type InsertOneResult,
+	type DeleteResult,
+} from "mongodb";
 import type { SortByOptions, Stock } from "../../@types";
 import { BaseService } from "../../common/api/baseservice";
 import { MONGO_COMMON, type StockMongoClient } from "../../mongo";
@@ -106,7 +111,6 @@ export class StockService extends BaseService {
 			}
 		}
 		return stock;
-
 	};
 
 	/**
@@ -195,7 +199,7 @@ export class StockService extends BaseService {
 		return stockCollection.acknowledged;
 	};
 
-/**
+	/**
 	 * Deletes a stock to the database
 	 *
 	 * @param client - The MongoClient instance
@@ -211,7 +215,7 @@ export class StockService extends BaseService {
 			.getClient()
 			.db(MONGO_COMMON.DATABASE_NAME)
 			.collection(this.COLLECTION_NAME)
-			.deleteOne(Symbol);
-			return stockCollection.acknowledged;
+			.deleteOne({ symbol });
+		return stockCollection.acknowledged;
 	};
 }
