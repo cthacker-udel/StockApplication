@@ -13,13 +13,8 @@ import { MONGO_COMMON, type StockMongoClient } from "../../mongo";
 import { StockService } from "./stock.service";
 import type { SessionService } from "../session";
 import { rolesValidator } from "../../middleware/rolesValidator/rolesValidator";
-import type {
-	ChangeStreamDocument,
-	ChangeStreamUpdateDocument,
-	Document,
-} from "mongodb";
-import { processStocksForDashboard } from "./stockHelpers";
-import { createServer } from "http";
+import type { ChangeStreamUpdateDocument } from "mongodb";
+import { createServer } from "node:http";
 
 const CONSTANTS = {
 	DELETE_STOCK_ALREADY_EXISTS: "Stock with stock symbol already exists",
@@ -57,7 +52,12 @@ export class StockController implements BaseController {
 		this.client = client;
 		this.sessionService = _sessionService;
 		const server = createServer().listen(3001);
-		const io = new Server(server);
+		const io = new Server(server, {
+			cors: {
+				methods: ["GET"],
+				origin: "http://localhost:4200",
+			},
+		});
 		this.client
 			.getClient()
 			.db(MONGO_COMMON.DATABASE_NAME)
@@ -66,7 +66,7 @@ export class StockController implements BaseController {
 			.on(
 				"change",
 				(changedDocument: ChangeStreamUpdateDocument): void => {
-					const foundDocument = this.stockService
+					this.stockService
 						.getStockById(
 							this.client,
 							changedDocument.documentKey._id.toString(),
@@ -75,8 +75,7 @@ export class StockController implements BaseController {
 							if (result === undefined) {
 								throw new Error("Unable to find updated stock");
 							}
-							console.log("emitting ", foundDocument);
-							io.sockets.emit("stockUpdated", foundDocument);
+							io.sockets.emit("stockUpdated", result);
 						})
 						.catch((error: unknown) => {
 							console.error(
@@ -87,8 +86,8 @@ export class StockController implements BaseController {
 						});
 				},
 			);
-		io.on("connection", (socket: any) => {
-			console.log("user connected");
+		io.on("connection", (_: any) => {
+			console.log("LISTENING TO CHANGES IN STOCK COLLECTION");
 		});
 	}
 
