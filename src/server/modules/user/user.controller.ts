@@ -5,6 +5,7 @@ import {
 	EMAIL_TEMPLATES,
 	generateApiMessage,
 	generateEmail,
+	Roles,
 } from "../../common";
 import type { StockMongoClient } from "../../mongo";
 import {
@@ -15,6 +16,9 @@ import { UserService } from "./user.service";
 import type { MailService } from "@sendgrid/mail";
 import { generateToken } from "../encryption/encryption";
 import type { SessionService } from "../session";
+import { rolesValidator } from "../../middleware/rolesValidator/rolesValidator";
+import { asyncMiddlewareHandler } from "../../middleware/asyncMiddlewareHandler";
+import { cookieValidator } from "../../middleware/cookieValidator/cookieValidator";
 
 export class UserController implements BaseController {
 	public ROUTE_PREFIX = "/user/";
@@ -96,6 +100,9 @@ export class UserController implements BaseController {
 					);
 				if (doesSessionExist) {
 					response.status(200);
+					response.header({
+						"Access-Control-Expose-Headers": "474StockAppSessionId",
+					});
 					response.send(
 						generateApiMessage("Successful login!", true),
 					);
@@ -105,7 +112,7 @@ export class UserController implements BaseController {
 						username,
 					});
 					if (canLogin) {
-						await this.sessionService.updateSession(
+						await this.sessionService.addSession(
 							username,
 							response,
 						);
@@ -276,8 +283,28 @@ export class UserController implements BaseController {
 		post: [
 			["signup", this.signUp],
 			["login", this.login],
-			["forgot/password", this.changePasswordRequest],
-			["change/password", this.changePassword],
+			[
+				"forgot/password",
+				this.changePasswordRequest,
+				[
+					rolesValidator(Roles.USER, this.client),
+					asyncMiddlewareHandler(
+						cookieValidator,
+						this.sessionService,
+					),
+				],
+			],
+			[
+				"change/password",
+				this.changePassword,
+				[
+					rolesValidator(Roles.USER, this.client),
+					asyncMiddlewareHandler(
+						cookieValidator,
+						this.sessionService,
+					),
+				],
+			],
 		],
 	});
 

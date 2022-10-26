@@ -7,17 +7,17 @@ export class ConfigService {
   configUrl = 'http://localhost:3000/api';
 
   corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET,POST,PATCH,DELETE,PUT,OPTIONS',
-    'Access-Control-Allow-Headers':
-      'Origin, Content-Type, X-Auth-Token, content-type',
+    'Access-Control-Allow-Credentials': 'true',
   };
 
   constructor(private http: HttpClient) {}
 
   getConfig<T>(endpoint: string) {
     return this.http
-      .get<T>(`${this.configUrl}${endpoint}`, { headers: this.corsHeaders })
+      .get<T>(`${this.configUrl}${endpoint}`, {
+        headers: this.corsHeaders,
+        withCredentials: true,
+      })
       .pipe(retry(3), catchError(this.handleError));
   }
 
@@ -26,10 +26,28 @@ export class ConfigService {
       observe: 'body',
       responseType: 'json',
       headers: this.corsHeaders,
+      withCredentials: true,
+    });
+  }
+
+  postConfig<T>(endpoint: string, body: any) {
+    return this.http.post<T>(`${this.configUrl}${endpoint}`, body, {
+      headers: this.corsHeaders,
+      withCredentials: true,
+    });
+  }
+
+  postConfigResponse<T>(endpoint: string, body: any) {
+    return this.http.post<T>(`${this.configUrl}${endpoint}`, body, {
+      headers: this.corsHeaders,
+      withCredentials: true,
+      observe: 'response',
+      responseType: 'json'
     });
   }
 
   private handleError(error: HttpErrorResponse) {
+    console.log('error = ', error);
     if (error.status === 0) {
       console.error('Client-side error occurred ', error.error);
     } else {

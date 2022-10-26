@@ -1,6 +1,5 @@
-/* eslint-disable no-mixed-spaces-and-tabs -- prettier/eslint conflict */
-/* eslint-disable indent -- prettier/eslint conflict */
-/* eslint-disable @typescript-eslint/indent -- prettier/eslint conflict */
+import type { SessionCookie } from "../../@types/api/session/SessionCookie";
+import { mockCookieManager } from "../../common/api/mockCookieManager";
 import type { Request, Response } from "express";
 import type { Collection } from "mongodb";
 import { v4, validate } from "uuid";
@@ -51,9 +50,12 @@ export class SessionService extends BaseService {
 			iterations,
 			salt,
 		);
-		response.cookie(SECRETS.STOCK_APP_SESSION_COOKIE_ID, hashedKey, {
-			maxAge: SECRETS.STOCK_APP_SESSION_COOKIE_EXPIRATION,
-		});
+		mockCookieManager.addCookie(
+			response,
+			SECRETS.STOCK_APP_SESSION_COOKIE_ID,
+			hashedKey,
+			{ username },
+		);
 		return true;
 	};
 
@@ -77,23 +79,35 @@ export class SessionService extends BaseService {
 		if (foundUser === null || foundUser?.sessionToken === undefined) {
 			return false;
 		}
+		// user found
 		const { iterations, salt, sessionToken } = foundUser;
 		const generatedHash = fixedPbkdf2Encryption(
 			`${username}${sessionToken}`,
 			iterations,
 			salt,
 		);
-		const acquiredHash =
-			request.cookies === undefined
-				? ""
-				: (request.cookies as { [key: string]: string })[
-						SECRETS.STOCK_APP_SESSION_COOKIE_ID
-				  ];
-		const result = generatedHash === acquiredHash;
-		if (result && validate(sessionToken)) {
+		// generate hash from username and sessionToken
+		const sentCookie = request.header(SECRETS.STOCK_APP_SESSION_COOKIE_ID);
+		if (sentCookie === undefined) {
+			return false;
+		}
+		const parsedCookie = JSON.parse(sentCookie) as SessionCookie;
+		const parsedCookieDate = new Date(parsedCookie.expiration);
+		if (parsedCookieDate === undefined) {
+			return false;
+		}
+		const comparison = parsedCookieDate.getTime() - Date.now();
+		if (comparison > 0) {
+			const result = generatedHash === parsedCookie.value;
+			if (result && validate(sessionToken)) {
+				return true;
+			}
+			await this.removeSession(username, response);
+		} else {
+			// has cookie but is outdated, then refresh the token
+			await this.updateSession(username, response);
 			return true;
 		}
-		await this.removeSession(username, response);
 		return false;
 	};
 
@@ -120,18 +134,31 @@ export class SessionService extends BaseService {
 		if (foundUser !== null) {
 			const { iterations, salt } = foundUser;
 			const id = v4();
-			response.cookie(
+			const generatedHash = fixedPbkdf2Encryption(
+				`${username}${id}`,
+				iterations,
+				salt,
+			);
+			mockCookieManager.addCookie(
+				response,
 				SECRETS.STOCK_APP_SESSION_COOKIE_ID,
-				fixedPbkdf2Encryption(`${username}${id}`, iterations, salt),
+				generatedHash,
 				{
-					maxAge: SECRETS.STOCK_APP_SESSION_COOKIE_EXPIRATION,
+					expiration:
+						mockCookieManager.generateExpirationDateUTCString(
+							SECRETS.STOCK_APP_SESSION_COOKIE_EXPIRATION,
+						),
 				},
 			);
-			response.cookie(
+			mockCookieManager.addCookie(
+				response,
 				SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_ID,
 				foundUser.username,
 				{
-					maxAge: SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_EXPIRATION,
+					expiration:
+						mockCookieManager.generateExpirationDateUTCString(
+							SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_EXPIRATION,
+						),
 				},
 			);
 			await userCollection.updateOne(
@@ -169,7 +196,7 @@ export class SessionService extends BaseService {
 			{ username },
 			{ $set: { sessionToken: undefined } },
 		);
-		response.clearCookie(SECRETS.STOCK_APP_SESSION_COOKIE_ID);
+		mockCookieManager.removeCookies(response);
 		return true;
 	};
 }

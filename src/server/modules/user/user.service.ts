@@ -1,10 +1,11 @@
 /* eslint-disable wrap-regex -- not needed*/
 import type { FoundUserEmailByUsernameReturn, User } from "../../@types";
-import { BaseService } from "../../common";
+import { BaseService, Roles } from "../../common";
 import { MONGO_COMMON, type StockMongoClient } from "../../mongo";
 import { pbkdf2Encryption } from "../encryption";
 import { fixedPbkdf2Encryption } from "../encryption/encryption";
 import { v4 } from "uuid";
+import { RolesService } from "../roles";
 
 export class UserService extends BaseService {
 	public constructor() {
@@ -32,9 +33,11 @@ export class UserService extends BaseService {
 			username,
 		});
 		if (doesUserAlreadyExist) {
+			console.log("failed user already exists");
 			return false;
 		}
 		if (/\W+/giu.test(username)) {
+			console.log("failed username");
 			return false;
 		}
 		if (
@@ -43,6 +46,7 @@ export class UserService extends BaseService {
 			!/\d/giu.test(password) ||
 			!/\W/giu.test(password)
 		) {
+			console.log("failed password");
 			return false;
 		}
 		if (
@@ -51,19 +55,22 @@ export class UserService extends BaseService {
 				-21 ||
 			Number.isNaN(Date.parse(dob))
 		) {
+			console.log("failed dob");
 			return false;
 		}
-		if (!firstName || !/\S/giu.test(firstName.trim())) {
+		if (firstName && !/\S/giu.test(firstName.trim())) {
+			console.log("failed firstname");
 			return false;
 		}
-		if (!lastName || !/S/giu.test(lastName.trim())) {
+		if (lastName && !/S/giu.test(lastName.trim())) {
+			console.log("failed lastname");
 			return false;
 		}
 		if (
-			email !== undefined &&
-			!email.trim() &&
+			email?.trim() &&
 			!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/giu.test(email.trim())
 		) {
+			console.log("failed email");
 			return false;
 		}
 		const { hash, iterations, salt } = pbkdf2Encryption(password);
@@ -74,6 +81,9 @@ export class UserService extends BaseService {
 			password: hash,
 			salt,
 		});
+		if (insertionResult.acknowledged) {
+			await RolesService.addRoleToUser(client, Roles.USER, username);
+		}
 		return insertionResult.acknowledged;
 	};
 

@@ -1,14 +1,24 @@
-import { request, Request, Response, Router } from "express";
+/* eslint-disable @typescript-eslint/no-unsafe-argument -- not needed */
+import type { Request, Response, Router } from "express";
 import { updateRoutes } from "../../common/api/basecontroller";
-import type { RouteMapping, Stock } from "../../@types";
+import type { RouteMapping, SortByOptions, Stock } from "../../@types";
+import { Server } from "socket.io";
 import {
 	type BaseController,
 	ERROR_CODE_ENUM,
 	generateApiMessage,
+	Roles,
 } from "../../common";
-import type { StockMongoClient } from "../../mongo";
+import { MONGO_COMMON, type StockMongoClient } from "../../mongo";
 import { StockService } from "./stock.service";
 import type { SessionService } from "../session";
+import { rolesValidator } from "../../middleware/rolesValidator/rolesValidator";
+import type { ChangeStreamUpdateDocument } from "mongodb";
+import { createServer } from "node:http";
+
+const CONSTANTS = {
+	DELETE_STOCK_ALREADY_EXISTS: "Stock with stock symbol already exists",
+};
 
 /**
  * Handles all incoming requests related to the "stock" endpoint
@@ -41,6 +51,46 @@ export class StockController implements BaseController {
 		this.stockService = new StockService();
 		this.client = client;
 		this.sessionService = _sessionService;
+		const server = createServer().listen(3001);
+		const io = new Server(server, {
+			cors: {
+				methods: ["GET"],
+				origin: "http://localhost:4200",
+			},
+		});
+		this.client
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection("stock")
+			.watch()
+			.on(
+				"change",
+				(changedDocument: ChangeStreamUpdateDocument): void => {
+					this.stockService
+						.getStockById(
+							this.client,
+							changedDocument.documentKey._id.toString(),
+						)
+						.then((result: Stock | undefined) => {
+							if (result === undefined) {
+								throw new Error("Unable to find updated stock");
+							}
+							io.sockets.emit("stockUpdated", result);
+						})
+						.catch((error: unknown) => {
+							console.error(
+								`Failed finding updated stock ${
+									(error as Error).stack
+								}`,
+							);
+						});
+				},
+			);
+		io.on("connection", (_: any) => {
+			console.log(
+				`${new Date().toLocaleTimeString()} -- User listening to stock collection socket`,
+			);
+		});
 	}
 
 	/**
@@ -232,8 +282,14 @@ export class StockController implements BaseController {
 	 */
 	public getAllStocks = async (request: Request, response: Response) => {
 		try {
+			const { amt } = request.query;
 			response.status(200);
-			response.send(await this.stockService.getAllStocks(this.client));
+			response.send(
+				await this.stockService.getAllStocks(
+					this.client,
+					amt as unknown as number,
+				),
+			);
 		} catch (error: unknown) {
 			console.error(
 				`Error fetching all stocks ${(error as Error).message}`,
@@ -244,6 +300,44 @@ export class StockController implements BaseController {
 					"Failed to fetch all stocks",
 					false,
 					ERROR_CODE_ENUM.FIND_ALL_STOCKS_FAILURE,
+				),
+			);
+		}
+	};
+
+	/**
+	 * Gets all stocks for the stock dashboard page
+	 *
+	 * @param _request - The client request
+	 * @param response - The server response
+	 */
+	public getStockDashboardStocks = async (
+		request: Request,
+		response: Response,
+	) => {
+		try {
+			const { sortBy } = request.query;
+			const result = await this.stockService.getStockDashboardStocks(
+				this.client,
+				sortBy as SortByOptions,
+			);
+			response.status(200);
+			response.header({
+				"Cache-Control": "stale-while-revalidate=60",
+			});
+			response.send({ stocks: result });
+		} catch (error: unknown) {
+			console.error(
+				`Error fetching stock dashboard stocks ${
+					(error as Error).message
+				}`,
+			);
+			response.status(400);
+			response.send(
+				generateApiMessage(
+					"Failed to fetch all stock dashboard stocks",
+					false,
+					ERROR_CODE_ENUM.GENERIC_ERROR,
 				),
 			);
 		}
@@ -279,11 +373,11 @@ export class StockController implements BaseController {
 					payload.symbol,
 				)
 			) {
-				console.error("Stock with stock symbol already exists");
+				console.error(CONSTANTS.DELETE_STOCK_ALREADY_EXISTS);
 				response.status(400);
 				response.send(
 					generateApiMessage(
-						"Stock with stock symbol already exists",
+						CONSTANTS.DELETE_STOCK_ALREADY_EXISTS,
 						false,
 						ERROR_CODE_ENUM.CREATE_STOCK_STOCK_ALREADY_EXISTS,
 					),
@@ -334,25 +428,32 @@ export class StockController implements BaseController {
 					),
 				);
 			} else if (
-				await this.stockService.getStockBySymbol(
+				(await this.stockService.getStockBySymbol(
 					this.client,
 					payload.symbol,
-				) === null
+				)) === null
 			) {
 				console.error("Stock with stock symbol doesn't exists");
 				response.status(400);
 				response.send(
 					generateApiMessage(
+<<<<<<< HEAD
 						"Stock with stock symbol doesn't exists",
+=======
+						CONSTANTS.DELETE_STOCK_ALREADY_EXISTS,
+>>>>>>> 772066b5f8e5449e2430f8302d4f80ac19dffdd4
 						false,
 						ERROR_CODE_ENUM.DELETE_STOCK_STOCK_DOESNT_EXIST,
 					),
 				);
 			} else {
-				await this.stockService.deleteStock(this.client, payload.symbol);
+				await this.stockService.deleteStock(
+					this.client,
+					payload.symbol,
+				);
 				response.status(204);
 				response.send(JSON.stringify({}));
-			} 
+			}
 		} catch (error: unknown) {
 			console.error(
 				`Error occurred deleting stock ${(error as Error).stack}`,
@@ -374,16 +475,33 @@ export class StockController implements BaseController {
 	 * @returns - The route mapping, basically an object that will be utilized by the app in making it easier to dynamically generate endpoints dependent on each of the controllers
 	 */
 	public getRouteMapping = (): RouteMapping => ({
-		get: [
-			["get/id", this.getStockById],
-			["get/symbol", this.getStockBySymbol],
-			["get/price", this.getAllStocksByPrice],
-			["get/name", this.getStocksByName],
-			["get/shares", this.getStocksWithShares],
-			["get/all", this.getAllStocks],
-		],
-		post: [["add", this.addStock]],
 		delete: [["delete", this.deleteStock]],
+		get: [
+			[
+				"get/id",
+				this.getStockById,
+				[rolesValidator(Roles.USER, this.client)],
+			],
+			[
+				"get/symbol",
+				this.getStockBySymbol,
+				[rolesValidator(Roles.USER, this.client)],
+			],
+			[
+				"get/price",
+				this.getAllStocksByPrice,
+				[rolesValidator(Roles.USER, this.client)],
+			],
+			["get/all", this.getAllStocks],
+			[
+				"dashboard",
+				this.getStockDashboardStocks,
+				[rolesValidator(Roles.USER, this.client)],
+			],
+		],
+		post: [
+			["add", this.addStock, [rolesValidator(Roles.ADMIN, this.client)]],
+		],
 	});
 
 	/**

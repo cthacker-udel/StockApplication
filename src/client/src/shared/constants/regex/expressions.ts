@@ -1,3 +1,3 @@
 export const REGEX_EXPRESSIONS = {
-  NO_SPACES: /\S+/, // can contain no spaces
+  NO_SPACES: /^\S+$/, // can contain no spaces
 };

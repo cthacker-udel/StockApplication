@@ -16,3 +16,7 @@
     width: fit-content;
     font-size: .75em;
 }
+
+#toast-container > div {
+    opacity: 1;
+}

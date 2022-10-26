@@ -1,0 +1,12 @@
+.stock_dashboard_background {
+    background-image: url('https://www.xmple.com/wallpaper/black-grey-gradient-linear-1920x1080-c2-000000-c0c0c0-a-270-f-14.svg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+#top_stocks_container > .ng-star-inserted {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}

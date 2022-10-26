@@ -1,5 +1,10 @@
-import { type Collection, ObjectId, type InsertOneResult, type DeleteOneModel, DeleteResult } from "mongodb";
-import type { Stock } from "../../@types";
+import {
+	type Collection,
+	ObjectId,
+	type InsertOneResult,
+	type DeleteResult,
+} from "mongodb";
+import type { SortByOptions, Stock } from "../../@types";
 import { BaseService } from "../../common/api/baseservice";
 import { MONGO_COMMON, type StockMongoClient } from "../../mongo";
 
@@ -106,7 +111,6 @@ export class StockService extends BaseService {
 			}
 		}
 		return stock;
-
 	};
 
 	/**
@@ -139,6 +143,7 @@ export class StockService extends BaseService {
 	 */
 	public getAllStocks = async (
 		client: StockMongoClient,
+		amt = 10,
 	): Promise<Stock[] | undefined> => {
 		// eslint-disable-next-line sonarjs/prefer-immediate-return -- not needed
 		const allStocks = await client
@@ -146,8 +151,33 @@ export class StockService extends BaseService {
 			.db(MONGO_COMMON.DATABASE_NAME)
 			.collection(this.COLLECTION_NAME)
 			.find<Stock>({})
+			.limit(amt)
 			.toArray();
 		return allStocks;
+	};
+
+	/**
+	 * The specific usage of the stock dashboard stocks, where we display the most
+	 * profitable stocks, according to our calculations
+	 *
+	 * @param client - The mongo client
+	 * @returns - An array of 3 of the most profitable stocks
+	 */
+	public getStockDashboardStocks = async (
+		client: StockMongoClient,
+		sortOption: SortByOptions = "volume",
+	): Promise<Stock[] | undefined> => {
+		const stockCollection = client
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection(this.COLLECTION_NAME);
+		// eslint-disable-next-line sonarjs/prefer-immediate-return -- not needed
+		const stockCursor = await stockCollection
+			.find<Stock>({})
+			.sort(sortOption, "descending")
+			.limit(3)
+			.toArray();
+		return stockCursor;
 	};
 
 	/**
@@ -169,7 +199,7 @@ export class StockService extends BaseService {
 		return stockCollection.acknowledged;
 	};
 
-/**
+	/**
 	 * Deletes a stock to the database
 	 *
 	 * @param client - The MongoClient instance
@@ -185,7 +215,12 @@ export class StockService extends BaseService {
 			.getClient()
 			.db(MONGO_COMMON.DATABASE_NAME)
 			.collection(this.COLLECTION_NAME)
+<<<<<<< HEAD
 			.deleteOne({symbol});
 			return stockCollection.acknowledged;
+=======
+			.deleteOne({ symbol });
+		return stockCollection.acknowledged;
+>>>>>>> 772066b5f8e5449e2430f8302d4f80ac19dffdd4
 	};
 }
