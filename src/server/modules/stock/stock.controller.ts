@@ -1,4 +1,5 @@
-import { request, Request, Response, Router } from "express";
+/* eslint-disable @typescript-eslint/no-unsafe-argument -- not needed */
+import type { Request, Response, Router } from "express";
 import { updateRoutes } from "../../common/api/basecontroller";
 import type { RouteMapping, SortByOptions, Stock } from "../../@types";
 import {
@@ -11,6 +12,10 @@ import type { StockMongoClient } from "../../mongo";
 import { StockService } from "./stock.service";
 import type { SessionService } from "../session";
 import { rolesValidator } from "../../middleware/rolesValidator/rolesValidator";
+
+const CONSTANTS = {
+	DELETE_STOCK_ALREADY_EXISTS: "Stock with stock symbol already exists",
+};
 
 /**
  * Handles all incoming requests related to the "stock" endpoint
@@ -325,11 +330,11 @@ export class StockController implements BaseController {
 					payload.symbol,
 				)
 			) {
-				console.error("Stock with stock symbol already exists");
+				console.error(CONSTANTS.DELETE_STOCK_ALREADY_EXISTS);
 				response.status(400);
 				response.send(
 					generateApiMessage(
-						"Stock with stock symbol already exists",
+						CONSTANTS.DELETE_STOCK_ALREADY_EXISTS,
 						false,
 						ERROR_CODE_ENUM.CREATE_STOCK_STOCK_ALREADY_EXISTS,
 					),
@@ -380,25 +385,28 @@ export class StockController implements BaseController {
 					),
 				);
 			} else if (
-				await this.stockService.getStockBySymbol(
+				(await this.stockService.getStockBySymbol(
 					this.client,
 					payload.symbol,
-				) === null
+				)) === null
 			) {
 				console.error("Stock with stock symbol doesn't exists");
 				response.status(400);
 				response.send(
 					generateApiMessage(
-						"Stock with stock symbol already exists",
+						CONSTANTS.DELETE_STOCK_ALREADY_EXISTS,
 						false,
 						ERROR_CODE_ENUM.DELETE_STOCK_STOCK_DOESNT_EXIST,
 					),
 				);
 			} else {
-				await this.stockService.deleteStock(this.client, payload.symbol);
+				await this.stockService.deleteStock(
+					this.client,
+					payload.symbol,
+				);
 				response.status(204);
 				response.send(JSON.stringify({}));
-			} 
+			}
 		} catch (error: unknown) {
 			console.error(
 				`Error occurred deleting stock ${(error as Error).message}`,
@@ -420,6 +428,7 @@ export class StockController implements BaseController {
 	 * @returns - The route mapping, basically an object that will be utilized by the app in making it easier to dynamically generate endpoints dependent on each of the controllers
 	 */
 	public getRouteMapping = (): RouteMapping => ({
+		delete: [["delete", this.deleteStock]],
 		get: [
 			[
 				"get/id",
@@ -446,7 +455,6 @@ export class StockController implements BaseController {
 		post: [
 			["add", this.addStock, [rolesValidator(Roles.ADMIN, this.client)]],
 		],
-		delete: [["delete", this.deleteStock]],
 	});
 
 	/**
