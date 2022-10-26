@@ -5,3 +5,14 @@
     background-repeat: no-repeat;
     background-size: cover;
 }
+
+#profile_picture {
+    height: 15vh;
+    max-height: 15vh;
+    max-width: 10vw;
+}
+
+.stock_activity_date {
+    font-size: .77em;
+    opacity: 50%;
+}
