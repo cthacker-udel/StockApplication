@@ -273,13 +273,51 @@ export class UserController implements BaseController {
 		}
 	};
 
+	public getUserDataWithUsername = async (
+		request: Request,
+		response: Response,
+	): Promise<void> => {
+		try {
+			const { username } = request.query;
+			if (username === undefined) {
+				response.status(400);
+				response.send(
+					generateApiMessage("Failed to fetch user by username"),
+				);
+			} else {
+				const result = await this.userService.getUserDataWithUsername(
+					this.client,
+					username as string,
+				);
+				if (result === undefined) {
+					response.status(400);
+					response.send("Invalid username sent");
+				}
+				response.send({ user: result });
+			}
+		} catch (error: unknown) {
+			console.error(`Unable to find user data ${(error as Error).stack}`);
+			response.status(400);
+			response.send(
+				generateApiMessage("Unable to find user data by username"),
+			);
+		}
+	};
+
 	/**
 	 * Fetches all the routes and their methods
 	 *
 	 * @returns The routes all mapped to their proper get numbers
 	 */
 	public getRouteMapping = (): RouteMapping => ({
-		get: [["exist/username", this.doesUserWithUsernameExist]],
+		get: [
+			["exist/username", this.doesUserWithUsernameExist],
+			[
+				"data",
+				this.getUserDataWithUsername,
+				[rolesValidator(Roles.USER, this.client)],
+			],
+		],
 		post: [
 			["signup", this.signUp],
 			["login", this.login],

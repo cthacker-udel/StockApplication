@@ -13,9 +13,10 @@ import { SignInComponent } from './_components/signin/signin.component';
 import { StockDashboardComponent } from './_components/stockdashboard/stockdashboard.component';
 import { RequestInterceptor } from './config/requestInterceptor';
 import { SessionService } from './_services/session.service';
-import { MatCardModule } from "@angular/material/card";
+import { MatCardModule } from '@angular/material/card';
 import { DashboardService } from './_services/dashboard.service';
 import { ProfileComponent } from './_components/profile/profile.component';
+import { UserService } from './_services/user.service';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { ProfileComponent } from './_components/profile/profile.component';
     },
     SessionService,
     DashboardService,
+    UserService,
   ],
   bootstrap: [AppComponent],
 })

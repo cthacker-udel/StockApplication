@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument -- not needed */
 import type { Request, Response, Router } from "express";
 import { updateRoutes } from "../../common/api/basecontroller";
 import type { RouteMapping, SortByOptions, Stock } from "../../@types";
