@@ -1,42 +1,44 @@
 <div
-  class="h-100 w-100 d-flex flex-column justify-content-center landing_page_main"
+  id="background"
+  class="w-100 bg-success bg-opacity-50 bg-gradient d-flex flex-row justify-content-center position-relative"
 >
-  <div class="text-center d-flex flex-row w-75 mx-auto">
+  <div 
+  id="row_for_cards"
+  class="text-center d-flex flex-row w-75 h-75 mx-auto">
     <div
       class="d-flex flex-column bg-light rounded bg-gradient p-2 justify-content-around"
-    >
+      style="min-width: 300px;">
       <div class="d-flex flex-column">
-        <span class="fw-bold fs-1"
-          ><i class="fa-solid fa-money-bill me-2" style="color: green"></i
-          >Welcome to StockTrader!<i
-            class="fa-solid fa-money-bill ms-2"
-            style="color: green"
-          ></i
-        ></span>
-        <span class="fs-4 fw-semibold"
-          >The StockTrading playground where you can simulate a real stock
-          trading experience!</span
-        >
+        <span class="fw-bold fs-1">
+          <img src="assets/bullStocksLogo.png" width="150px" style="margin-bottom: 20px;"/>
+          BullStocks
+        </span>
+        <span class="fs-4 fw-semibold" style="margin-top: 0px; margin: 10px">
+          The stock trading playground where you can simulate a real stock
+          trading experience!
+        </span>
       </div>
       <div>
         <span class="fs-5 fw-bold text-secondary mb-2">Available Features</span>
         <ul class="list-group">
-          <li class="list-group-item w-25 mx-auto mt-2 disabled">
-            Buy/Sell stocks
+          <li class="list-group-item w-75 mx-auto mt-2 disabled">
+            Buy & Sell Stocks
           </li>
-          <li class="list-group-item w-25 mx-auto disabled">View stocks</li>
-          <li class="list-group-item w-25 mx-auto disabled">
-            Create Stock Portfolio
+          <li class="list-group-item w-75 mx-auto disabled">
+            View Stocks
+          </li>
+          <li class="list-group-item w-75 mx-auto disabled">
+            Create a Stock Portfolio
           </li>
         </ul>
       </div>
     </div>
     <form
-      class="bg-light bg-gradient rounded p-3 ms-5 shadow"
+      class="bg-light bg-gradient rounded p-3 ms-5"
       [formGroup]="landingPageFormGroup"
     >
       <div class="d-flex flex-column">
-        <span class="fw-semibold"
+        <span class="fw-semibold" style="padding: 10px; padding-bottom: 0px;"
           >Sign up now to start trading stocks and become a stock master!</span
         >
         <div class="d-flex flex-row mt-3">
