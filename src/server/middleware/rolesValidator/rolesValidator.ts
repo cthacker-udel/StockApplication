@@ -1,4 +1,3 @@
-/* eslint-disable max-statements -- disabled for now */
 /* eslint-disable sonarjs/cognitive-complexity -- disabled */
 /* eslint-disable indent -- disabled */
 /* eslint-disable @typescript-eslint/indent -- disabled */
@@ -32,7 +31,6 @@ export const rolesValidator =
 		response: Response,
 		next: NextFunction,
 	): Promise<void> => {
-		console.log("in roles validator");
 		// access roles from user, see if roles align with requiredRole
 		if (requiredRole) {
 			const database = client.getClient().db(MONGO_COMMON.DATABASE_NAME);
