@@ -17,6 +17,9 @@ import { MatCardModule } from '@angular/material/card';
 import { DashboardService } from './_services/dashboard.service';
 import { ProfileComponent } from './_components/profile/profile.component';
 import { UserService } from './_services/user.service';
+import { TradingService } from './_services/trading.service';
+import { CommonModule } from '@angular/common';
+import { TradingComponent } from './_components/trading/trading.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +28,7 @@ import { UserService } from './_services/user.service';
     SignInComponent,
     StockDashboardComponent,
     ProfileComponent,
+    TradingComponent,
   ],
   imports: [
     BrowserModule,
@@ -39,6 +43,7 @@ import { UserService } from './_services/user.service';
       positionClass: 'toast-bottom-right',
     }),
     MatCardModule,
+    CommonModule,
   ],
   providers: [
     ConfigService,
@@ -51,6 +56,7 @@ import { UserService } from './_services/user.service';
     SessionService,
     DashboardService,
     UserService,
+    TradingService,
   ],
   bootstrap: [AppComponent],
 })

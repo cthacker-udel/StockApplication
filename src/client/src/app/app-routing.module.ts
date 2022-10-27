@@ -5,6 +5,7 @@ import { LandingPageComponent } from './_components/landingpage/landingpage.comp
 import { ProfileComponent } from './_components/profile/profile.component';
 import { SignInComponent } from './_components/signin/signin.component';
 import { StockDashboardComponent } from './_components/stockdashboard/stockdashboard.component';
+import { TradingComponent } from './_components/trading/trading.component';
 
 const routes: Routes = [
   {
@@ -18,6 +19,10 @@ const routes: Routes = [
   {
     component: ProfileComponent,
     path: 'profile',
+  },
+  {
+    component: TradingComponent,
+    path: 'trading',
   },
   {
     component: LandingPageComponent,

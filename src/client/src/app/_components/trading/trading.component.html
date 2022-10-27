@@ -1,0 +1,31 @@
+<div
+  class="h-100 w-100 bg-secondary d-flex flex-column justify-content-center trading_background"
+>
+  <div class="w-25 mx-auto rounded bg-light p-3">
+    <div class="text-center fs-4">Trading</div>
+    <div class="d-flex flex-row justify-content-center mt-2">
+      <button
+        type="button"
+        class="btn px-4 me-2"
+        [ngClass]="{
+          'btn-primary': isBuying,
+          'btn-outline-primary': !isBuying
+        }"
+        (click)="switchModes()"
+      >
+        <i class="fa-solid fa-shopping-cart"></i>
+      </button>
+      <button
+        type="button"
+        class="btn px-4 ms-2"
+        [ngClass]="{
+          'btn-success': !isBuying,
+          'btn-outline-success': isBuying
+        }"
+        (click)="switchModes()"
+      >
+        <i class="fa-solid fa-money-bill"></i>
+      </button>
+    </div>
+  </div>
+</div>
