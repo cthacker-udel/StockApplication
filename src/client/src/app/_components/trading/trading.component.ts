@@ -43,7 +43,7 @@ export class TradingComponent implements OnInit, AfterViewInit {
         this.rawStockData = [...this.rawStockData].map((_, i) =>
           i === index ? latestUpdate : _
         );
-        this.stocks = new MatTableDataSource<Stock>(this.rawStockData);
+        this.stocks.data = this.rawStockData;
       });
     });
   }
