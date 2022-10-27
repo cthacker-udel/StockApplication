@@ -4,11 +4,14 @@ import { ConfigService } from '../config/config.service';
 import { Stock } from '../_models/Stock';
 import { io } from 'socket.io-client';
 import { from, Subject } from 'rxjs';
+import { SocketService } from './socket.service';
 
 @Injectable()
 export class DashboardService {
-  private socketUrl = 'http://localhost:3001';
-  constructor(private httpClient: ConfigService) {}
+  constructor(
+    private httpClient: ConfigService,
+    private socketService: SocketService
+  ) {}
 
   getInitialMarketStatus() {
     return this.httpClient.getConfig<Stock[]>(
@@ -17,7 +20,7 @@ export class DashboardService {
   }
 
   getUpdates() {
-    const socket = io(this.socketUrl);
+    const socket = this.socketService.getSocket();
     const stockSub = new Subject<Stock>();
     const stockObservable = from(stockSub);
 
