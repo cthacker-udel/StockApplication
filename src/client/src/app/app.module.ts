@@ -20,6 +20,9 @@ import { UserService } from './_services/user.service';
 import { TradingService } from './_services/trading.service';
 import { CommonModule } from '@angular/common';
 import { TradingComponent } from './_components/trading/trading.component';
+import { MatTableModule } from '@angular/material/table';
+import { MatSortModule } from '@angular/material/sort';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @NgModule({
   declarations: [
@@ -44,6 +47,9 @@ import { TradingComponent } from './_components/trading/trading.component';
     }),
     MatCardModule,
     CommonModule,
+    MatTableModule,
+    MatSortModule,
+    MatPaginatorModule,
   ],
   providers: [
     ConfigService,
