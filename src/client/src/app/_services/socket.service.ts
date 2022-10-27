@@ -10,4 +10,16 @@ export class SocketService {
   constructor() {
     this.socket = io(this.socketUrl);
   }
+
+  getSocket() {
+    return this.socket;
+  }
+
+  closeSocket() {
+    this.socket.close();
+  }
+
+  openSocket() {
+    this.socket.open();
+  }
 }
