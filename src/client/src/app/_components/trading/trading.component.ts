@@ -23,7 +23,12 @@ export class TradingComponent implements OnInit, AfterViewInit {
     'Total Shares',
     'Volume',
     'Risk',
+    'Actions',
   ];
+
+  actionBtnClass = this.isBuying
+    ? 'btn btn-outline-primary'
+    : 'btn btn-outline-success';
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -32,7 +37,6 @@ export class TradingComponent implements OnInit, AfterViewInit {
     public tradingService: TradingService
   ) {
     this.tradingService.getAllInitialStocks().subscribe((stocks: Stock[]) => {
-      console.log('received = ', stocks);
       this.rawStockData = stocks;
       this.stocks = new MatTableDataSource<Stock>(this.rawStockData);
       const updateObservable = this.tradingService.getUpdates();
@@ -51,6 +55,24 @@ export class TradingComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.stocks.paginator = this.paginator;
   }
+
+  calculateDifferenceAndReturnClass = (
+    price1: number,
+    price2: number
+  ): string => {
+    const diff = price1 - price2;
+    return diff < 0 ? 'dec' : diff > 0 ? 'inc' : 'equal';
+  };
+
+  fireAction = (element: Stock) => {
+    console.log('fired action with element', element);
+  };
+
+  generateActionBtnText = () => (this.isBuying ? 'Buy' : 'Sell');
+
+  roundPriceChange = (price: number): string => {
+    return price.toFixed(2);
+  };
 
   switchModes() {
     this.isBuying = !this.isBuying;
