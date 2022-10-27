@@ -16,14 +16,6 @@ export class ProfileComponent implements OnInit {
   user: User;
   role: string;
 
-  processProfileChange(event: any): void {
-    console.log(event);
-    const { target } = event;
-    if (target && target.files?.length === 1) {
-      console.log(target.files);
-    }
-  }
-
   ngOnInit(): void {
     const username = localStorage.getItem(
       SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_ID
