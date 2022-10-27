@@ -1,5 +1,5 @@
 /* eslint-disable wrap-regex -- not needed*/
-import type { FoundUserEmailByUsernameReturn, User } from "../../@types";
+import type { FoundUserEmailByUsernameReturn, Role, User } from "../../@types";
 import { BaseService, Roles } from "../../common";
 import { MONGO_COMMON, type StockMongoClient } from "../../mongo";
 import { pbkdf2Encryption } from "../encryption";
@@ -233,5 +233,89 @@ export class UserService extends BaseService {
 			.db(MONGO_COMMON.DATABASE_NAME)
 			.collection(this.COLLECTION_NAME);
 		return (await userCollection.findOne<User>({ username })) !== null;
+	};
+
+	/**
+	 * Fetches the user with the username provided
+	 *
+	 * @param client - The mongo client
+	 * @param username - The username to find the user by
+	 * @returns The found user
+	 */
+	public getUserDataWithUsername = async (
+		client: StockMongoClient,
+		username: string,
+	): Promise<Partial<User> | undefined> => {
+		if (username === undefined) {
+			return undefined;
+		}
+		const userCollection = client
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection(this.COLLECTION_NAME);
+		const rolesCollection = client
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection("roles");
+		const foundUser = await userCollection.findOne<User>({ username });
+		if (foundUser === null) {
+			return undefined;
+		}
+		const { roles } = foundUser;
+		const rolePromises = [];
+		for (const eachRoleId of roles) {
+			rolePromises.push(
+				rolesCollection.findOne<Role>({
+					_id: eachRoleId,
+				}),
+			);
+		}
+		const foundRoles = await Promise.all(rolePromises);
+		const formattedRoles = foundRoles
+			.filter((eachItem: Role | null) => eachItem !== null)
+			.map(
+				(eachRole: Role | null) => (eachRole as Role).perm,
+			) as number[];
+		const maxValue =
+			formattedRoles.length > 0 ? Math.max(...formattedRoles) : -1;
+
+		const {
+			password: _pass,
+			salt: _salt,
+			iterations: _iter,
+			sessionToken: _session,
+			roles: _roles,
+			token: _token,
+			...rest
+		} = foundUser;
+		return { ...rest, roles: [maxValue.toString()] };
+	};
+
+	/**
+	 * Adds an image link to the user
+	 *
+	 * @param client - the mongo client
+	 * @param username - the username we are adding the image link to
+	 * @param imageLink - the image link we are appending to the user matching the username
+	 * @returns Whether the link was appended or not
+	 */
+	public addImageLinkToUser = async (
+		client: StockMongoClient,
+		username: string,
+		imageLink: string,
+	): Promise<boolean> => {
+		const userCollection = client
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection(this.COLLECTION_NAME);
+		const foundUser = await userCollection.findOne<User>({ username });
+		if (foundUser === null) {
+			return false;
+		}
+		const updateResult = await userCollection.updateOne(
+			{ username },
+			{ ...foundUser, pfpLink: imageLink },
+		);
+		return updateResult.modifiedCount > 0;
 	};
 }

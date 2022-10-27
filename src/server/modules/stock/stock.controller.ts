@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument -- not needed */
 import type { Request, Response, Router } from "express";
 import { updateRoutes } from "../../common/api/basecontroller";
 import type { RouteMapping, SortByOptions, Stock } from "../../@types";
-import { Server } from "socket.io";
 import {
 	type BaseController,
 	ERROR_CODE_ENUM,
@@ -14,7 +12,7 @@ import { StockService } from "./stock.service";
 import type { SessionService } from "../session";
 import { rolesValidator } from "../../middleware/rolesValidator/rolesValidator";
 import type { ChangeStreamUpdateDocument } from "mongodb";
-import { createServer } from "node:http";
+import type { Server } from "socket.io";
 
 const CONSTANTS = {
 	DELETE_STOCK_ALREADY_EXISTS: "Stock with stock symbol already exists",
@@ -47,17 +45,11 @@ export class StockController implements BaseController {
 	public constructor(
 		client: StockMongoClient,
 		_sessionService: SessionService,
+		_socket: Server,
 	) {
 		this.stockService = new StockService();
 		this.client = client;
 		this.sessionService = _sessionService;
-		const server = createServer().listen(3001);
-		const io = new Server(server, {
-			cors: {
-				methods: ["GET"],
-				origin: "http://localhost:4200",
-			},
-		});
 		this.client
 			.getClient()
 			.db(MONGO_COMMON.DATABASE_NAME)
@@ -75,7 +67,7 @@ export class StockController implements BaseController {
 							if (result === undefined) {
 								throw new Error("Unable to find updated stock");
 							}
-							io.sockets.emit("stockUpdated", result);
+							_socket.sockets.emit("stockUpdated", result);
 						})
 						.catch((error: unknown) => {
 							console.error(
@@ -86,7 +78,7 @@ export class StockController implements BaseController {
 						});
 				},
 			);
-		io.on("connection", (_: any) => {
+		_socket.on("connection", (_: any) => {
 			console.log(
 				`${new Date().toLocaleTimeString()} -- User listening to stock collection socket`,
 			);

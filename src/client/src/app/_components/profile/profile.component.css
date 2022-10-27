@@ -1,6 +1,6 @@
 
 #profile_background {
-    background-image: url("https://919687.smushcdn.com/2316719/wp-content/uploads/2022/03/bg_06.jpg?lossy=1&strip=1&webp=1");
+    background-image: url("https://img5.goodfon.com/wallpaper/nbig/e/98/svet-fon-oboi.jpg");
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -10,6 +10,18 @@
     height: 15vh;
     max-height: 15vh;
     max-width: 10vw;
+}
+
+#profile_picture_placeholder {
+    height: 15vh;
+    width: 11vw;
+    border: 3px solid black;
+    cursor: pointer;
+}
+
+#profile_picture_placeholder_text {
+    font-size: .65em;
+    font-weight: bold;
 }
 
 .stock_activity_date {

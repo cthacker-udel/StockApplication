@@ -1,50 +1,67 @@
-<div class="h-100 w-100 d-flex flex-column justify-content-center" id="profile_background">
-    <div class="w-100 h-100 d-flex flex-row justify-content-around">
-        <div class="bg-light h-50 my-auto w-25">
-            <div class="d-flex flex-column justify-content-around h-100 p-2">
-                <div class="d-flex flex-column p-3 shadow bg-secondary bg-gradient bg-opacity-75 rounded">
-                    <img class="img-thumbnail rounded-circle mx-auto" src="https://media.istockphoto.com/photos/male-silhouette-as-avatar-profile-picture-picture-id519078723?k=20&m=519078723&s=170667a&w=0&h=83wBe_Ger9b2UNxzpZI1KcvObqEdvh99v0CgApERoJ4=" id="profile_picture" />
-                    <div class="d-flex flex-column px-2 mt-3">
-                        <div class="d-flex flex-row">
-                            <i class="fa-solid fa-signature me-2 my-auto"></i>
-                            <span>Firstname</span>
-                            <span>Lastname</span>
-                        </div>
-                        <div class="d-flex flex-row">
-                            <i class="fa-solid fa-cake-candles me-2 my-auto"></i>
-                            <span>10/26/2022</span>
-                        </div>
-                        <div class="d-flex flex-row">
-                            <i class="fa-solid fa-at me-2 my-auto"></i>
-                            <span>flyingkickrules@aol.com</span>
-                        </div>
-                        <div class="d-flex flex-row">
-                            <i class="fa-solid fa-user me-2 my-auto"></i>
-                            <span>dalizardking</span>
-                        </div>
-                        <div class="d-flex flex-row">
-                            <i class="fa-solid fa-clock me-2 my-auto"></i>
-                            <span>10/26/2022 - 4:15AM</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-success bg-gradient rounded p-3 mt-4">
-                    <div class="d-flex flex-column">
-                        <div class="text-center fw-semibold fs-6">Recent Stock Activity</div>
-                        <div class="list-group mt-3">
-                            <div class="list-group-item list-group-item-danger">
-                                3.5 APPL <i class="fa-solid fa-arrow-right"></i> 5.6 SEGA <i class="fa-solid fa-arrow-trend-down"></i> 450$ <span class="fw-light stock_activity_date">10/26 1:45AM</span>
-                            </div>
-                            <div class="list-group-item list-group-item-success">
-                                4.77 SONY <i class="fa-solid fa-arrow-right"></i> 3.2 LIZ <i class="fa-solid fa-arrow-trend-up"></i> 600$ <span class="fw-light stock_activity_date">10/26 1:45AM</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<div
+  class="h-100 w-100 d-flex flex-column justify-content-center"
+  id="profile_background"
+>
+  <div class="w-100 h-100 d-flex flex-row justify-content-around">
+    <div class="h-50 my-auto w-25">
+      <div class="d-flex flex-column justify-content-around h-100 p-2">
+        <div
+          class="d-flex flex-column p-3 shadow bg-secondary bg-gradient bg-opacity-75 rounded"
+        >
+          <div class="d-flex flex-column px-2 mt-3 fs-4 text-opacity-75 text-light">
+            <div class="d-flex flex-row">
+              <i class="fa-solid fa-signature me-2 my-auto"></i>
+              <span *ngIf="user !== undefined" class="me-1">{{
+                user.firstName
+              }}</span>
+              <span *ngIf="user !== undefined">{{ user.lastName }}</span>
             </div>
+            <div class="d-flex flex-row">
+              <i class="fa-solid fa-cake-candles me-2 my-auto"></i>
+              <span *ngIf="user !== undefined">{{ user.dob }}</span>
+            </div>
+            <div class="d-flex flex-row">
+              <i class="fa-solid fa-at me-2 my-auto"></i>
+              <span *ngIf="user !== undefined">{{ user.email }}</span>
+            </div>
+            <div class="d-flex flex-row">
+              <i class="fa-solid fa-user me-2 my-auto"></i>
+              <span *ngIf="user !== undefined">{{ user.username }}</span>
+            </div>
+            <div class="d-flex flex-row">
+              <i class="fa-solid fa-clock me-2 my-auto"></i>
+              <span *ngIf="user !== undefined">{{ user.lastLogin }}</span>
+            </div>
+            <div class="d-flex flex-row">
+              <i class="fa-solid fa-id-badge me-2 my-auto"></i>
+              <span *ngIf="role !== undefined">{{ role }}</span>
+            </div>
+          </div>
         </div>
-        <div class="bg-light w-25">
-            Total amount made, total amount lost, total # of stocks traded, total # of of stocks sold, amount of times logged in, created account date, etc.
+        <div class="bg-success bg-gradient rounded p-3 mt-4">
+          <div class="d-flex flex-column">
+            <div class="text-center fw-semibold fs-6">
+              Recent Stock Activity
+            </div>
+            <div class="list-group mt-3">
+              <div class="list-group-item list-group-item-danger">
+                3.5 APPL <i class="fa-solid fa-arrow-right"></i> 5.6 SEGA
+                <i class="fa-solid fa-arrow-trend-down"></i> 450$
+                <span class="fw-light stock_activity_date">10/26 1:45AM</span>
+              </div>
+              <div class="list-group-item list-group-item-success">
+                4.77 SONY <i class="fa-solid fa-arrow-right"></i> 3.2 LIZ
+                <i class="fa-solid fa-arrow-trend-up"></i> 600$
+                <span class="fw-light stock_activity_date">10/26 1:45AM</span>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
+    <div class="bg-light w-25">
+      Total amount made, total amount lost, total # of stocks traded, total # of
+      of stocks sold, amount of times logged in, created account date, etc.
+    </div>
+  </div>
 </div>
