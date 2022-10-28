@@ -9,3 +9,7 @@
 .action_btn_text {
     font-size: .75em !important;
 }
+
+.amount_slider_width {
+    width: calc(100% - 30px);
+}

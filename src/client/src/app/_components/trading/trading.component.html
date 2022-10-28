@@ -84,7 +84,7 @@
           Total Shares
         </th>
         <td class="text-center" mat-cell *matCellDef="let element">
-          {{ element.totalShares ?? 0 }}
+          {{ element.shares ?? 0 }}
         </td>
       </ng-container>
       <ng-container matColumnDef="Volume">
@@ -133,11 +133,17 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="actionBtnModalTitle">
-            {{ generateActionBtnText() }} Stock
-          </h1>
+          <div class="modal-title fs-5 d-flex flex-row justify-content-start" id="actionBtnModalTitle">
+            <div class="fs-4">{{ generateActionBtnText() }} Stock</div>
+            <div class="my-auto align-items-center ms-2" *ngIf="isBuying">
+              <i class="fa-solid fa-shopping-cart fa-shake text-primary"></i>
+            </div>
+            <div class="my-auto align-items-center ms-2" *ngIf="!isBuying">
+              <i class="fa-solid fa-dollar fa-beat text-success"></i>
+            </div>
+          </div>
         </div>
-        <div class="modal-body d-flex flex-row justify-content-between">
+        <div class="modal-body d-flex flex-row justify-content-center">
           <form *ngIf="actionStock !== undefined">
             <mat-form-field appearance="fill">
               <mat-label>{{ generateActionBtnText() }}ing Stock</mat-label>
@@ -150,12 +156,19 @@
               />
             </mat-form-field>
           </form>
-          <form *ngIf="targetStocks && targetStocks.length > 0">
-            <mat-form-field appearance="fill">
-              <mat-label>Select Stock</mat-label>
-              <input class="pe-none" matInput />
-            </mat-form-field>
-          </form>
+        </div>
+        <div class="w-75 mx-auto" *ngIf="actionStock !== undefined">
+          <div class="text-center">Amount</div>
+          <mat-slider
+            class="amount_slider_width"
+            (input)="selectedStockAmountChangeHandler($event)"
+            thumbLabel
+            tickInterval="100"
+            step="{{ calculateSliderStep(actionStock.shares) }}"
+            min="0"
+            max="{{ actionStock.shares }}"
+            aria-label="units"
+          ></mat-slider>
         </div>
         <div class="modal-footer">
           <button
@@ -165,7 +178,13 @@
           >
             Close
           </button>
-          <button type="button" class="btn btn-primary">
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="executeTrade()"
+            [disabled]="selectedStockAmount === 0"
+            data-bs-dismiss="modal"
+          >
             {{ generateActionBtnText() }} Stock
           </button>
         </div>

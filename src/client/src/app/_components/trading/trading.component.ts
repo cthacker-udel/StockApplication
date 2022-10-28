@@ -1,6 +1,9 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatSliderChange } from '@angular/material/slider';
 import { MatTableDataSource } from '@angular/material/table';
+import { map, Observable, startWith } from 'rxjs';
 import { ConfigService } from 'src/app/config/config.service';
 import { Stock } from 'src/app/_models/Stock';
 import { TradingService } from 'src/app/_services/trading.service';
@@ -11,7 +14,7 @@ import { ROUTE_PREFIXES } from 'src/shared/constants/api';
   templateUrl: './trading.component.html',
   styleUrls: ['./trading.component.css'],
 })
-export class TradingComponent implements OnInit, AfterViewInit {
+export class TradingComponent implements AfterViewInit {
   isBuying: boolean = true;
   rawStockData: Stock[];
   stocks: MatTableDataSource<Stock>;
@@ -25,9 +28,10 @@ export class TradingComponent implements OnInit, AfterViewInit {
     'Risk',
     'Actions',
   ];
+
   actionStock: Stock;
-  targetStocks: Stock[];
-  targetStock: Stock;
+  selectedStock = new FormControl();
+  selectedStockAmount = 0;
 
   actionBtnClass = this.isBuying
     ? 'btn btn-outline-primary'
@@ -61,6 +65,10 @@ export class TradingComponent implements OnInit, AfterViewInit {
     }
   }
 
+  calculateSliderStep = (totalShares: number) => {
+    return totalShares > 100 ? totalShares / 500 : 1;
+  };
+
   calculateDifferenceAndReturnClass = (
     price1: number,
     price2: number
@@ -71,9 +79,6 @@ export class TradingComponent implements OnInit, AfterViewInit {
 
   fireAction = (element: Stock) => {
     this.actionStock = element;
-    this.targetStocks = this.rawStockData.filter(
-      (elem: Stock) => elem.symbol !== element.symbol
-    );
   };
 
   generateActionBtnText = () => (this.isBuying ? 'Buy' : 'Sell');
@@ -82,13 +87,18 @@ export class TradingComponent implements OnInit, AfterViewInit {
     return price.toFixed(2);
   };
 
-  getTargetPlaceholder = () => (this.targetStock ? this.targetStock : 'None');
-
   switchModes() {
     this.isBuying = !this.isBuying;
   }
 
-  ngOnInit(): void {
-    console.log('initialized');
+  selectedStockAmountChangeHandler(event: MatSliderChange) {
+    if (event.value !== null) {
+      this.selectedStockAmount = event.value;
+    }
+  }
+
+  executeTrade() {
+    console.log('accessing stock', this.actionStock);
+    console.log(this.isBuying ? 'Buying' : 'Selling');
   }
 }

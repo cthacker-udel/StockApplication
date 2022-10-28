@@ -13,7 +13,6 @@ import { SignInComponent } from './_components/signin/signin.component';
 import { StockDashboardComponent } from './_components/stockdashboard/stockdashboard.component';
 import { RequestInterceptor } from './config/requestInterceptor';
 import { SessionService } from './_services/session.service';
-import { MatCardModule } from '@angular/material/card';
 import { DashboardService } from './_services/dashboard.service';
 import { ProfileComponent } from './_components/profile/profile.component';
 import { UserService } from './_services/user.service';
@@ -25,6 +24,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatInputModule } from '@angular/material/input';
 import { SocketService } from './_services/socket.service';
+import { MatSliderModule } from '@angular/material/slider';
 
 @NgModule({
   declarations: [
@@ -47,12 +47,12 @@ import { SocketService } from './_services/socket.service';
       timeOut: 20000,
       positionClass: 'toast-bottom-right',
     }),
-    MatCardModule,
     CommonModule,
     MatTableModule,
     MatSortModule,
     MatPaginatorModule,
     MatInputModule,
+    MatSliderModule,
   ],
   providers: [
     ConfigService,
