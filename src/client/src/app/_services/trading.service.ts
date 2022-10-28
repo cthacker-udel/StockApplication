@@ -1,33 +1,30 @@
 import { Injectable } from '@angular/core';
+import { from, Subject } from 'rxjs';
 import { ROUTE_PREFIXES } from 'src/shared/constants/api';
 import { ConfigService } from '../config/config.service';
 import { Stock } from '../_models/Stock';
-import { io } from 'socket.io-client';
-import { from, Subject } from 'rxjs';
 import { SocketService } from './socket.service';
 
 @Injectable()
-export class DashboardService {
+export class TradingService {
   constructor(
     private httpClient: ConfigService,
     private socketService: SocketService
   ) {}
 
-  getInitialMarketStatus() {
-    return this.httpClient.getConfig<Stock[]>(
-      `${ROUTE_PREFIXES.stock}dashboard`
-    );
+  getAllInitialStocks() {
+    return this.httpClient.getConfig<Stock[]>(`${ROUTE_PREFIXES.stock}get/all`);
   }
 
   getUpdates() {
     const socket = this.socketService.getSocket();
-    const stockSub = new Subject<Stock>();
-    const stockObservable = from(stockSub);
+    const socketSub = new Subject<Stock>();
+    const socketObservable = from(socketSub);
 
     socket.on('stockUpdated', (stock: Stock) => {
-      stockSub.next(stock);
+      socketSub.next(stock);
     });
 
-    return stockObservable;
+    return socketObservable;
   }
 }

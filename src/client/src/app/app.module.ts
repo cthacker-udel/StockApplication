@@ -13,10 +13,18 @@ import { SignInComponent } from './_components/signin/signin.component';
 import { StockDashboardComponent } from './_components/stockdashboard/stockdashboard.component';
 import { RequestInterceptor } from './config/requestInterceptor';
 import { SessionService } from './_services/session.service';
-import { MatCardModule } from '@angular/material/card';
 import { DashboardService } from './_services/dashboard.service';
 import { ProfileComponent } from './_components/profile/profile.component';
 import { UserService } from './_services/user.service';
+import { TradingService } from './_services/trading.service';
+import { CommonModule } from '@angular/common';
+import { TradingComponent } from './_components/trading/trading.component';
+import { MatTableModule } from '@angular/material/table';
+import { MatSortModule } from '@angular/material/sort';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatInputModule } from '@angular/material/input';
+import { SocketService } from './_services/socket.service';
+import { MatSliderModule } from '@angular/material/slider';
 
 @NgModule({
   declarations: [
@@ -25,6 +33,7 @@ import { UserService } from './_services/user.service';
     SignInComponent,
     StockDashboardComponent,
     ProfileComponent,
+    TradingComponent,
   ],
   imports: [
     BrowserModule,
@@ -38,7 +47,12 @@ import { UserService } from './_services/user.service';
       timeOut: 20000,
       positionClass: 'toast-bottom-right',
     }),
-    MatCardModule,
+    CommonModule,
+    MatTableModule,
+    MatSortModule,
+    MatPaginatorModule,
+    MatInputModule,
+    MatSliderModule,
   ],
   providers: [
     ConfigService,
@@ -51,6 +65,8 @@ import { UserService } from './_services/user.service';
     SessionService,
     DashboardService,
     UserService,
+    TradingService,
+    SocketService,
   ],
   bootstrap: [AppComponent],
 })
