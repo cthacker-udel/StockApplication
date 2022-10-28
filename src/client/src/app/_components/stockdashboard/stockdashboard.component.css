@@ -2,12 +2,6 @@
     background-color: rgb(120, 147, 149);
 }
 
-#top_stocks_container > .ng-star-inserted {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-}
-
 #stock_dashboard_icon_buttons > div > div {
     background-color: rgb(148, 180, 159);
     border-color: rgb(148, 180, 159);

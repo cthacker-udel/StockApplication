@@ -15,20 +15,21 @@
           <div class="fa-beat px-3 text-dark">Top Stocks</div>
           <i class="fa-solid fa-fire text-danger fa-beat p-2"></i>
         </div>
-        <div id="top_stocks_container">
-          <div *ngIf="stocks.length > 0">
-            <div class="w-25" *ngFor="let eachStock of stocks; index as i">
-              <div class="card bg-dark p-3">
-                <span class="text-light fs-6">#{{ i + 1 }} Stock</span>
-                <span class="text-light"
-                  ><i class="fa-solid fa-arrow-trend-up fa-2xs"></i>
-                  {{ eachStock.symbol }}</span
-                >
-                <span class="text-success"
-                  ><i class="fa-solid fa-dollar-sign fa-xs"></i
-                  >{{ eachStock.price }}</span
-                >
-              </div>
+        <div
+          *ngIf="stocks.length > 0"
+          class="d-flex flex-row justify-content-around"
+        >
+          <div class="w-25" *ngFor="let eachStock of stocks; index as i">
+            <div class="card bg-dark p-3">
+              <span class="text-light fs-6">#{{ i + 1 }} Stock</span>
+              <span class="text-light"
+                ><i class="fa-solid fa-arrow-trend-up fa-2xs"></i>
+                {{ eachStock.symbol }}</span
+              >
+              <span class="text-success"
+                ><i class="fa-solid fa-dollar-sign fa-xs"></i
+                >{{ eachStock.price }}</span
+              >
             </div>
           </div>
         </div>
