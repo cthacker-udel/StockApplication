@@ -98,7 +98,14 @@ export class TradingComponent implements AfterViewInit {
   }
 
   executeTrade() {
-    console.log('accessing stock', this.actionStock);
-    console.log(this.isBuying ? 'Buying' : 'Selling');
+    this.isBuying
+      ? this.tradingService.buyStock(
+          this.selectedStock.value,
+          this.selectedStockAmount
+        )
+      : this.tradingService.sellStock(
+          this.selectedStock.value,
+          this.selectedStockAmount
+        );
   }
 }

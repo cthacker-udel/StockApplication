@@ -199,7 +199,6 @@ export class StockController implements BaseController {
 	 * @param request - The server request
 	 * @param response - The server response
 	 */
-
 	public getStocksByName = async (
 		request: Request,
 		response: Response,
@@ -234,7 +233,6 @@ export class StockController implements BaseController {
 	 * @param request - The server request
 	 * @param response - The server response
 	 */
-
 	public getStocksWithShares = async (
 		request: Request,
 		response: Response,
@@ -400,7 +398,6 @@ export class StockController implements BaseController {
 	 * @param request - The server request
 	 * @param response - The server response
 	 */
-
 	public deleteStock = async (
 		request: Request,
 		response: Response,
