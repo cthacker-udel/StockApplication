@@ -25,6 +25,9 @@ export class TradingComponent implements OnInit, AfterViewInit {
     'Risk',
     'Actions',
   ];
+  actionStock: Stock;
+  targetStocks: Stock[];
+  targetStock: Stock;
 
   actionBtnClass = this.isBuying
     ? 'btn btn-outline-primary'
@@ -53,7 +56,9 @@ export class TradingComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.stocks.paginator = this.paginator;
+    if (this.stocks) {
+      this.stocks.paginator = this.paginator;
+    }
   }
 
   calculateDifferenceAndReturnClass = (
@@ -65,7 +70,10 @@ export class TradingComponent implements OnInit, AfterViewInit {
   };
 
   fireAction = (element: Stock) => {
-    console.log('fired action with element', element);
+    this.actionStock = element;
+    this.targetStocks = this.rawStockData.filter(
+      (elem: Stock) => elem.symbol !== element.symbol
+    );
   };
 
   generateActionBtnText = () => (this.isBuying ? 'Buy' : 'Sell');
@@ -73,6 +81,8 @@ export class TradingComponent implements OnInit, AfterViewInit {
   roundPriceChange = (price: number): string => {
     return price.toFixed(2);
   };
+
+  getTargetPlaceholder = () => (this.targetStock ? this.targetStock : 'None');
 
   switchModes() {
     this.isBuying = !this.isBuying;

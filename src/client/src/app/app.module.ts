@@ -23,6 +23,7 @@ import { TradingComponent } from './_components/trading/trading.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatInputModule } from '@angular/material/input';
 import { SocketService } from './_services/socket.service';
 
 @NgModule({
@@ -51,6 +52,7 @@ import { SocketService } from './_services/socket.service';
     MatTableModule,
     MatSortModule,
     MatPaginatorModule,
+    MatInputModule,
   ],
   providers: [
     ConfigService,

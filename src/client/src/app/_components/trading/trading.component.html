@@ -137,6 +137,26 @@
             {{ generateActionBtnText() }} Stock
           </h1>
         </div>
+        <div class="modal-body d-flex flex-row justify-content-between">
+          <form *ngIf="actionStock !== undefined">
+            <mat-form-field appearance="fill">
+              <mat-label>{{ generateActionBtnText() }}ing Stock</mat-label>
+              <input
+                class="pe-none"
+                matInput
+                readonly
+                type="text"
+                value="{{ actionStock.symbol }}"
+              />
+            </mat-form-field>
+          </form>
+          <form *ngIf="targetStocks && targetStocks.length > 0">
+            <mat-form-field appearance="fill">
+              <mat-label>Select Stock</mat-label>
+              <input class="pe-none" matInput />
+            </mat-form-field>
+          </form>
+        </div>
         <div class="modal-footer">
           <button
             type="button"
