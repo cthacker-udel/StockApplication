@@ -429,11 +429,7 @@ export class StockController implements BaseController {
 				response.status(400);
 				response.send(
 					generateApiMessage(
-<<<<<<< HEAD
-						"Stock with stock symbol doesn't exists",
-=======
 						CONSTANTS.DELETE_STOCK_ALREADY_EXISTS,
->>>>>>> 772066b5f8e5449e2430f8302d4f80ac19dffdd4
 						false,
 						ERROR_CODE_ENUM.DELETE_STOCK_STOCK_DOESNT_EXIST,
 					),

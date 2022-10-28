@@ -215,12 +215,7 @@ export class StockService extends BaseService {
 			.getClient()
 			.db(MONGO_COMMON.DATABASE_NAME)
 			.collection(this.COLLECTION_NAME)
-<<<<<<< HEAD
-			.deleteOne({symbol});
-			return stockCollection.acknowledged;
-=======
 			.deleteOne({ symbol });
 		return stockCollection.acknowledged;
->>>>>>> 772066b5f8e5449e2430f8302d4f80ac19dffdd4
 	};
 }
