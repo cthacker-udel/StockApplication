@@ -1,3 +1,5 @@
+import type { Portfolio } from "../portfolio";
+
 export type User = {
 	firstName: string;
 	lastName: string;
@@ -14,6 +16,9 @@ export type User = {
 	sessionToken: string;
 	roles: string[]; // the roleIds
 
-	// profile picture
-	pfpLink?: string;
+	// account balance
+	balance: number;
+
+	// trade records
+	portfolio: Portfolio;
 };
