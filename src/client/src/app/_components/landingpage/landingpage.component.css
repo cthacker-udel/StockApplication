@@ -7,9 +7,8 @@
 }
 
 #background {
-    background-color: #28a745;
+    background-color: rgb(120, 147, 149);
     height: 100vh;
-    overflow-y: hidden;
 }
 
 #row_for_cards {
@@ -20,4 +19,61 @@
     background-image: url('https://cdn.mos.cms.futurecdn.net/avQoSGU9uTjFCgtCW3Rrhk.jpg');
     background-position: center;
     background-size: auto;
+}
+
+#landing_page_left_card {
+    background-color: rgb(148, 180, 159);
+    border-color: rgb(229, 227, 201);
+}
+
+.list-group > * {
+    background-color: rgb(148, 180, 159);
+    border-color: rgb(229, 227, 201);
+    color: black;
+}
+
+#landing_page_right_card {
+    background-color: rgb(180, 207, 176);
+    font-weight: bold;
+}
+
+#landing_page_right_card {
+    background-color: rgb(148, 180, 159);
+    border-color: rgb(148, 180, 159);
+    height: fit-content;
+}
+
+#username_landing_input {
+    background-color: rgb(229, 227, 201);
+    border-color: rgb(148, 180, 159);
+}
+
+#first_name_landing_input {
+    background-color: rgb(229, 227, 201);
+    border-color: rgb(148, 180, 159);
+}
+
+#last_name_landing_input {
+    background-color: rgb(229, 227, 201);
+    border-color: rgb(148, 180, 159);
+}
+
+#date_of_birth_landing_input {
+    background-color: rgb(229, 227, 201);
+    border-color: rgb(148, 180, 159);
+}
+
+#email_address_landing_input {
+    background-color: rgb(229, 227, 201);
+    border-color: rgb(148, 180, 159);
+}
+
+#password_landing_input {
+    background-color: rgb(229, 227, 201);
+    border-color: rgb(148, 180, 159);
+}
+
+#confirm_password_landing_input {
+    background-color: rgb(229, 227, 201);
+    border-color: rgb(148, 180, 159);
 }

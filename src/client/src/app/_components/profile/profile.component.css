@@ -1,9 +1,6 @@
 
 #profile_background {
-    background-image: url("https://img5.goodfon.com/wallpaper/nbig/e/98/svet-fon-oboi.jpg");
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
+    background-color: rgb(120, 147, 149);
 }
 
 #profile_picture {
@@ -27,4 +24,18 @@
 .stock_activity_date {
     font-size: .77em;
     opacity: 50%;
+}
+
+#profile_info {
+    background-color: rgb(148, 180, 159);
+    border-color: rgb(229, 227, 201);
+    width: fit-content;
+    height: fit-content;
+}
+
+#recent_stock_activity {
+    background-color: rgb(148, 180, 159);
+    border-color: rgb(229, 227, 201);
+    width: fit-content;
+    height: fit-content;
 }

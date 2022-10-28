@@ -1,15 +1,18 @@
 <div
   class="w-100 h-100 d-flex flex-column justify-content-around stock_dashboard_background"
 >
-  <div class="fw-bold text-center p-4 fs-5 bg-light w-25 mx-auto mt-4 rounded">
+  <div
+    class="fw-bold text-center p-4 fs-5 w-25 mx-auto mt-4 rounded"
+    id="stock_dashboard_card_body"
+  >
     Welcome {{ username }}!
   </div>
   <div class="bg bg-light w-75 mx-auto rounded">
-    <div class="card">
+    <div class="card" id="stock_dashboard_card_body">
       <div class="card-body text-center fs-3 fw-bold">
         <div class="card-title d-flex flex-row justify-content-center">
           <i class="fa-solid fa-fire text-danger fa-beat p-2"></i>
-          <div class="fa-beat px-3">Top Stocks</div>
+          <div class="fa-beat px-3 text-dark">Top Stocks</div>
           <i class="fa-solid fa-fire text-danger fa-beat p-2"></i>
         </div>
         <div id="top_stocks_container">
@@ -33,40 +36,38 @@
     </div>
   </div>
   <div class="d-flex flex-row justify-content-around">
-    <div class="bg-danger rounded bg-opacity-75 p-4">
-        <div class="card border-0">
-            <div class="card-body">
-                    <div class="card-title fs-4 fw-bold">
-                        Most Recent Trades <i class="fa-solid fa-stopwatch fa-shake fa-lg"></i>
-                    </div>
-                    <div class="list-group list-group-flush list-group-numbered">
-                        <div class="list-group-item list-group-item-action">Trade 1</div>
-                        <div class="list-group-item list-group-item-action">Trade 2</div>
-                        <div class="list-group-item list-group-item-action">Trade 3</div>
-                        <div class="list-group-item list-group-item-action">Trade 4</div>
-                        <div class="list-group-item list-group-item-action">Trade 5</div>
-                    </div>
-            </div>
+    <div class="rounded p-4">
+      <div class="card border-0">
+        <div class="card-body" id="stock_dashboard_card_body">
+          <div class="card-title fs-4 fw-bold">
+            <span class="text-dark">Most Recent Trades</span>
+            <i class="ms-1 fa-solid fa-stopwatch fa-shake fa-lg text-dark"></i>
+          </div>
+          <div class="list-group list-group-flush list-group-numbered">
+            <div class="list-group-item list-group-item-action">Trade 1</div>
+            <div class="list-group-item list-group-item-action">Trade 2</div>
+            <div class="list-group-item list-group-item-action">Trade 3</div>
+            <div class="list-group-item list-group-item-action">Trade 4</div>
+            <div class="list-group-item list-group-item-action">Trade 5</div>
+          </div>
         </div>
+      </div>
     </div>
-    <div class="d-flex flex-column">
+    <div class="d-flex flex-column" id="stock_dashboard_icon_buttons">
       <div class="d-flex flex-row justify-content-center">
-        <div class="p-5 rounded border shadow me-4 btn btn-light" routerLink="/profile">
+        <div class="p-5 rounded shadow me-4 btn" routerLink="/profile">
           <i class="fa-solid fa-user fa-3x text-dark"></i>
         </div>
-        <div class="p-5 rounded border shadow ms-4 btn btn-light" routerLink="/trading">
+        <div class="p-5 rounded shadow ms-4 btn" routerLink="/trading">
           <i class="fa-solid fa-money-bill-trend-up fa-3x text-success"></i>
         </div>
       </div>
       <div class="d-flex flex-row justify-content-center mt-5">
-        <div
-          class="p-5 rounded border me-4 shadow btn btn-light"
-          id="stock_btn"
-        >
+        <div class="p-5 rounded me-4 shadow btn" id="stock_btn">
           <i class="fa-solid fa-chart-simple fa-3x text-primary"></i>
         </div>
         <div
-          class="p-5 rounded border ms-4 shadow btn btn-light"
+          class="p-5 rounded ms-4 shadow btn"
           data-bs-toggle="tooltip"
           data-bs-placement="top"
           data-bs-title="User settings"
@@ -75,21 +76,22 @@
         </div>
       </div>
     </div>
-    <div class="bg-success bg-opacity-75 rounded p-4">
-        <div class="card border-0">
-            <div class="card-body">
-                    <div class="card-title fs-4 fw-bold">
-                        Leaderboard <i class="fa-solid fa-trophy"></i>
-                    </div>
-                    <div class="list-group list-group-flush list-group-numbered">
-                        <div class="list-group-item list-group-item-action">User</div>
-                        <div class="list-group-item list-group-item-action">User</div>
-                        <div class="list-group-item list-group-item-action">User</div>
-                        <div class="list-group-item list-group-item-action">User</div>
-                        <div class="list-group-item list-group-item-action">User</div>
-                    </div>
-            </div>
+    <div class="rounded p-4">
+      <div class="card border-0">
+        <div class="card-body" id="stock_dashboard_card_body">
+          <div class="card-title fs-4 fw-bold">
+            <span class="text-dark">Leaderboard</span>
+            <i class="fa-solid fa-trophy text-dark ms-1"></i>
+          </div>
+          <div class="list-group list-group-flush list-group-numbered">
+            <div class="list-group-item list-group-item-action">User</div>
+            <div class="list-group-item list-group-item-action">User</div>
+            <div class="list-group-item list-group-item-action">User</div>
+            <div class="list-group-item list-group-item-action">User</div>
+            <div class="list-group-item list-group-item-action">User</div>
+          </div>
         </div>
+      </div>
     </div>
   </div>
 </div>

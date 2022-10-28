@@ -1,9 +1,6 @@
 
 .trading_background {
-    background-image: url('https://steamcdn-a.akamaihd.net/steamcommunity/public/images/items/286300/c33a58cd147d270171996c766b102de411603d89.jpg');
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
+    background-color: rgb(120, 147, 149);
 }
 
 .action_btn_text {
@@ -12,4 +9,17 @@
 
 .amount_slider_width {
     width: calc(100% - 30px);
+}
+
+#trading_header {
+    background-color: rgb(148, 180, 159);
+}
+
+#trading_header_title {
+    color: rgb(229, 227, 201);
+    letter-spacing: .05em;
+}
+
+#toggle_buttons {
+    width: fit-content;
 }
