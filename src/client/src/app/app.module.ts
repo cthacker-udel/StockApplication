@@ -25,6 +25,12 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatInputModule } from '@angular/material/input';
 import { SocketService } from './_services/socket.service';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { AdminDashboardComponent } from './_components/admin/dashboard/admin.dashboard.component';
+import { AdminUserComponent } from './_components/admin/users/admin.users.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { AdminStocksComponent } from './_components/admin/stocks/admin.stocks.component';
+import { AdminAddStocksComponent } from './_components/admin/stocks/add/admin.addstocks.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +40,10 @@ import { MatSliderModule } from '@angular/material/slider';
     StockDashboardComponent,
     ProfileComponent,
     TradingComponent,
+    AdminDashboardComponent,
+    AdminUserComponent,
+    AdminStocksComponent,
+    AdminAddStocksComponent,
   ],
   imports: [
     BrowserModule,
@@ -53,6 +63,8 @@ import { MatSliderModule } from '@angular/material/slider';
     MatPaginatorModule,
     MatInputModule,
     MatSliderModule,
+    MatExpansionModule,
+    MatTooltipModule,
   ],
   providers: [
     ConfigService,

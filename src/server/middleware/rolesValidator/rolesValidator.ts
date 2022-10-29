@@ -80,7 +80,11 @@ export const rolesValidator =
 							const mappedRoles = foundPromises.map(
 								(eachRole) => eachRole?.perm,
 							);
-							if (mappedRoles.includes(requiredRole)) {
+							if (
+								mappedRoles.includes(requiredRole) ||
+								Math.max(...(mappedRoles as Roles[])) >=
+									requiredRole
+							) {
 								response.status(200);
 								next();
 							} else {

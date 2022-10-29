@@ -65,7 +65,7 @@ export class SignInComponent implements OnInit {
             this.toastr.error('Failed to login');
           } else {
             this.sessionService.addSessionInformation(result.headers);
-            this._router.navigateByUrl('stock-dashboard');
+            this._router.navigateByUrl('stock-dashboard?firstTime=true');
           }
         });
     }

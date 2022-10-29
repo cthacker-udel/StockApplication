@@ -25,7 +25,13 @@ export class StockDashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.dashboardService.getUpdates();
-    this.toastr.success('Welcome to the stock application!', 'Welcome!');
+
+    const query = new URL(window.location.href);
+    const isFirstTime = query.searchParams.get('firstTime');
+    if (isFirstTime === 'true') {
+      this.toastr.success('Welcome to the stock application!', 'Welcome!');
+      history.replaceState(undefined, '', 'stock-dashboard');
+    }
     const username = localStorage.getItem(
       SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_ID
     );

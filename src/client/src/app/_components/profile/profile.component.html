@@ -5,10 +5,10 @@
   <div class="w-100 h-100 d-flex flex-row justify-content-around">
     <div class="h-50 my-auto w-25">
       <div class="d-flex flex-column justify-content-around h-100 p-2">
-        <div
-          class="d-flex flex-column p-3 shadow bg-secondary bg-gradient bg-opacity-75 rounded"
-        >
-          <div class="d-flex flex-column px-2 mt-3 fs-4 text-opacity-75 text-light">
+        <div class="d-flex flex-column p-3 shadow rounded" id="profile_info">
+          <div
+            class="d-flex flex-column px-2 mt-3 fs-4 text-opacity-75 text-light"
+          >
             <div class="d-flex flex-row">
               <i class="fa-solid fa-signature me-2 my-auto"></i>
               <span *ngIf="user !== undefined" class="me-1">{{
@@ -38,7 +38,7 @@
             </div>
           </div>
         </div>
-        <div class="bg-success bg-gradient rounded p-3 mt-4">
+        <div class="rounded p-3 mt-4" id="recent_stock_activity">
           <div class="d-flex flex-column">
             <div class="text-center fw-semibold fs-6">
               Recent Stock Activity

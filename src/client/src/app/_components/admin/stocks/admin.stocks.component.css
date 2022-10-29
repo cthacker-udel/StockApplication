@@ -1,0 +1,72 @@
+/*
+
+Animations
+
+*/
+
+@keyframes middle_button_anim {
+    from {
+    }
+    to {
+        background-color: #0D6EFD;
+    }
+}
+
+/*
+
+Styles
+
+*/
+
+
+.main_page {
+    background-color: rgb(120, 147, 149);
+}
+
+.middle_button {
+    background-color: #212529;
+    padding: 2em;
+    color: white;
+    cursor: pointer;
+}
+
+.middle_button:hover {
+    animation-name: middle_button_anim;
+    animation-timing-function: ease-in-out;
+    animation-duration: .5s;
+    animation-fill-mode: forwards;
+}
+
+.first_option {
+    cursor: pointer;
+    padding: 2em;
+    bottom: 15vh;
+    left: 10vw;
+}
+
+.second_option {
+    cursor: pointer;
+    padding: 2em;
+    bottom: 15vh;
+    right: 10vw;
+}
+
+.third_option {
+    cursor: pointer;
+    padding: 2em;
+    top: 15vh;
+    right: 10vw;
+}
+
+.fourth_option {
+    cursor: pointer;
+    padding: 2em;
+    top: 15vh;
+    left: 10vw;
+}
+
+.dashboard_title {
+    top: 10vh;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

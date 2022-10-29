@@ -1,16 +1,20 @@
 <div
   id="background"
-  class="w-100 bg-success bg-opacity-50 bg-gradient d-flex flex-row justify-content-center position-relative"
+  class="w-100 d-flex flex-row justify-content-center position-relative"
 >
-  <div 
-  id="row_for_cards"
-  class="text-center d-flex flex-row w-75 h-75 mx-auto">
+  <div id="row_for_cards" class="text-center d-flex flex-row w-75 h-75 mx-auto">
     <div
-      class="d-flex flex-column bg-light rounded bg-gradient p-2 justify-content-around"
-      style="min-width: 300px;">
+      class="d-flex flex-column rounded p-2 justify-content-around"
+      id="landing_page_left_card"
+      style="min-width: 300px"
+    >
       <div class="d-flex flex-column">
         <span class="fw-bold fs-1">
-          <img src="assets/bullStocksLogo.png" width="150px" style="margin-bottom: 20px;"/>
+          <img
+            src="assets/bullStocksLogo.png"
+            width="150px"
+            style="margin-bottom: 20px"
+          />
           BullStocks
         </span>
         <span class="fs-4 fw-semibold" style="margin-top: 0px; margin: 10px">
@@ -19,14 +23,12 @@
         </span>
       </div>
       <div>
-        <span class="fs-5 fw-bold text-secondary mb-2">Available Features</span>
+        <span class="fs-5 fw-bold mb-2">Available Features</span>
         <ul class="list-group">
           <li class="list-group-item w-75 mx-auto mt-2 disabled">
             Buy & Sell Stocks
           </li>
-          <li class="list-group-item w-75 mx-auto disabled">
-            View Stocks
-          </li>
+          <li class="list-group-item w-75 mx-auto disabled">View Stocks</li>
           <li class="list-group-item w-75 mx-auto disabled">
             Create a Stock Portfolio
           </li>
@@ -34,11 +36,12 @@
       </div>
     </div>
     <form
-      class="bg-light bg-gradient rounded p-3 ms-5"
+      class="rounded p-3 ms-5"
       [formGroup]="landingPageFormGroup"
+      id="landing_page_right_card"
     >
       <div class="d-flex flex-column">
-        <span class="fw-semibold" style="padding: 10px; padding-bottom: 0px;"
+        <span class="fw-semibold" style="padding: 10px; padding-bottom: 0px"
           >Sign up now to start trading stocks and become a stock master!</span
         >
         <div class="d-flex flex-row mt-3">
@@ -268,7 +271,7 @@
               </div>
             </div>
             <button
-              class="w-25 mx-auto btn btn-success mt-3"
+              class="w-25 mx-auto btn btn-secondary mt-3"
               (click)="signUp()"
               [disabled]="!landingPageFormGroup.valid"
             >

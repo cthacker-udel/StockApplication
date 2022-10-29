@@ -1,0 +1,35 @@
+<div
+  class="h-100 w-100 d-flex flex-column justify-content-between"
+  id="admin_dashboard"
+>
+  <div class="text-start fs-2 ms-2 fw-semibold">Admin</div>
+  <div class="w-50 mx-auto mt-4">
+    <mat-accordion>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title> Options </mat-panel-title>
+          <mat-panel-description>
+            These are the options for the Admin
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <div class="d-flex flex-column">
+          <div
+            class="btn btn-outline-secondary"
+            routerLink="users"
+            routerLinkActive
+          >
+            Users
+          </div>
+          <div
+            class="btn btn-outline-secondary mt-2"
+            routerLink="stocks"
+            routerLinkActive
+          >
+            Stocks
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+  <div class="text-end me-4 mb-4 fs-4">You are logged in as <span class="fw-bold">{{ loggedInUsername }}</span></div>
+</div>
