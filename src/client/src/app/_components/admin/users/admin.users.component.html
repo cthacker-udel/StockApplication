@@ -1,17 +1,19 @@
 <div class="h-100 w-100 d-flex flex-column justify-content-center align-items-center main_page">
-    <div class="fw-bold fs-3 middle_button rounded-circle img-thumbnail position-relative" (click)="triggerDisplayOptions()">
-        <i class="fa-solid fa-bars p-2"></i>
-        <div class="position-absolute first_option rounded-circle bg-secondary img-thumbnail" *ngIf="display_options" [@firstOptionAnimation]>
-            <i class="fa-solid fa-plus p-2"></i>
+    <div class="fw-bold fs-3 position-relative" (click)="triggerDisplayOptions()">
+        <div class="middle_button rounded-circle img-thumbnail">
+            <i class="fa-solid fa-bars p-2"></i>
         </div>
-        <div class="position-absolute second_option rounded-circle bg-secondary img-thumbnail" *ngIf="display_options" [@secondOptionAnimation]>
-            <i class="fa-solid fa-trash p-2"></i>
+        <div class="position-absolute first_option rounded-circle bg-dark bg-gradient bg-opacity-75 shadow-lg img-thumbnail" *ngIf="display_options" [@firstOptionAnimation]>
+            <i class="fa-solid fa-plus p-2 text-success"></i>
         </div>
-        <div class="position-absolute third_option rounded-circle bg-secondary img-thumbnail" *ngIf="display_options" [@thirdOptionAnimation]>
-            <i class="fa-solid fa-pen-to-square p-2"></i>
+        <div class="position-absolute second_option rounded-circle bg-dark bg-gradient bg-opacity-75 shadow-lg img-thumbnail" *ngIf="display_options" [@secondOptionAnimation]>
+            <i class="fa-solid fa-trash p-2 text-danger"></i>
         </div>
-        <div class="position-absolute fourth_option rounded-circle bg-secondary img-thumbnail" *ngIf="display_options" [@fourthOptionAnimation]>
-            <i class="fa-solid fa-eye"></i>
+        <div class="position-absolute third_option rounded-circle bg-dark bg-gradient bg-opacity-75 shadow-lg img-thumbnail" *ngIf="display_options" [@thirdOptionAnimation]>
+            <i class="fa-solid fa-pen-to-square p-2 text-info"></i>
+        </div>
+        <div class="position-absolute fourth_option rounded-circle bg-dark bg-gradient bg-opacity-75 shadow-lg img-thumbnail" *ngIf="display_options" [@fourthOptionAnimation]>
+            <i class="fa-solid fa-eye text-primary"></i>
         </div>
     </div>
 </div>
