@@ -38,25 +38,35 @@ Styles
 }
 
 .first_option {
+    cursor: pointer;
     padding: 2em;
     bottom: 15vh;
     left: 10vw;
 }
 
 .second_option {
+    cursor: pointer;
     padding: 2em;
     bottom: 15vh;
     right: 10vw;
 }
 
 .third_option {
+    cursor: pointer;
     padding: 2em;
     top: 15vh;
     right: 10vw;
 }
 
 .fourth_option {
+    cursor: pointer;
     padding: 2em;
     top: 15vh;
     left: 10vw;
+}
+
+.dashboard_title {
+    top: 10vh;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }

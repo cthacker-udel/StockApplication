@@ -28,6 +28,8 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { AdminDashboardComponent } from './_components/admin/dashboard/admin.dashboard.component';
 import { AdminUserComponent } from './_components/admin/users/admin.users.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { AdminStocksComponent } from './_components/admin/stocks/admin.stocks.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +41,7 @@ import { AdminUserComponent } from './_components/admin/users/admin.users.compon
     TradingComponent,
     AdminDashboardComponent,
     AdminUserComponent,
+    AdminStocksComponent,
   ],
   imports: [
     BrowserModule,
@@ -59,6 +62,7 @@ import { AdminUserComponent } from './_components/admin/users/admin.users.compon
     MatInputModule,
     MatSliderModule,
     MatExpansionModule,
+    MatTooltipModule,
   ],
   providers: [
     ConfigService,
