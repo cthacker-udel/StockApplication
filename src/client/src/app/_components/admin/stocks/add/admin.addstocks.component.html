@@ -1,5 +1,5 @@
 <div class="main_page h-100 w-100 d-flex flex-column justify-content-center align-items-center">
-    <form class="bg-light rounded p-4" [formGroup]="addStocksFormGroup">
+    <form class="bg-light rounded p-4" [formGroup]="addStocksFormGroup" (ngSubmit)="onSubmit()">
         <div>
             <label for="symbolInput" class="form-label">Stock Symbol<i class="ms-2 fa-solid fa-font"></i></label>
             <input type="text" class="form-control" id="symbolInput" formControlName="symbol" />

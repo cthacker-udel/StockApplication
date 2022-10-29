@@ -28,9 +28,9 @@ export class TradeService {
 			return false;
 		}
 		const { balance, portfolio } = foundUser;
-		const { price, totalShares } = foundStock;
+		const { price, shares } = foundStock;
 		const cost = price * amt;
-		if (totalShares < amt) {
+		if (shares < amt) {
 			return false;
 		}
 		if (cost > balance) {
@@ -52,7 +52,7 @@ export class TradeService {
 		await stockCollection.updateOne(
 			{ symbol: stockSymbol },
 			{
-				totalShares: totalShares - amt,
+				shares: shares - amt,
 			},
 		);
 		return true;
@@ -119,7 +119,7 @@ export class TradeService {
 				await stockCollection.updateOne(
 					{ symbol: stockSymbol },
 					{
-						totalShares: currentStock.totalShares + amt,
+						shares: currentStock.shares + amt,
 					},
 				);
 				await userCollection.updateOne(
