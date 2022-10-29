@@ -25,6 +25,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatInputModule } from '@angular/material/input';
 import { SocketService } from './_services/socket.service';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { AdminDashboardComponent } from './_components/admin/dashboard/admin.dashboard.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +36,7 @@ import { MatSliderModule } from '@angular/material/slider';
     StockDashboardComponent,
     ProfileComponent,
     TradingComponent,
+    AdminDashboardComponent,
   ],
   imports: [
     BrowserModule,
@@ -53,6 +56,7 @@ import { MatSliderModule } from '@angular/material/slider';
     MatPaginatorModule,
     MatInputModule,
     MatSliderModule,
+    MatExpansionModule,
   ],
   providers: [
     ConfigService,
