@@ -1,42 +1,89 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { Router } from '@angular/router';
+import { ConfigService } from 'src/app/config/config.service';
+import { Stock } from 'src/app/_models/Stock';
+import { ROUTE_PREFIXES } from 'src/shared/constants/api';
+import { REGEX_EXPRESSIONS } from 'src/shared/constants/regex';
 
 @Component({
   selector: 'admin-add-stock',
   templateUrl: './admin.addstocks.component.html',
   styleUrls: ['./admin.addstocks.component.css'],
 })
-export class AdminAddStocksComponent {
-  symbol = new FormControl<string>('');
-  price = new FormControl<number>(0);
-  shares = new FormControl<number>(0);
-  volume = new FormControl<number>(0);
-  risk = new FormControl<number>(0);
-  constructor(private _router: Router) {}
+export class AdminAddStocksComponent implements OnInit {
+  controlNames = ['symbol', 'price', 'shares', 'volume', 'risk'];
+  addStocksFormGroup: FormGroup = new FormGroup({});
 
-  symbolChange = (event: Event) => {
-    const { value } = (event as InputEvent).target as HTMLInputElement;
-    this.symbol.setValue(value);
+  constructor(private _router: Router, private _configService: ConfigService) {}
+
+  doesStockAlreadyExist = async (
+    control: AbstractControl
+  ): Promise<ValidationErrors | null> => {
+    const { value } = control;
+    const getStock = this._configService.getConfig<Stock | null>(
+      `${ROUTE_PREFIXES.stock}get/symbol?symbol=${(
+        value as string
+      ).toUpperCase()}`
+    );
+    getStock.subscribe((foundStock: Stock | null) => {
+      const doesExist = foundStock !== null;
+      if (doesExist) {
+        this.addStocksFormGroup.controls['symbol'].setErrors({
+          symbolAlreadyExists: true,
+        });
+      } else {
+        if (this.addStocksFormGroup.controls['symbol'].errors) {
+          delete this.addStocksFormGroup.controls['symbol'].errors[
+            'symbolAlreadyExists'
+          ];
+        }
+      }
+    });
+    return null;
   };
 
-  priceChange = (event: Event) => {
-    const { value } = (event as InputEvent).target as HTMLInputElement;
-    this.price.setValue(Number.parseInt(value, 10));
-  };
+  ngOnInit(): void {
+    this.addStocksFormGroup = new FormGroup({
+      symbol: new FormControl(
+        '',
+        [
+          Validators.required,
+          Validators.maxLength(5),
+          Validators.pattern(REGEX_EXPRESSIONS.NO_SPACES),
+        ],
+        [this.doesStockAlreadyExist]
+      ),
+      price: new FormControl(1, [Validators.min(1)]),
+      shares: new FormControl(1, [Validators.min(1)]),
+      volume: new FormControl(1, [Validators.min(1)]),
+      risk: new FormControl(1, [Validators.min(1)]),
+    });
+  }
 
-  sharesChange = (event: Event) => {
-    const { value } = (event as InputEvent).target as HTMLInputElement;
-    this.shares.setValue(Number.parseInt(value, 10));
-  };
+  get symbol() {
+    return this.addStocksFormGroup.get('symbol');
+  }
 
-  volumeChange = (event: Event) => {
-    const { value } = (event as InputEvent).target as HTMLInputElement;
-    this.volume.setValue(Number.parseInt(value, 10));
-  };
+  get price() {
+    return this.addStocksFormGroup.get('price');
+  }
 
-  riskChange = (event: Event) => {
-    const { value } = (event as InputEvent).target as HTMLInputElement;
-    this.risk.setValue(Number.parseInt(value, 10));
-  };
+  get shares() {
+    return this.addStocksFormGroup.get('shares');
+  }
+
+  get volume() {
+    return this.addStocksFormGroup.get('volume');
+  }
+
+  get risk() {
+    return this.addStocksFormGroup.get('risk');
+  }
 }

@@ -1,3 +1,7 @@
 .main_page {
     background-color: rgb(120, 147, 149);
 }
+
+.error_style {
+    font-size: .80em;
+}
