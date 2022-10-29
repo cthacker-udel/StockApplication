@@ -1,0 +1,5 @@
+What if we made the admin dashboard, just one giant version of the stock dashboard and user dashboard.
+
+Such that when the options expand, it displays the generic delete, add,
+then when you click add, it expands that in a similar fashion to the options, with
+options for user, and stock.
