@@ -27,6 +27,7 @@ import { SocketService } from './_services/socket.service';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { AdminDashboardComponent } from './_components/admin/dashboard/admin.dashboard.component';
+import { AdminUserComponent } from './_components/admin/users/admin.users.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { AdminDashboardComponent } from './_components/admin/dashboard/admin.das
     ProfileComponent,
     TradingComponent,
     AdminDashboardComponent,
+    AdminUserComponent,
   ],
   imports: [
     BrowserModule,

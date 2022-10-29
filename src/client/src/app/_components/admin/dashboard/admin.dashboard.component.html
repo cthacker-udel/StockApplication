@@ -15,14 +15,14 @@
         <div class="d-flex flex-column">
           <div
             class="btn btn-outline-secondary"
-            routerLink="admin/users"
+            routerLink="users"
             routerLinkActive
           >
             Users
           </div>
           <div
             class="btn btn-outline-secondary mt-2"
-            routerLink="admin/stocks"
+            routerLink="stocks"
             routerLinkActive
           >
             Stocks
@@ -31,5 +31,5 @@
       </mat-expansion-panel>
     </mat-accordion>
   </div>
-  <div class="text-end fw-bold me-3 fs-4">You are logged in as</div>
+  <div class="text-end me-4 mb-4 fs-4">You are logged in as <span class="fw-bold">{{ loggedInUsername }}</span></div>
 </div>

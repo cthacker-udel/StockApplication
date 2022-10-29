@@ -21,6 +21,7 @@ export class AdminDashboardComponent implements OnInit {
       this._router.navigateByUrl('stock-dashboard');
     } else {
       const parsedUsername = JSON.parse(foundUsername) as SessionCookie;
+      this.loggedInUsername = parsedUsername.value;
     }
   }
 }
