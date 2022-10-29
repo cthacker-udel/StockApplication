@@ -1,0 +1,33 @@
+<div class="main_page h-100 w-100 d-flex flex-column justify-content-center align-items-center">
+    <form class="bg-light rounded p-4">
+        <div>
+            <label for="symbolInput" class="form-label">Stock Symbol<i class="ms-2 fa-solid fa-font"></i></label>
+            <input type="text" class="form-control" id="symbolInput" (input)="symbolChange($event)" value="{{ symbol.value }}" />
+            <div class="form-text">The symbol of the stock, less than or equal to 5 letters</div>
+        </div>
+        <div class="mt-4">
+            <label for="priceInput" class="form-label">Stock Price<i class="ms-2 fa-solid fa-dollar-sign"></i></label>
+            <input type="number" class="form-control" id="priceInput" (input)="priceChange($event)" value="{{ price.value }}" />
+            <div class="form-text">The price of the stock, cannot be negative</div>
+        </div>
+
+        <div class="mt-4">
+            <label for="initialShares" class="form-label">Stock Initial Shares<i class="ms-2 fa-solid fa-cubes-stacked"></i></label>
+            <input type="number" class="form-control" id="initialShares" (input)="sharesChange($event)" value="{{ shares.value }}" />
+            <div class="form-text">The initial # of shares of the stock, cannot be negative</div>
+        </div>
+        
+        <div class="mt-4">
+            <label for="initialVolume" class="form-label">Stock Initial Volume<i class="ms-2 fa-solid fa-box-open"></i></label>
+            <input type="number" class="form-control" id="initialVolume" (input)="volumeChange($event)" value="{{ volume.value }}" />
+            <div class="form-text">The initial volume of the stock, cannot be negative</div>
+        </div>
+
+        <div class="mt-4">
+            <label for="initialRisk" class="form-label">Stock Initial Risk<i class="ms-2 fa-solid fa-dice"></i></label>
+            <input type="number" class="form-control" id="initialRisk" (input)="riskChange($event)" value="{{ risk.value }}" />
+            <div class="form-text">The initial risk of the stock, cannot be negative</div>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3 w-100">Add Stock</button>
+    </form>
+</div>

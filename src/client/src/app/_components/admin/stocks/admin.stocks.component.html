@@ -3,7 +3,7 @@
         <div class="middle_button rounded-circle img-thumbnail" matTooltip="Options">
             <i class="fa-solid fa-bars p-2"></i>
         </div>
-        <div class="position-absolute first_option rounded-circle bg-dark bg-gradient bg-opacity-75 shadow-lg img-thumbnail" *ngIf="display_options" [@firstOptionAnimation] matTooltip="Add Stocks">
+        <div class="position-absolute first_option rounded-circle bg-dark bg-gradient bg-opacity-75 shadow-lg img-thumbnail" *ngIf="display_options" [@firstOptionAnimation] matTooltip="Add Stocks" routerLink="/admin/stocks/add">
             <i class="fa-solid fa-plus p-2 text-success"></i>
         </div>
         <div class="position-absolute second_option rounded-circle bg-dark bg-gradient bg-opacity-75 shadow-lg img-thumbnail" *ngIf="display_options" [@secondOptionAnimation] matTooltip="Delete Stocks">

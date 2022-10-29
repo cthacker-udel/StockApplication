@@ -30,6 +30,7 @@ import { AdminDashboardComponent } from './_components/admin/dashboard/admin.das
 import { AdminUserComponent } from './_components/admin/users/admin.users.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AdminStocksComponent } from './_components/admin/stocks/admin.stocks.component';
+import { AdminAddStocksComponent } from './_components/admin/stocks/add/admin.addstocks.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { AdminStocksComponent } from './_components/admin/stocks/admin.stocks.co
     AdminDashboardComponent,
     AdminUserComponent,
     AdminStocksComponent,
+    AdminAddStocksComponent,
   ],
   imports: [
     BrowserModule,
