@@ -118,10 +118,12 @@ export class AdminAddStocksComponent implements OnInit {
         }
       );
       request.subscribe((result: ApiMessage | {}) => {
-        if ((result as ApiMessage) === undefined) {
+        if ((result as ApiMessage) === null) {
           this.toastr.success(`Added Stock ${symbolValue}!`);
           this.controlNames.forEach((eachName: string, _ind: number) => {
             this.addStocksFormGroup.controls[eachName].setErrors(null);
+            this.addStocksFormGroup.controls[eachName].markAsUntouched();
+            this.addStocksFormGroup.controls[eachName].markAsPristine();
             if (_ind > 0) {
               this.addStocksFormGroup.controls[eachName].setValue(1);
             } else {
