@@ -9,6 +9,7 @@ import { SessionCookie } from 'src/app/_models/SessionCookie';
 import { Stock } from 'src/app/_models/Stock';
 import { SECRETS } from 'src/secrets';
 import { ROUTE_PREFIXES } from 'src/shared/constants/api';
+import { AddStockModal } from './modals/addStock/addStockModal.component';
 import { DeleteStockModal } from './modals/deleteStock/deleteStockModal.component';
 
 @Component({
@@ -193,6 +194,10 @@ export class AdminDashboardComponent implements OnInit {
     switch (key) {
       case 'deleteStock': {
         dialogRef = this.dialog.open(DeleteStockModal);
+        break;
+      }
+      case 'addStock': {
+        dialogRef = this.dialog.open(AddStockModal);
         break;
       }
     }

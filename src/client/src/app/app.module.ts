@@ -28,12 +28,12 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { AdminDashboardComponent } from './_components/admin/dashboard/admin.dashboard.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { AdminAddStocksComponent } from './_components/admin/stocks/add/admin.addstocks.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDialogModule } from '@angular/material/dialog';
 import { DeleteStockModal } from './_components/admin/dashboard/modals/deleteStock/deleteStockModal.component';
 import { MatButtonModule } from '@angular/material/button';
+import { AddStockModal } from './_components/admin/dashboard/modals/addStock/addStockModal.component';
 
 @NgModule({
   declarations: [
@@ -44,8 +44,8 @@ import { MatButtonModule } from '@angular/material/button';
     ProfileComponent,
     TradingComponent,
     AdminDashboardComponent,
-    AdminAddStocksComponent,
     DeleteStockModal,
+    AddStockModal,
   ],
   imports: [
     BrowserModule,
