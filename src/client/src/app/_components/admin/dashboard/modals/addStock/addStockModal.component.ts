@@ -6,7 +6,6 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
-import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { ConfigService } from 'src/app/config/config.service';
 import { ApiMessage } from 'src/app/_models/ApiMessage';
@@ -16,15 +15,14 @@ import { REGEX_EXPRESSIONS } from 'src/shared/constants/regex';
 
 @Component({
   selector: 'admin-add-stock',
-  templateUrl: './admin.addstocks.component.html',
-  styleUrls: ['./admin.addstocks.component.css'],
+  templateUrl: './addStockModal.component.html',
+  styleUrls: ['./addStockModal.component.css'],
 })
-export class AdminAddStocksComponent implements OnInit {
+export class AddStockModal implements OnInit {
   controlNames = ['symbol', 'price', 'shares', 'volume', 'risk'];
   addStocksFormGroup: FormGroup = new FormGroup({});
 
   constructor(
-    private _router: Router,
     private _configService: ConfigService,
     private toastr: ToastrService
   ) {}

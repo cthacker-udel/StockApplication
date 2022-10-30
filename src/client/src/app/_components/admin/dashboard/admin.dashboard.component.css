@@ -1,3 +1,126 @@
+/*
+
+Animations
+
+*/
+
+@keyframes middle_button_anim {
+    from {
+    }
+    to {
+        background-color: #0D6EFD;
+    }
+}
+
+/*
+
+Styles
+
+*/
+
+
 #admin_dashboard {
     background-color: rgb(120, 147, 149);
+}
+
+.middle_area {
+    width: fit-content;
+    height: fit-content;
+}
+
+.middle_button {
+    height: 15vh;
+    width: 15vh;
+    cursor: pointer;
+}
+
+.middle_button_contents {
+    background-color: #212529;
+}
+
+.middle_button_contents:hover {
+    animation-name: middle_button_anim;
+    animation-timing-function: ease-in-out;
+    animation-duration: .5s;
+    animation-fill-mode: forwards;
+}
+
+.first_option {
+    background-color: #212529;
+    cursor: pointer;
+    bottom: calc(100%);
+    left: calc(100% + 1vw);
+    height: 15vh;
+    width: 15vh;
+}
+
+.first_option_contents {
+    background-color: #212529;
+}
+
+.first_option_contents:hover {
+    animation-name: middle_button_anim;
+    animation-timing-function: ease-in-out;
+    animation-duration: .5s;
+    animation-fill-mode: forwards;
+}
+
+.second_option_contents {
+    background-color: #212529;
+}
+
+.second_option_contents:hover {
+    animation-name: middle_button_anim;
+    animation-timing-function: ease-in-out;
+    animation-duration: .5s;
+    animation-fill-mode: forwards;
+}
+
+.second_option {
+    background-color: #212529;
+    cursor: pointer;
+    bottom: calc(100%);
+    right: calc(100% + 1vw);
+    height: 15vh;
+    width: 15vh;
+}
+
+.second_sub1_option {
+    right: calc(100% - 2vw);
+    bottom: calc(100% - 5.5vh);
+    height: 7vh;
+    width: 7vh;
+    background-color: #212529;
+    z-index: 1;
+}
+
+.second_sub2_option {
+    left: calc(100% - 2vw);
+    bottom: calc(100% - 5.5vh);
+    height: 7vh;
+    width: 7vh;
+    background-color: #212529;
+    z-index: 1;
+}
+
+.second_sub3_option {
+    right: calc(100% - 2vw);
+    top: calc(100% - 5.5vh);
+    height: 7vh;
+    width: 7vh;
+    background-color: #212529;
+    z-index: 1;
+}
+
+.second_sub4_option {
+    left: calc(100% - 2vw);
+    top: calc(100% - 5.5vh);
+    height: 7vh;
+    width: 7vh;
+    background-color: #212529;
+    z-index: 1;
+}
+
+.angular_form {
+    z-index: 9999;
 }
