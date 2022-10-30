@@ -403,8 +403,11 @@ export class StockController implements BaseController {
 		response: Response,
 	): Promise<void> => {
 		try {
-			const payload: Stock = request.body as Stock;
-			if (payload?.symbol.length > 5) {
+			const { symbol } = request.query;
+			if (symbol === undefined) {
+				throw new Error("Stock not supplied in query");
+			}
+			if ((symbol as string).length > 5) {
 				console.error(
 					"Error occurred deleting stock, symbol length must be between 1 and 5 characters",
 				);
@@ -419,7 +422,7 @@ export class StockController implements BaseController {
 			} else if (
 				(await this.stockService.getStockBySymbol(
 					this.client,
-					payload.symbol,
+					symbol as string,
 				)) === null
 			) {
 				console.error("Stock with stock symbol doesn't exists");
@@ -434,7 +437,7 @@ export class StockController implements BaseController {
 			} else {
 				await this.stockService.deleteStock(
 					this.client,
-					payload.symbol,
+					symbol as string,
 				);
 				response.status(204);
 				response.send(JSON.stringify({}));
@@ -460,7 +463,13 @@ export class StockController implements BaseController {
 	 * @returns - The route mapping, basically an object that will be utilized by the app in making it easier to dynamically generate endpoints dependent on each of the controllers
 	 */
 	public getRouteMapping = (): RouteMapping => ({
-		delete: [["delete", this.deleteStock]],
+		delete: [
+			[
+				"delete",
+				this.deleteStock,
+				[rolesValidator(Roles.ADMIN, this.client)],
+			],
+		],
 		get: [
 			[
 				"get/id",

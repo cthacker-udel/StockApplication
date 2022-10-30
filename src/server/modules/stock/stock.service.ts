@@ -4,7 +4,7 @@ import {
 	type InsertOneResult,
 	type DeleteResult,
 } from "mongodb";
-import type { SortByOptions, Stock } from "../../@types";
+import type { SortByOptions, Stock, User } from "../../@types";
 import { BaseService } from "../../common/api/baseservice";
 import { MONGO_COMMON, type StockMongoClient } from "../../mongo";
 
@@ -211,11 +211,20 @@ export class StockService extends BaseService {
 		client: StockMongoClient,
 		symbol: string,
 	): Promise<boolean> => {
-		const stockCollection: DeleteResult = await client
+		const userCollection = client
 			.getClient()
 			.db(MONGO_COMMON.DATABASE_NAME)
-			.collection(this.COLLECTION_NAME)
-			.deleteOne({ symbol });
-		return stockCollection.acknowledged;
+			.collection("user");
+		const stockCollection = client
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection(this.COLLECTION_NAME);
+		const usersWithStock = await userCollection
+			.find<User>({
+				portfolio: { stocks: { $elemMatch: { symbol } } },
+			})
+			.toArray();
+		console.log(usersWithStock);
+		return false;
 	};
 }

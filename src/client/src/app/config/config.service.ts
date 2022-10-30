@@ -42,7 +42,14 @@ export class ConfigService {
       headers: this.corsHeaders,
       withCredentials: true,
       observe: 'response',
-      responseType: 'json'
+      responseType: 'json',
+    });
+  }
+
+  deleteConfig<T>(endpoint: string) {
+    return this.http.delete<T>(`${this.configUrl}${endpoint}`, {
+      headers: this.corsHeaders,
+      withCredentials: true,
     });
   }
 

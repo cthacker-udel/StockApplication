@@ -24,7 +24,7 @@
 </mat-dialog-content>
 <mat-dialog-actions class="justify-content-end">
   <button mat-button color="primary" mat-dialog-close>Cancel</button>
-  <button mat-raised-button color="warn" [mat-dialog-close]="true">
+  <button mat-raised-button color="warn" [mat-dialog-close]="true" [disabled]="hasNotEnteredStock" (click)="deleteStock(enteredValue)">
     Confirm
   </button>
 </mat-dialog-actions>
