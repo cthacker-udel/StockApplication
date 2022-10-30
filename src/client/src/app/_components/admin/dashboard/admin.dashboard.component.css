@@ -48,8 +48,8 @@ Styles
 .first_option {
     background-color: #212529;
     cursor: pointer;
-    bottom: 15vh;
-    left: 10vw;
+    bottom: calc(100%);
+    left: calc(100% + 1vw);
     height: 15vh;
     width: 15vh;
 }
@@ -79,15 +79,15 @@ Styles
 .second_option {
     background-color: #212529;
     cursor: pointer;
-    bottom: 15vh;
-    right: 10vw;
+    bottom: calc(100%);
+    right: calc(100% + 1vw);
     height: 15vh;
     width: 15vh;
 }
 
 .second_sub1_option {
-    right: 5vw;
-    bottom: 9vh;
+    right: calc(100% - 2vw);
+    bottom: calc(100% - 5.5vh);
     height: 7vh;
     width: 7vh;
     background-color: #212529;
@@ -95,8 +95,8 @@ Styles
 }
 
 .second_sub2_option {
-    left: 5vw;
-    bottom: 9vh;
+    left: calc(100% - 2vw);
+    bottom: calc(100% - 5.5vh);
     height: 7vh;
     width: 7vh;
     background-color: #212529;
@@ -104,8 +104,8 @@ Styles
 }
 
 .second_sub3_option {
-    right: 5vw;
-    top: 9vh;
+    right: calc(100% - 2vw);
+    top: calc(100% - 5.5vh);
     height: 7vh;
     width: 7vh;
     background-color: #212529;
@@ -113,8 +113,8 @@ Styles
 }
 
 .second_sub4_option {
-    left: 5vw;
-    top: 9vh;
+    left: calc(100% - 2vw);
+    top: calc(100% - 5.5vh);
     height: 7vh;
     width: 7vh;
     background-color: #212529;

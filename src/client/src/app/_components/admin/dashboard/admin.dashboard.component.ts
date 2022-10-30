@@ -20,13 +20,13 @@ import { SECRETS } from 'src/secrets';
           '.75s ease-in-out',
           style({
             opacity: 1,
-            bottom: '15vh',
-            left: '10vw',
+            bottom: 'calc(100%)',
+            left: 'calc(100% + 1vw)',
           })
         ),
       ]),
       transition(':leave', [
-        style({ opacity: 1, bottom: '15vh', left: '10vw' }),
+        style({ opacity: 1, bottom: 'calc(100%)', left: 'calc(100% + 1vw)' }),
         animate(
           '.75s ease-in-out',
           style({ opacity: 0, bottom: '0vh', left: '0vw' })
@@ -38,11 +38,11 @@ import { SECRETS } from 'src/secrets';
         style({ opacity: 0, bottom: '0vh', right: '0vw' }),
         animate(
           '.75s ease-in-out',
-          style({ opacity: 1, bottom: '15vh', right: '10vw' })
+          style({ opacity: 1, bottom: 'calc(100%)', right: 'calc(100% + 1vw)' })
         ),
       ]),
       transition(':leave', [
-        style({ opacity: 1, bottom: '15vh', right: '10vw' }),
+        style({ opacity: 1, bottom: 'calc(100%)', right: 'calc(100% + 1vw)' }),
         animate(
           '.75s ease-in-out',
           style({ opacity: 0, bottom: '0vh', right: '0vw' })
@@ -54,11 +54,19 @@ import { SECRETS } from 'src/secrets';
         style({ opacity: 0, bottom: '0vh', right: '0vw' }),
         animate(
           '.75s ease-in-out',
-          style({ opacity: 1, bottom: '9vh', right: '5vw' })
+          style({
+            opacity: 1,
+            bottom: 'calc(100% - 5.5vh)',
+            right: 'calc(100% - 2vw)',
+          })
         ),
       ]),
       transition(':leave', [
-        style({ opacity: 1, bottom: '9vh', right: '5vw' }),
+        style({
+          opacity: 1,
+          bottom: 'calc(100% - 5.5vh)',
+          right: 'calc(100% - 2vw)',
+        }),
         animate(
           '.75s ease-in-out',
           style({ opacity: 0, bottom: '0vh', right: '0vw' })
@@ -70,11 +78,19 @@ import { SECRETS } from 'src/secrets';
         style({ opacity: 0, bottom: '0vh', left: '0vw' }),
         animate(
           '.75s ease-in-out',
-          style({ opacity: 1, bottom: '9vh', left: '5vw' })
+          style({
+            opacity: 1,
+            bottom: 'calc(100% - 5.5vh)',
+            left: 'calc(100% - 2vw)',
+          })
         ),
       ]),
       transition(':leave', [
-        style({ opacity: 1, bottom: '9vh', left: '5vw' }),
+        style({
+          opacity: 1,
+          bottom: 'calc(100% - 5.5vh)',
+          left: 'calc(100% - 2vw)',
+        }),
         animate(
           '.75s ease-in-out',
           style({ opacity: 0, bottom: '0vh', left: '0vw' })
@@ -86,11 +102,19 @@ import { SECRETS } from 'src/secrets';
         style({ opacity: 0, top: '0vh', right: '0vw' }),
         animate(
           '.75s ease-in-out',
-          style({ opacity: 1, top: '9vh', right: '5vw' })
+          style({
+            opacity: 1,
+            top: 'calc(100% - 5.5vh)',
+            right: 'calc(100% - 2vw)',
+          })
         ),
       ]),
       transition(':leave', [
-        style({ opacity: 1, top: '9vh', right: '5vw' }),
+        style({
+          opacity: 1,
+          top: 'calc(100% - 5.5vh)',
+          right: 'calc(100% - 2vw)',
+        }),
         animate(
           '.75s ease-in-out',
           style({ opacity: 0, top: '0vh', right: '0vw' })
@@ -102,11 +126,19 @@ import { SECRETS } from 'src/secrets';
         style({ opacity: 0, top: '0vh', left: '0vw' }),
         animate(
           '.75s ease-in-out',
-          style({ opacity: 1, top: '9vh', left: '5vw' })
+          style({
+            opacity: 1,
+            top: 'calc(100% - 5.5vh)',
+            left: 'calc(100% - 2vw)',
+          })
         ),
       ]),
       transition(':leave', [
-        style({ opacity: 1, top: '9vh', left: '5vw' }),
+        style({
+          opacity: 1,
+          top: 'calc(100% - 5.5vh)',
+          left: 'calc(100% - 2vw)',
+        }),
         animate(
           '.75s ease-in-out',
           style({ opacity: 0, top: '0vh', left: '0vw' })
