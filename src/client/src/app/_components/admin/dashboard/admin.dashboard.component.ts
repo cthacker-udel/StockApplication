@@ -23,6 +23,8 @@ import { DeleteStockModal } from './modals/deleteStock/deleteStockModal.componen
           opacity: 0,
           bottom: '0vh',
           left: '0vw',
+          height: '0vh',
+          width: '0vh',
         }),
         animate(
           '.75s ease-in-out',
@@ -30,42 +32,88 @@ import { DeleteStockModal } from './modals/deleteStock/deleteStockModal.componen
             opacity: 1,
             bottom: 'calc(100%)',
             left: 'calc(100% + 1vw)',
+            height: '15vh',
+            width: '15vh',
           })
         ),
       ]),
       transition(':leave', [
-        style({ opacity: 1, bottom: 'calc(100%)', left: 'calc(100% + 1vw)' }),
+        style({
+          opacity: 1,
+          bottom: 'calc(100%)',
+          left: 'calc(100% + 1vw)',
+          height: '15vh',
+          width: '15vh',
+        }),
         animate(
           '.75s ease-in-out',
-          style({ opacity: 0, bottom: '0vh', left: '0vw' })
+          style({
+            opacity: 0,
+            bottom: '0vh',
+            left: '0vw',
+            height: '0vh',
+            width: '0vh',
+          })
         ),
       ]),
     ]),
     trigger('secondOptionAnimation', [
       transition(':enter', [
-        style({ opacity: 0, bottom: '0vh', right: '0vw' }),
+        style({
+          opacity: 0,
+          bottom: '0vh',
+          right: '0vw',
+          height: '0vh',
+          width: '0vh',
+        }),
         animate(
           '.75s ease-in-out',
-          style({ opacity: 1, bottom: 'calc(100%)', right: 'calc(100% + 1vw)' })
+          style({
+            opacity: 1,
+            bottom: 'calc(100%)',
+            right: 'calc(100% + 1vw)',
+            height: '15vh',
+            width: '15vh',
+          })
         ),
       ]),
       transition(':leave', [
-        style({ opacity: 1, bottom: 'calc(100%)', right: 'calc(100% + 1vw)' }),
+        style({
+          opacity: 1,
+          bottom: 'calc(100%)',
+          right: 'calc(100% + 1vw)',
+          height: '15vh',
+          width: '15vh',
+        }),
         animate(
           '.75s ease-in-out',
-          style({ opacity: 0, bottom: '0vh', right: '0vw' })
+          style({
+            opacity: 0,
+            bottom: '0vh',
+            right: '0vw',
+            height: '0vh',
+            width: '0vh',
+          })
         ),
       ]),
     ]),
     trigger('subOption1Animation', [
       transition(':enter', [
-        style({ opacity: 0, bottom: '0vh', right: '0vw' }),
+        style({
+          opacity: 0,
+          bottom: '0vh',
+          right: '0vw',
+          height: '0vh',
+          width: '0vh',
+        }),
         animate(
           '.75s ease-in-out',
           style({
             opacity: 1,
             bottom: 'calc(100% - 5.5vh)',
             right: 'calc(100% - 2vw)',
+            height: '7vh',
+            width: '7vh',
           })
         ),
       ]),
@@ -74,22 +122,38 @@ import { DeleteStockModal } from './modals/deleteStock/deleteStockModal.componen
           opacity: 1,
           bottom: 'calc(100% - 5.5vh)',
           right: 'calc(100% - 2vw)',
+          height: '7vh',
+          width: '7vh',
         }),
         animate(
           '.75s ease-in-out',
-          style({ opacity: 0, bottom: '0vh', right: '0vw' })
+          style({
+            opacity: 0,
+            bottom: '0vh',
+            right: '0vw',
+            height: '0vh',
+            width: '0vh',
+          })
         ),
       ]),
     ]),
     trigger('subOption2Animation', [
       transition(':enter', [
-        style({ opacity: 0, bottom: '0vh', left: '0vw' }),
+        style({
+          opacity: 0,
+          bottom: '0vh',
+          left: '0vw',
+          height: '0vh',
+          width: '0vh',
+        }),
         animate(
           '.75s ease-in-out',
           style({
             opacity: 1,
             bottom: 'calc(100% - 5.5vh)',
             left: 'calc(100% - 2vw)',
+            height: '7vh',
+            width: '7vh',
           })
         ),
       ]),
@@ -98,22 +162,38 @@ import { DeleteStockModal } from './modals/deleteStock/deleteStockModal.componen
           opacity: 1,
           bottom: 'calc(100% - 5.5vh)',
           left: 'calc(100% - 2vw)',
+          height: '7vh',
+          width: '7vh',
         }),
         animate(
           '.75s ease-in-out',
-          style({ opacity: 0, bottom: '0vh', left: '0vw' })
+          style({
+            opacity: 0,
+            bottom: '0vh',
+            left: '0vw',
+            height: '0vh',
+            width: '0vh',
+          })
         ),
       ]),
     ]),
     trigger('subOption3Animation', [
       transition(':enter', [
-        style({ opacity: 0, top: '0vh', right: '0vw' }),
+        style({
+          opacity: 0,
+          top: '0vh',
+          right: '0vw',
+          height: '0vh',
+          width: '0vh',
+        }),
         animate(
           '.75s ease-in-out',
           style({
             opacity: 1,
             top: 'calc(100% - 5.5vh)',
             right: 'calc(100% - 2vw)',
+            height: '7vh',
+            width: '7vh',
           })
         ),
       ]),
@@ -122,22 +202,38 @@ import { DeleteStockModal } from './modals/deleteStock/deleteStockModal.componen
           opacity: 1,
           top: 'calc(100% - 5.5vh)',
           right: 'calc(100% - 2vw)',
+          height: '7vh',
+          width: '7vh',
         }),
         animate(
           '.75s ease-in-out',
-          style({ opacity: 0, top: '0vh', right: '0vw' })
+          style({
+            opacity: 0,
+            top: '0vh',
+            right: '0vw',
+            height: '0vh',
+            width: '0vh',
+          })
         ),
       ]),
     ]),
     trigger('subOption4Animation', [
       transition(':enter', [
-        style({ opacity: 0, top: '0vh', left: '0vw' }),
+        style({
+          opacity: 0,
+          top: '0vh',
+          left: '0vw',
+          height: '0vh',
+          width: '0vh',
+        }),
         animate(
           '.75s ease-in-out',
           style({
             opacity: 1,
             top: 'calc(100% - 5.5vh)',
             left: 'calc(100% - 2vw)',
+            height: '7vh',
+            width: '7vh',
           })
         ),
       ]),
@@ -146,10 +242,18 @@ import { DeleteStockModal } from './modals/deleteStock/deleteStockModal.componen
           opacity: 1,
           top: 'calc(100% - 5.5vh)',
           left: 'calc(100% - 2vw)',
+          height: '7vh',
+          width: '7vh',
         }),
         animate(
           '.75s ease-in-out',
-          style({ opacity: 0, top: '0vh', left: '0vw' })
+          style({
+            opacity: 0,
+            top: '0vh',
+            left: '0vw',
+            height: '0vh',
+            width: '0vh',
+          })
         ),
       ]),
     ]),
