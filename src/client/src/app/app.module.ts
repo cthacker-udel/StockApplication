@@ -29,7 +29,6 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { AdminDashboardComponent } from './_components/admin/dashboard/admin.dashboard.component';
 import { AdminUserComponent } from './_components/admin/users/admin.users.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { AdminStocksComponent } from './_components/admin/stocks/admin.stocks.component';
 import { AdminAddStocksComponent } from './_components/admin/stocks/add/admin.addstocks.component';
 
 @NgModule({
@@ -41,8 +40,6 @@ import { AdminAddStocksComponent } from './_components/admin/stocks/add/admin.ad
     ProfileComponent,
     TradingComponent,
     AdminDashboardComponent,
-    AdminUserComponent,
-    AdminStocksComponent,
     AdminAddStocksComponent,
   ],
   imports: [
