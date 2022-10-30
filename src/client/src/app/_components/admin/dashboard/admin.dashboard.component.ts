@@ -11,10 +11,18 @@ import { SECRETS } from 'src/secrets';
   animations: [
     trigger('firstOptionAnimation', [
       transition(':enter', [
-        style({ opacity: 0, bottom: '0vh', left: '0vw' }),
+        style({
+          opacity: 0,
+          bottom: '0vh',
+          left: '0vw',
+        }),
         animate(
           '.75s ease-in-out',
-          style({ opacity: 1, bottom: '15vh', left: '10vw' })
+          style({
+            opacity: 1,
+            bottom: '15vh',
+            left: '10vw',
+          })
         ),
       ]),
       transition(':leave', [
@@ -109,8 +117,9 @@ import { SECRETS } from 'src/secrets';
 })
 export class AdminDashboardComponent implements OnInit {
   loggedInUsername: string;
-  displayOptions: boolean = true;
+  displayOptions: boolean = false;
   displaySubOptionsOne: boolean = false;
+  displaySubOptionsTwo: boolean = false;
 
   constructor(private _router: Router) {}
 
@@ -129,6 +138,7 @@ export class AdminDashboardComponent implements OnInit {
   toggleFirstLayerDisplay() {
     this.displayOptions = !this.displayOptions;
     this.displaySubOptionsOne = false;
+    this.displaySubOptionsTwo = false;
   }
 
   toggleSubOptionsOne() {

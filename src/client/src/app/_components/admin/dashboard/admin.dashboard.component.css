@@ -65,6 +65,17 @@ Styles
     animation-fill-mode: forwards;
 }
 
+.second_option_contents {
+    background-color: #212529;
+}
+
+.second_option_contents:hover {
+    animation-name: middle_button_anim;
+    animation-timing-function: ease-in-out;
+    animation-duration: .5s;
+    animation-fill-mode: forwards;
+}
+
 .second_option {
     background-color: #212529;
     cursor: pointer;

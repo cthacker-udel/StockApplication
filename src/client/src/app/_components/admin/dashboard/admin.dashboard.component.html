@@ -15,15 +15,63 @@
         <i class="fa-solid fa-bars text-light"></i>
       </div>
       <div
-        class="position-absolute first_option rounded-circle shadow-lg img-thumbnail"
+        class="position-absolute first_option rounded-circle border border-2 border-light"
         *ngIf="displayOptions"
         [@firstOptionAnimation]
         matTooltip="Stocks"
       >
         <div
-          class="d-flex flex-column justify-content-center h-100 align-items-center"
+          class="d-flex flex-column justify-content-center h-100 w-100 rounded-circle align-items-center first_option_contents"
         >
           <i class="fa-solid fa-arrow-trend-up text-light"></i>
+        </div>
+        <div
+          class="position-absolute second_sub1_option rounded-circle shadow-lg img-thumbnail"
+          *ngIf="displaySubOptionsTwo"
+          [@subOption1Animation]
+          matTooltip="Add"
+        >
+          <div
+            class="d-flex flex-column justify-content-center h-100 align-items-center"
+          >
+            <i class="fa-solid fa-plus text-light fa-2xs"></i>
+          </div>
+        </div>
+        <div
+          class="position-absolute second_sub2_option rounded-circle shadow-lg img-thumbnail"
+          *ngIf="displaySubOptionsTwo"
+          [@subOption2Animation]
+          matTooltip="Delete"
+        >
+          <div
+            class="d-flex flex-column justify-content-center h-100 align-items-center"
+          >
+            <i class="fa-solid fa-trash text-light fa-2xs"></i>
+          </div>
+        </div>
+        <div
+          class="position-absolute second_sub3_option rounded-circle shadow-lg img-thumbnail"
+          *ngIf="displaySubOptionsTwo"
+          [@subOption3Animation]
+          matTooltip="Edit"
+        >
+          <div
+            class="d-flex flex-column justify-content-center h-100 align-items-center"
+          >
+            <i class="fa-solid fa-pencil text-light fa-2xs"></i>
+          </div>
+        </div>
+        <div
+          class="position-absolute second_sub4_option rounded-circle shadow-lg img-thumbnail"
+          *ngIf="displaySubOptionsTwo"
+          [@subOption4Animation]
+          matTooltip="View"
+        >
+          <div
+            class="d-flex flex-column justify-content-center h-100 align-items-center"
+          >
+            <i class="fa-solid fa-eye text-light fa-2xs"></i>
+          </div>
         </div>
       </div>
       <div
