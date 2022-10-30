@@ -26,10 +26,15 @@ import { MatInputModule } from '@angular/material/input';
 import { SocketService } from './_services/socket.service';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { AdminDashboardComponent } from './_components/admin/dashboard/admin.dashboard.component';
-import { AdminUserComponent } from './_components/admin/users/admin.users.component';
+import {
+  AddStockDialog,
+  AdminDashboardComponent,
+} from './_components/admin/dashboard/admin.dashboard.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AdminAddStocksComponent } from './_components/admin/stocks/add/admin.addstocks.component';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -41,6 +46,7 @@ import { AdminAddStocksComponent } from './_components/admin/stocks/add/admin.ad
     TradingComponent,
     AdminDashboardComponent,
     AdminAddStocksComponent,
+    AddStockDialog,
   ],
   imports: [
     BrowserModule,
@@ -62,6 +68,9 @@ import { AdminAddStocksComponent } from './_components/admin/stocks/add/admin.ad
     MatSliderModule,
     MatExpansionModule,
     MatTooltipModule,
+    MatAutocompleteModule,
+    MatFormFieldModule,
+    MatDialogModule,
   ],
   providers: [
     ConfigService,

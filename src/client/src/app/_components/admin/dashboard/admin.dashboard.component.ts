@@ -1,8 +1,20 @@
 import { animate, style, transition, trigger } from '@angular/animations';
 import { Component, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { map, Observable, startWith } from 'rxjs';
+import { ConfigService } from 'src/app/config/config.service';
 import { SessionCookie } from 'src/app/_models/SessionCookie';
+import { Stock } from 'src/app/_models/Stock';
 import { SECRETS } from 'src/secrets';
+import { ROUTE_PREFIXES } from 'src/shared/constants/api';
+
+@Component({
+  selector: 'add-stock-dialog',
+  templateUrl: './modals/add_stock.dialog.html',
+})
+export class AddStockDialog {}
 
 @Component({
   selector: 'admin-dashboard',
@@ -153,11 +165,22 @@ export class AdminDashboardComponent implements OnInit {
   displaySubOptionsOne: boolean = false;
   displaySubOptionsTwo: boolean = false;
 
-  constructor(private _router: Router) {}
+  autocompleteControl = new FormControl('');
+  stocks: Stock[] = [];
+  filteredOptions: Observable<Stock[]>;
+
+  constructor(
+    private _router: Router,
+    private _configService: ConfigService,
+    public dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
     const foundUsername = localStorage.getItem(
       SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_ID
+    );
+    const allStocksRequest = this._configService.getConfig<Stock[]>(
+      `${ROUTE_PREFIXES.stock}get/all`
     );
     if (foundUsername === null) {
       this._router.navigateByUrl('stock-dashboard');
@@ -165,6 +188,20 @@ export class AdminDashboardComponent implements OnInit {
       const parsedUsername = JSON.parse(foundUsername) as SessionCookie;
       this.loggedInUsername = parsedUsername.value;
     }
+    allStocksRequest.subscribe((allStocks: Stock[]) => {
+      this.stocks = allStocks;
+    });
+    this.filteredOptions = this.autocompleteControl.valueChanges.pipe(
+      startWith(''),
+      map((value) => this.filterValue(value || ''))
+    );
+  }
+
+  private filterValue(value: string): Stock[] {
+    const filterValue = value.toLowerCase();
+    return this.stocks.filter((eachStock: Stock) =>
+      eachStock.symbol.toLowerCase().includes(filterValue)
+    );
   }
 
   toggleFirstLayerDisplay() {
@@ -179,5 +216,18 @@ export class AdminDashboardComponent implements OnInit {
 
   toggleSubOptionsTwo() {
     this.displaySubOptionsTwo = !this.displaySubOptionsTwo;
+  }
+
+  openDialog(key: string) {
+    let dialogRef;
+    switch (key) {
+      case 'addStock': {
+        dialogRef = this.dialog.open(AddStockDialog);
+        break;
+      }
+    }
+    dialogRef?.afterClosed().subscribe((result) => {
+      console.log('Dialog result', result);
+    });
   }
 }
