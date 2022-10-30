@@ -142,7 +142,10 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   toggleSubOptionsOne() {
-    console.log('flipping');
     this.displaySubOptionsOne = !this.displaySubOptionsOne;
+  }
+
+  toggleSubOptionsTwo() {
+    this.displaySubOptionsTwo = !this.displaySubOptionsTwo;
   }
 }

@@ -16,6 +16,7 @@
       </div>
       <div
         class="position-absolute first_option rounded-circle border border-2 border-light"
+        (click)="toggleSubOptionsTwo()"
         *ngIf="displayOptions"
         [@firstOptionAnimation]
         matTooltip="Stocks"
