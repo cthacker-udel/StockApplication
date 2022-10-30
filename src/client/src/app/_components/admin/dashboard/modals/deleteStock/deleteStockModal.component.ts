@@ -6,10 +6,11 @@ import { Stock } from 'src/app/_models/Stock';
 import { ROUTE_PREFIXES } from 'src/shared/constants/api';
 
 @Component({
-  selector: 'add-stock-dialog',
-  templateUrl: './modals/add_stock.dialog.html',
+  selector: 'delete-stock-dialog',
+  templateUrl: './deleteStockModal.component.html',
+  styleUrls: [],
 })
-export class AddStockModal implements OnInit {
+export class DeleteStockModal implements OnInit {
   autocompleteControl = new FormControl('');
   stocks: Stock[] = [];
   filteredOptions: Observable<Stock[]>;

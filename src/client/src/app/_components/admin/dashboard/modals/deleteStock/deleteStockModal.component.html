@@ -1,6 +1,6 @@
-<h2>Delete Stock</h2>
-<mat-dialog-content
-  ><form>
+<h2 class="p-4">Delete Stock</h2>
+<mat-dialog-content>
+  <form class="my-4 px-4">
     <mat-form-field appearance="fill">
       <mat-label>Stock</mat-label>
       <input
@@ -23,6 +23,8 @@
   </form>
 </mat-dialog-content>
 <mat-dialog-actions class="justify-content-end">
-    <button mat-button mat-dialog-close>Cancel</button>
-    <button mat-button [mat-dialog-close]="true">Confirm</button>
+  <button mat-button color="primary" mat-dialog-close>Cancel</button>
+  <button mat-raised-button color="warn" [mat-dialog-close]="true">
+    Confirm
+  </button>
 </mat-dialog-actions>
