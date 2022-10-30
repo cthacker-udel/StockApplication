@@ -6,7 +6,6 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
-import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { ConfigService } from 'src/app/config/config.service';
 import { ApiMessage } from 'src/app/_models/ApiMessage';
@@ -24,7 +23,6 @@ export class AddStockModal implements OnInit {
   addStocksFormGroup: FormGroup = new FormGroup({});
 
   constructor(
-    private _router: Router,
     private _configService: ConfigService,
     private toastr: ToastrService
   ) {}
