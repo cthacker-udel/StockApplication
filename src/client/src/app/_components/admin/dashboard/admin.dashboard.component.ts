@@ -41,11 +41,76 @@ import { SECRETS } from 'src/secrets';
         ),
       ]),
     ]),
+    trigger('subOption1Animation', [
+      transition(':enter', [
+        style({ opacity: 0, bottom: '0vh', right: '0vw' }),
+        animate(
+          '.75s ease-in-out',
+          style({ opacity: 1, bottom: '9vh', right: '5vw' })
+        ),
+      ]),
+      transition(':leave', [
+        style({ opacity: 1, bottom: '9vh', right: '5vw' }),
+        animate(
+          '.75s ease-in-out',
+          style({ opacity: 0, bottom: '0vh', right: '0vw' })
+        ),
+      ]),
+    ]),
+    trigger('subOption2Animation', [
+      transition(':enter', [
+        style({ opacity: 0, bottom: '0vh', left: '0vw' }),
+        animate(
+          '.75s ease-in-out',
+          style({ opacity: 1, bottom: '9vh', left: '5vw' })
+        ),
+      ]),
+      transition(':leave', [
+        style({ opacity: 1, bottom: '9vh', left: '5vw' }),
+        animate(
+          '.75s ease-in-out',
+          style({ opacity: 0, bottom: '0vh', left: '0vw' })
+        ),
+      ]),
+    ]),
+    trigger('subOption3Animation', [
+      transition(':enter', [
+        style({ opacity: 0, top: '0vh', right: '0vw' }),
+        animate(
+          '.75s ease-in-out',
+          style({ opacity: 1, top: '9vh', right: '5vw' })
+        ),
+      ]),
+      transition(':leave', [
+        style({ opacity: 1, top: '9vh', right: '5vw' }),
+        animate(
+          '.75s ease-in-out',
+          style({ opacity: 0, top: '0vh', right: '0vw' })
+        ),
+      ]),
+    ]),
+    trigger('subOption4Animation', [
+      transition(':enter', [
+        style({ opacity: 0, top: '0vh', left: '0vw' }),
+        animate(
+          '.75s ease-in-out',
+          style({ opacity: 1, top: '9vh', left: '5vw' })
+        ),
+      ]),
+      transition(':leave', [
+        style({ opacity: 1, top: '9vh', left: '5vw' }),
+        animate(
+          '.75s ease-in-out',
+          style({ opacity: 0, top: '0vh', left: '0vw' })
+        ),
+      ]),
+    ]),
   ],
 })
 export class AdminDashboardComponent implements OnInit {
   loggedInUsername: string;
-  displayOptions: boolean = false;
+  displayOptions: boolean = true;
+  displaySubOptionsOne: boolean = false;
 
   constructor(private _router: Router) {}
 
@@ -63,5 +128,11 @@ export class AdminDashboardComponent implements OnInit {
 
   toggleFirstLayerDisplay() {
     this.displayOptions = !this.displayOptions;
+    this.displaySubOptionsOne = false;
+  }
+
+  toggleSubOptionsOne() {
+    console.log('flipping');
+    this.displaySubOptionsOne = !this.displaySubOptionsOne;
   }
 }

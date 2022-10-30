@@ -30,8 +30,59 @@
         [@secondOptionAnimation]
         matTooltip="Users"
       >
-        <div class="d-flex flex-column justify-content-center h-100 align-items-center">
+        <div
+          class="d-flex flex-column justify-content-center h-100 align-items-center position-relative"
+          (click)="toggleSubOptionsOne()"
+        >
           <i class="fa-solid fa-user text-light"></i>
+          <div
+            class="position-absolute second_sub1_option rounded-circle shadow-lg img-thumbnail"
+            *ngIf="displaySubOptionsOne"
+            [@subOption1Animation]
+            matTooltip="Add"
+          >
+            <div
+              class="d-flex flex-column justify-content-center h-100 align-items-center"
+            >
+              <i class="fa-solid fa-plus text-light fa-2xs"></i>
+            </div>
+          </div>
+          <div
+            class="position-absolute second_sub2_option rounded-circle shadow-lg img-thumbnail"
+            *ngIf="displaySubOptionsOne"
+            [@subOption2Animation]
+            matTooltip="Delete"
+          >
+            <div
+              class="d-flex flex-column justify-content-center h-100 align-items-center"
+            >
+              <i class="fa-solid fa-trash text-light fa-2xs"></i>
+            </div>
+          </div>
+          <div
+            class="position-absolute second_sub3_option rounded-circle shadow-lg img-thumbnail"
+            *ngIf="displaySubOptionsOne"
+            [@subOption3Animation]
+            matTooltip="Edit"
+          >
+            <div
+              class="d-flex flex-column justify-content-center h-100 align-items-center"
+            >
+              <i class="fa-solid fa-pencil text-light fa-2xs"></i>
+            </div>
+          </div>
+          <div
+            class="position-absolute second_sub4_option rounded-circle shadow-lg img-thumbnail"
+            *ngIf="displaySubOptionsOne"
+            [@subOption4Animation]
+            matTooltip="View"
+          >
+            <div
+              class="d-flex flex-column justify-content-center h-100 align-items-center"
+            >
+              <i class="fa-solid fa-eye text-light fa-2xs"></i>
+            </div>
+          </div>
         </div>
       </div>
     </div>

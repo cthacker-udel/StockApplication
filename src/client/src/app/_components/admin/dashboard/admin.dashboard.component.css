@@ -59,3 +59,39 @@ Styles
     height: 15vh;
     width: 15vh;
 }
+
+.second_sub1_option {
+    right: 5vw;
+    bottom: 9vh;
+    height: 7vh;
+    width: 7vh;
+    background-color: #212529;
+    z-index: 1;
+}
+
+.second_sub2_option {
+    left: 5vw;
+    bottom: 9vh;
+    height: 7vh;
+    width: 7vh;
+    background-color: #212529;
+    z-index: 1;
+}
+
+.second_sub3_option {
+    right: 5vw;
+    top: 9vh;
+    height: 7vh;
+    width: 7vh;
+    background-color: #212529;
+    z-index: 1;
+}
+
+.second_sub4_option {
+    left: 5vw;
+    top: 9vh;
+    height: 7vh;
+    width: 7vh;
+    background-color: #212529;
+    z-index: 1;
+}
