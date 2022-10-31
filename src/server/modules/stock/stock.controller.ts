@@ -11,7 +11,7 @@ import { MONGO_COMMON, type StockMongoClient } from "../../mongo";
 import { StockService } from "./stock.service";
 import type { SessionService } from "../session";
 import { rolesValidator } from "../../middleware/rolesValidator/rolesValidator";
-import type { ChangeStreamUpdateDocument } from "mongodb";
+import type { ChangeStreamUpdateDocument, ChangeStreamDeleteDocument, ChangeStreamCreateDocument } from "mongodb";
 import type { Server } from "socket.io";
 
 const CONSTANTS = {
@@ -81,6 +81,61 @@ export class StockController implements BaseController {
 						});
 				},
 			);
+		this.client
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection("stock")
+			.watch()
+			.on(
+				"delete", 
+				(changedDocument: ChangeStreamDeleteDocument): void => {
+					this.stockService
+						.getStockById(
+							this.client,
+							changedDocument.documentKey._id.toString(),
+						)
+						.then((result: Stock | undefined) => {
+							if (result === undefined) {
+								throw new Error("Unable to find Deleted stock");
+							}
+							_socket.sockets.emit("stockDeleted", result);
+						})
+						.catch((error: unknown) => {
+							console.error(
+								`Failed finding Deleted stock ${
+									(error as Error).stack
+								}`,
+							);
+						});
+					},
+				);
+		this.client
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection("stock")
+			.watch()
+			.on(
+				"add", 
+				(changedDocument: ChangeStreamCreateDocument): void => {
+					this.stockService
+						.getStockById(
+							this.client,
+						)
+						.then((result: Stock | undefined) => {
+							if (result === undefined) {
+								throw new Error("Unable to find Created stock");
+							}
+							_socket.sockets.emit("stockCreated", result);
+						})
+						.catch((error: unknown) => {
+							console.error(
+								`Failed finding Created stock ${
+									(error as Error).stack
+								}`,
+							);
+						});
+					},
+				);		
 		_socket.on("connection", (_: any) => {
 			console.log(
 				`${new Date().toLocaleTimeString()} -- User listening to stock collection socket`,
