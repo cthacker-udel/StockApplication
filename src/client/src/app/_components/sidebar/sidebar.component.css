@@ -1,3 +1,22 @@
+@keyframes sidebar_open_animation {
+    from {
+        left: calc(0%);
+    }
+    to {
+        left: calc(100%);
+    }
+}
+
+@keyframes sidebar_closed_animation {
+    from {
+        left: calc(100%);
+    }
+    to {
+        left: calc(0%);
+    }
+}
+
+
 .sidebar_contents {
     position: absolute;
     display: flex;
@@ -5,7 +24,7 @@
     justify-content: space-around;
     height: 100vh;
     width: 10vw;
-    z-index: 9999;
+    z-index: 1000;
 }
 
 .main_container {
@@ -17,22 +36,25 @@
 .toggle_button {
     position: absolute;
     cursor: pointer;
-    z-index: 9999;
+    z-index: 1000;
     bottom: calc(95%);
-}
-
-.toggle_button_open {
-    left: calc(100%);
-}
-
-.toggle_button_closed {
     left: calc(100%);
 }
 
 .sidebar_contents_closed {
-    left: calc(0%);
+    animation-name: sidebar_closed_animation;
+    animation-duration: 1s;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
 }
 
 .sidebar_contents_open {
-    left: calc(100%);
+    animation-name: sidebar_open_animation;
+    animation-duration: 1s;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
+}
+
+.sidebar_contents_not_touched {
+    left: calc(0%);
 }

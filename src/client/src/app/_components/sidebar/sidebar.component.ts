@@ -11,7 +11,8 @@ import { ROUTE_PREFIXES } from 'src/shared/constants/api';
   templateUrl: './sidebar.component.html',
 })
 export class SidebarComponent implements OnInit {
-  isSidebarExpanded: boolean = true;
+  isSidebarExpanded: boolean = false;
+  touched: boolean = false;
   currentUser: Partial<User>;
 
   constructor(private configService: ConfigService) {}
@@ -38,6 +39,13 @@ export class SidebarComponent implements OnInit {
   }
 
   toggleSidebar() {
+    if (!this.touched) {
+      this.touched = true;
+    }
     this.isSidebarExpanded = !this.isSidebarExpanded;
+  }
+
+  getToggleButtonTooltipText() {
+    return this.isSidebarExpanded ? 'Shrink Toolbar' : 'Expand Toolbar';
   }
 }
