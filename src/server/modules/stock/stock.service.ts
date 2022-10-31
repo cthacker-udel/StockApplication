@@ -1,9 +1,4 @@
-import {
-	type Collection,
-	ObjectId,
-	type InsertOneResult,
-	type DeleteResult,
-} from "mongodb";
+import { type Collection, ObjectId, type InsertOneResult } from "mongodb";
 import type { SortByOptions, Stock, User } from "../../@types";
 import { BaseService } from "../../common/api/baseservice";
 import { MONGO_COMMON, type StockMongoClient } from "../../mongo";

@@ -1,5 +1,5 @@
-import { BaseService } from "common";
-import type { StockMongoClient } from "mongo";
+import { BaseService } from "../../common";
+import type { StockMongoClient } from "../../mongo";
 
 export class TradingService extends BaseService {
 	private readonly stockMongoClient: StockMongoClient;
@@ -24,6 +24,13 @@ export class TradingService extends BaseService {
 		return false;
 	};
 
+	/**
+	 *
+	 * @param username
+	 * @param stockSymbol
+	 * @param amount
+	 * @returns
+	 */
 	public sellStock = async (
 		username: string,
 		stockSymbol: string,
@@ -33,6 +40,15 @@ export class TradingService extends BaseService {
 		return false;
 	};
 
+	/**
+	 *
+	 * @param username
+	 * @param stockFromSymbol
+	 * @param stockToSymbol
+	 * @param stockFromAmount
+	 * @param stockToAmount
+	 * @returns
+	 */
 	public convertStock = async (
 		username: string,
 		stockFromSymbol: string,

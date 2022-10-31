@@ -7,7 +7,7 @@ import { UserController } from "./modules/user";
 import type { StockMongoClient } from "./mongo";
 import { SessionService } from "./modules/session/session.service";
 import type { Server } from "socket.io";
-import { TradingService } from "modules/trading/trading.service";
+import { TradingService } from "./modules/trading/trading.service";
 
 export class AppController {
 	/**
