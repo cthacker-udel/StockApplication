@@ -7,7 +7,6 @@ import { UserController } from "./modules/user";
 import type { StockMongoClient } from "./mongo";
 import { SessionService } from "./modules/session/session.service";
 import type { Server } from "socket.io";
-import { TradingService } from "./modules/trading/trading.service";
 
 export class AppController {
 	/**
@@ -37,11 +36,6 @@ export class AppController {
 	private readonly socketServer: Server;
 
 	/**
-	 * The service to handle trading logic
-	 */
-	private readonly tradingService: TradingService;
-
-	/**
 	 * Constructs a AppController instance, instantiating it's stockController and it's router instance
 	 *
 	 * @param client - the stock mongo client instance passed from app.ts
@@ -53,13 +47,11 @@ export class AppController {
 	) {
 		this.socketServer = _socket;
 		this.sessionService = new SessionService(client);
-		this.tradingService = new TradingService(client);
 
 		this.stockController = new StockController(
 			client,
 			this.sessionService,
 			this.socketServer,
-			this.tradingService,
 		);
 		this.userController = new UserController(
 			client,
