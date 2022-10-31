@@ -11,8 +11,8 @@ import { ROUTE_PREFIXES } from 'src/shared/constants/api';
   templateUrl: './sidebar.component.html',
 })
 export class SidebarComponent implements OnInit {
-  isSidebarExpanded: boolean = false;
-  touched: boolean = false;
+  isSidebarExpanded: boolean = true;
+  touched: boolean = true;
   currentUser: Partial<User>;
 
   constructor(private configService: ConfigService) {}
@@ -24,12 +24,12 @@ export class SidebarComponent implements OnInit {
     if (storedUsername !== null) {
       // found user, grab information
       const parsedUsername = JSON.parse(storedUsername) as SessionCookie;
-      const request = this.configService.getConfig<User>(
+      const request = this.configService.getConfig<{ user: Partial<User> }>(
         `${ROUTE_PREFIXES.user}data?username=${parsedUsername.value}`
       );
-      request.subscribe((result: Partial<User>) => {
+      request.subscribe((result: { user: Partial<User> }) => {
         console.log('found user = ', result);
-        this.currentUser = result;
+        this.currentUser = result.user;
       });
     }
   }
