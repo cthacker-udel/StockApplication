@@ -21,6 +21,7 @@ export class TradingService extends BaseService {
 		stockSymbol: string,
 		amount: number,
 	): Promise<boolean> => {
+		// this.stockMongoClient <---- access the mongo database
 		return false;
 	};
 
@@ -36,6 +37,7 @@ export class TradingService extends BaseService {
 		stockSymbol: string,
 		amount: number,
 	): Promise<boolean> => {
+        // this.stockMongoClient <---- access the mongo database
 		// TODO: missing implementation
 		return false;
 	};
@@ -56,6 +58,7 @@ export class TradingService extends BaseService {
 		stockFromAmount: number,
 		stockToAmount: number,
 	): Promise<boolean> => {
+		// this.stockMongoClient <---- access the mongo database
 		// TODO: Don't have to implement now, option isn't even in the front-end, can implement later on down the road
 		return false;
 	};
