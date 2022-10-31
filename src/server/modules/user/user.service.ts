@@ -6,8 +6,8 @@ import { pbkdf2Encryption } from "../encryption";
 import { fixedPbkdf2Encryption } from "../encryption/encryption";
 import { v4 } from "uuid";
 import { RolesService } from "../roles";
-import { generateRandomBalance } from "common/api/generateRandomBalance";
-import { API_CONSTANTS } from "common/api/apiConstants";
+import { generateRandomBalance } from "../../common/api/generateRandomBalance";
+import { API_CONSTANTS } from "../../common/api/apiConstants";
 
 export class UserService extends BaseService {
 	public constructor() {
@@ -64,7 +64,7 @@ export class UserService extends BaseService {
 			console.log("failed firstname");
 			return false;
 		}
-		if (lastName && !/S/giu.test(lastName.trim())) {
+		if (lastName && !/\S/giu.test(lastName.trim())) {
 			console.log("failed lastname");
 			return false;
 		}

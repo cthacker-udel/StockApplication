@@ -30,7 +30,6 @@ export class TradingComponent implements AfterViewInit {
   ];
 
   actionStock: Stock;
-  selectedStock = new FormControl();
   selectedStockAmount = 0;
 
   actionBtnClass = this.isBuying
@@ -97,15 +96,16 @@ export class TradingComponent implements AfterViewInit {
     }
   }
 
+  displayPrice = (): string =>
+    Math.round(this.actionStock.price * this.selectedStockAmount).toFixed(2);
+
   executeTrade() {
     this.isBuying
-      ? this.tradingService.buyStock(
-          this.selectedStock.value,
-          this.selectedStockAmount
-        )
+      ? this.tradingService.buyStock(this.actionStock, this.selectedStockAmount)
       : this.tradingService.sellStock(
-          this.selectedStock.value,
+          this.actionStock,
           this.selectedStockAmount
         );
+    this.selectedStockAmount = 0;
   }
 }

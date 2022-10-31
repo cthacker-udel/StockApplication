@@ -10,5 +10,6 @@ export type Trade = {
 	profit?: number;
 	loss?: number;
 	stockAmount: number;
+	stockSymbol: string;
 	time: Date;
 };

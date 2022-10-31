@@ -48,7 +48,7 @@ export class TradeController implements BaseController {
 					),
 				);
 			} else {
-				const { amt, stockSymbol } = request.query;
+				const { amt, stockSymbol } = request.body;
 				const usernameHeader = request.header(
 					SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_ID,
 				);
@@ -73,6 +73,10 @@ export class TradeController implements BaseController {
 						Number.parseInt(amt as string, 10),
 						stockSymbol as string,
 						username,
+					);
+					response.status(200);
+					response.send(
+						generateApiMessage("Successfully bought stock", true),
 					);
 				}
 			}

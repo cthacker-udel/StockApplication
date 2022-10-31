@@ -163,18 +163,23 @@
             </mat-form-field>
           </form>
         </div>
-        <div class="w-75 mx-auto" *ngIf="actionStock !== undefined">
-          <div class="text-center">Amount</div>
-          <mat-slider
-            class="amount_slider_width"
-            (input)="selectedStockAmountChangeHandler($event)"
-            thumbLabel
-            tickInterval="100"
-            step="{{ calculateSliderStep(actionStock.shares) }}"
-            min="0"
-            max="{{ actionStock.shares }}"
-            aria-label="units"
-          ></mat-slider>
+        <div class="d-flex flex-row justify-content-around">
+          <div class="w-50" *ngIf="actionStock !== undefined">
+            <div class="text-center">Amount</div>
+            <mat-slider
+              class="amount_slider_width"
+              (input)="selectedStockAmountChangeHandler($event)"
+              thumbLabel
+              tickInterval="100"
+              step="{{ calculateSliderStep(actionStock.shares) }}"
+              min="0"
+              max="{{ actionStock.shares }}"
+              aria-label="units"
+            ></mat-slider>
+          </div>
+          <div *ngIf="actionStock !== undefined">
+            Total Price {{ displayPrice() }}$
+          </div>
         </div>
         <div class="modal-footer">
           <button

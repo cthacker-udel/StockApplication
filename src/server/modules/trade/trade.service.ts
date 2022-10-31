@@ -36,10 +36,11 @@ export class TradeService {
 		if (cost > balance) {
 			return false;
 		}
-		const modifiedBalance = balance - cost;
+		const modifiedBalance = Number(Math.round(balance - cost).toFixed(2));
 		const tradeLog: Trade = {
-			loss: cost,
+			loss: Number(Math.round(cost).toFixed(2)),
 			stockAmount: amt,
+			stockSymbol,
 			time: new Date(Date.now()),
 			type: TRADE_TYPE.BUY,
 		};
@@ -47,12 +48,12 @@ export class TradeService {
 		trades.push(tradeLog);
 		await userCollection.updateOne(
 			{ username },
-			{ balance: modifiedBalance, portfolio: trades },
+			{ $set: { balance: modifiedBalance, portfolio: trades } },
 		);
 		await stockCollection.updateOne(
 			{ symbol: stockSymbol },
 			{
-				shares: shares - amt,
+				$set: { shares: shares - amt },
 			},
 		);
 		return true;
@@ -119,14 +120,16 @@ export class TradeService {
 				await stockCollection.updateOne(
 					{ symbol: stockSymbol },
 					{
-						shares: currentStock.shares + amt,
+						$set: { shares: currentStock.shares + amt },
 					},
 				);
 				await userCollection.updateOne(
 					{ username },
 					{
-						balance: modifiedBalance,
-						portfolio: { ...portfolio, stocks: updatedStocks },
+						$set: {
+							balance: modifiedBalance,
+							portfolio: { ...portfolio, stocks: updatedStocks },
+						},
 					},
 				);
 			}
