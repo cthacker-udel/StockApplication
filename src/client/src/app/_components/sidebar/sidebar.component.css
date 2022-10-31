@@ -1,0 +1,38 @@
+.sidebar_contents {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 100vh;
+    width: 10vw;
+    z-index: 9999;
+}
+
+.main_container {
+    right: 100%;
+    height: 100vh;
+    width: 10vw;
+}
+
+.toggle_button {
+    position: absolute;
+    cursor: pointer;
+    z-index: 9999;
+    bottom: calc(95%);
+}
+
+.toggle_button_open {
+    left: calc(100%);
+}
+
+.toggle_button_closed {
+    left: calc(100%);
+}
+
+.sidebar_contents_closed {
+    left: calc(0%);
+}
+
+.sidebar_contents_open {
+    left: calc(100%);
+}

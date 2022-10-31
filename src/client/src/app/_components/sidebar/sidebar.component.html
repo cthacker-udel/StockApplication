@@ -1,0 +1,26 @@
+<div class="position-absolute main_container">
+  <span>
+    <span>
+      <span
+        class="bg-light sidebar_contents"
+        [ngClass]="{
+          sidebar_contents_open: isSidebarExpanded === true,
+          sidebar_contents_closed: isSidebarExpanded === false
+        }"
+      >
+        <div>Contents</div>
+        <div>Contents2</div>
+        <div>Contents3</div>
+        <div>Contents4</div>
+        <i
+          class="toggle_button_open fa-solid fa-arrow-right text-light toggle_button bg-dark rounded p-1 border-dark"
+          (click)="toggleSidebar()"
+          [ngClass]="{
+            'toggle_button_open': isSidebarExpanded === true,
+            'toggle_button_closed': isSidebarExpanded === false
+        }"
+        ></i>
+      </span>
+    </span>
+  </span>
+</div>

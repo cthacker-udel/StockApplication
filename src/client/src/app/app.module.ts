@@ -34,6 +34,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { DeleteStockModal } from './_components/admin/dashboard/modals/deleteStock/deleteStockModal.component';
 import { MatButtonModule } from '@angular/material/button';
 import { AddStockModal } from './_components/admin/dashboard/modals/addStock/addStockModal.component';
+import { SidebarComponent } from './_components/sidebar/sidebar.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +47,7 @@ import { AddStockModal } from './_components/admin/dashboard/modals/addStock/add
     AdminDashboardComponent,
     DeleteStockModal,
     AddStockModal,
+    SidebarComponent,
   ],
   imports: [
     BrowserModule,
