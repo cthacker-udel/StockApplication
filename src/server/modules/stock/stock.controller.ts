@@ -13,6 +13,7 @@ import type { SessionService } from "../session";
 import { rolesValidator } from "../../middleware/rolesValidator/rolesValidator";
 import type { ChangeStreamUpdateDocument } from "mongodb";
 import type { Server } from "socket.io";
+import type { TradingService } from "modules/trading/trading.service";
 
 const CONSTANTS = {
 	DELETE_STOCK_ALREADY_EXISTS: "Stock with stock symbol already exists",
@@ -35,7 +36,15 @@ export class StockController implements BaseController {
 	 */
 	private readonly client: StockMongoClient;
 
+	/**
+	 * The sessionService instance
+	 */
 	private readonly sessionService: SessionService;
+
+	/**
+	 * The trading service instance
+	 */
+	private readonly tradingService: TradingService;
 
 	/**
 	 * Instantiates an instance of the stock controller
@@ -46,10 +55,12 @@ export class StockController implements BaseController {
 		client: StockMongoClient,
 		_sessionService: SessionService,
 		_socket: Server,
+		_tradingService: TradingService,
 	) {
 		this.stockService = new StockService();
 		this.client = client;
 		this.sessionService = _sessionService;
+		this.tradingService = _tradingService;
 		this.client
 			.getClient()
 			.db(MONGO_COMMON.DATABASE_NAME)
