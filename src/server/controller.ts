@@ -7,6 +7,7 @@ import { UserController } from "./modules/user";
 import type { StockMongoClient } from "./mongo";
 import { SessionService } from "./modules/session/session.service";
 import type { Server } from "socket.io";
+import { TradeController } from "./modules/trade";
 
 export class AppController {
 	/**
@@ -29,6 +30,10 @@ export class AppController {
 	 * The session service instance
 	 */
 	private readonly sessionService: SessionService;
+	/**
+	 * The trading controller instance
+	 */
+	private readonly tradeController: TradeController;
 
 	/**
 	 * The socket instance
@@ -60,6 +65,13 @@ export class AppController {
 		);
 		this.statusController = new StatusController(client);
 
+		this.tradeController = new TradeController(
+			client,
+			this.socketServer,
+			this.sessionService,
+		);
+
+		this.tradeController.addRoutes(this.router);
 		this.stockController.addRoutes(this.router);
 		this.userController.addRoutes(this.router);
 		this.statusController.addRoutes(this.router);
