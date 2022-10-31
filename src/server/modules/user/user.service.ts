@@ -6,6 +6,8 @@ import { pbkdf2Encryption } from "../encryption";
 import { fixedPbkdf2Encryption } from "../encryption/encryption";
 import { v4 } from "uuid";
 import { RolesService } from "../roles";
+import { generateRandomBalance } from "common/api/generateRandomBalance";
+import { API_CONSTANTS } from "common/api/apiConstants";
 
 export class UserService extends BaseService {
 	public constructor() {
@@ -74,11 +76,14 @@ export class UserService extends BaseService {
 			return false;
 		}
 		const { hash, iterations, salt } = pbkdf2Encryption(password);
+		const balance = generateRandomBalance();
 		const insertionResult = await userCollection.insertOne({
 			...userInformation,
+			balance,
 			iterations,
 			lastLogin: new Date(Date.now()).toUTCString(),
 			password: hash,
+			portfolio: API_CONSTANTS.BASE_PORTFOLIO,
 			salt,
 		});
 		if (insertionResult.acknowledged) {
