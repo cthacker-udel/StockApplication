@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment -- not needed */
 import type { StockMongoClient } from "../../mongo/stockMongoClient";
-import type { StockService } from "../stock/stock.service";
 import {
 	type BaseController,
 	updateRoutes,
@@ -9,21 +8,16 @@ import type { Server } from "socket.io";
 import type { RouteMapping } from "@types";
 import type { Request, Response, Router } from "express";
 import { generateApiMessage, Roles } from "../../common";
-import type { UserService } from "../../modules/user";
 import { SECRETS } from "../../secrets";
 import type { SessionCookie } from "../../@types/api/session/SessionCookie";
-import type { TradeService } from "./trade.service";
-import { rolesValidator } from "middleware/rolesValidator/rolesValidator";
-import type { SessionService } from "modules/session";
-import { asyncMiddlewareHandler } from "middleware/asyncMiddlewareHandler";
-import { cookieValidator } from "middleware/cookieValidator/cookieValidator";
+import { TradeService } from "./trade.service";
+import { rolesValidator } from "../../middleware/rolesValidator/rolesValidator";
+import type { SessionService } from "../../modules/session";
+import { asyncMiddlewareHandler } from "../../middleware/asyncMiddlewareHandler";
+import { cookieValidator } from "../../middleware/cookieValidator/cookieValidator";
 
 export class TradeController implements BaseController {
 	public readonly ROUTE_PREFIX: string = "/trade/";
-
-	private readonly stockService: StockService;
-
-	private readonly userService: UserService;
 
 	private readonly client: StockMongoClient;
 
@@ -36,16 +30,11 @@ export class TradeController implements BaseController {
 	public constructor(
 		client: StockMongoClient,
 		_socket: Server,
-		_stockService: StockService,
-		_userService: UserService,
-		_tradeService: TradeService,
 		_sessionService: SessionService,
 	) {
 		this.client = client;
 		this.socketInstance = _socket;
-		this.stockService = _stockService;
-		this.userService = _userService;
-		this.tradeService = _tradeService;
+		this.tradeService = new TradeService();
 		this.sessionService = _sessionService;
 	}
 

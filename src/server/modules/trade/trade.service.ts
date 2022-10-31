@@ -2,7 +2,7 @@
 /* eslint-disable class-methods-use-this -- not needed */
 import type { Stock, User } from "@types";
 import { type Trade, TRADE_TYPE } from "../../@types/api/trade/Trade";
-import { MONGO_COMMON, type StockMongoClient } from "mongo";
+import { MONGO_COMMON, type StockMongoClient } from "../../mongo";
 import type { OwnedStock } from "../../@types/api/stock/OwnedStock";
 
 export class TradeService {
