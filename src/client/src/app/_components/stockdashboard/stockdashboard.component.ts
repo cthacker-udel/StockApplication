@@ -24,8 +24,6 @@ export class StockDashboardComponent implements OnInit {
   username: string = '';
 
   ngOnInit(): void {
-    this.dashboardService.getUpdates();
-
     const query = new URL(window.location.href);
     const isFirstTime = query.searchParams.get('firstTime');
     if (isFirstTime === 'true') {

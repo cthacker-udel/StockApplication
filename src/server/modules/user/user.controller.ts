@@ -304,6 +304,47 @@ export class UserController implements BaseController {
 		}
 	};
 
+	public getUserAggregateDataWithUsername = async (
+		request: Request,
+		response: Response,
+	): Promise<void> => {
+		try {
+			const { username } = request.query;
+			if (username === undefined) {
+				response.status(400);
+				response.send(
+					generateApiMessage(
+						"Failed fetching user aggregate data, must send username in query string",
+					),
+				);
+			} else {
+				const result =
+					await this.userService.getUserAggregateDataWithUsername(
+						this.client,
+						username as string,
+					);
+				if (result === undefined) {
+					response.status(400);
+					response.send(
+						generateApiMessage(
+							"Failed fetching user aggregate data, no response from the backend",
+						),
+					);
+				}
+				response.status(200);
+				response.send(result);
+			}
+		} catch (error: unknown) {
+			console.error(
+				`Failed fetching user aggregate data ${(error as Error).stack}`,
+			);
+			response.status(400);
+			response.send(
+				generateApiMessage("Failed fetching user aggregate data"),
+			);
+		}
+	};
+
 	/**
 	 * Fetches all the routes and their methods
 	 *
@@ -315,6 +356,11 @@ export class UserController implements BaseController {
 			[
 				"data",
 				this.getUserDataWithUsername,
+				[rolesValidator(Roles.USER, this.client)],
+			],
+			[
+				"aggregate",
+				this.getUserAggregateDataWithUsername,
 				[rolesValidator(Roles.USER, this.client)],
 			],
 		],
