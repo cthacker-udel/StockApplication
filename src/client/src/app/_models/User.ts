@@ -1,3 +1,5 @@
+import { Portfolio } from './Portfolio';
+
 export type User = {
   firstName: string;
   lastName: string;
@@ -12,4 +14,7 @@ export type User = {
   iterations: number;
   sessionToken: string;
   roles: string[];
+
+  balance: number;
+  portfolio: Portfolio;
 };

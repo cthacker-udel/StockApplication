@@ -1,0 +1,166 @@
+<div class="position-absolute main_container">
+  <span>
+    <span>
+      <span
+        class="bg-light bg-opacity-25 bg-gradient sidebar_contents"
+        [ngClass]="{
+          sidebar_contents_open: isSidebarExpanded === true && touched === true,
+          sidebar_contents_closed:
+            isSidebarExpanded === false && touched === true,
+          sidebar_contents_not_touched: touched === false
+        }"
+      >
+        <div>
+          <!-- Top content -->
+          <div class="d-flex flex-row sidebar_text my-2">
+            <i class="fa-solid fa-user my-auto mx-2"></i>
+            <div *ngIf="currentUser !== undefined" class="me-2 fw-bold">
+              {{ currentUser.username }}
+            </div>
+          </div>
+          <div class="ms-2 fw-bold mt-3">
+            <i class="fa-solid fa-minus me-1"></i
+            ><i class="fa-solid fa-pie-chart"></i> Stats<i
+              class="ms-1 fa-solid fa-minus"
+            ></i>
+          </div>
+          <div *ngIf="currentUser !== undefined" class="fw-bold mt-1" matTooltip="Current Balance" matTooltipPosition="after">
+            <i class="fa-solid fa-vault mx-2"></i>${{
+              currentUser.balance?.toFixed(2)
+            }}
+          </div>
+          <div
+            *ngIf="
+              userAggregateData !== undefined &&
+              userAggregateData?.totalPotentialProfit !== undefined
+            "
+            class="fw-bold mt-1"
+            matTooltip="Potential Profit"
+            matTooltipPosition="after"
+          >
+            <i class="fa-solid fa-comment-dollar mx-2"></i> ${{
+              userAggregateData.totalPotentialProfit
+            }}
+          </div>
+          <div
+            *ngIf="
+              currentUser !== undefined &&
+              currentUser.portfolio?.stocks !== undefined
+            "
+            class="fw-bold mt-1"
+            matTooltip="# of stocks"
+            matTooltipPosition="after"
+          >
+            <i class="fa-solid fa-cubes-stacked mx-2"></i
+            >{{
+              properPluralEnding(currentUser.portfolio?.stocks?.length, "Stock")
+            }}
+          </div>
+          <div
+            *ngIf="
+              currentUser !== undefined &&
+              currentUser.portfolio?.trades !== undefined
+            "
+            class="fw-bold"
+            matTooltip="# of trades"
+            matTooltipPosition="after"
+          >
+            <i class="fa-solid fa-right-left mx-2"></i
+            >{{
+              properPluralEnding(currentUser.portfolio?.trades?.length, "Trade")
+            }}
+          </div>
+          <div class="ms-2 mt-3 fw-bold">
+            <i class="fa-solid fa-minus me-1"></i
+            ><i class="fa-solid fa-calendar-days"></i> Totals<i
+              class="fa-solid fa-minus ms-1"
+            ></i>
+          </div>
+          <div *ngIf="userAggregateData !== undefined && userAggregateData.totalSpent" class="fw-bold mt-1" matTooltip="Total Spent" matTooltipPosition="after">
+            <i class="fa-solid fa-hand-holding-dollar mx-2"></i> ${{ userAggregateData.totalSpent }}
+          </div>
+          <div *ngIf="userAggregateData !== undefined && userAggregateData.totalProfit" class="fw-bold mt-1" matTooltip="Total Profit" matTooltipPosition="after">
+            <i class="fa-solid fa-money-bill-trend-up"></i> ${{ userAggregateData.totalProfit }}
+          </div>
+          <div
+            *ngIf="
+              userAggregateData !== undefined && userAggregateData.mostLossDay
+            "
+            class="fw-bold mt-1"
+            matTooltip="Highest Loss Day"
+            matTooltipPosition="after"
+          >
+            <i class="fa-solid fa-dumpster-fire mx-2"></i
+            >{{ properDateFormat(userAggregateData.mostLossDay) }}
+          </div>
+          <div
+            *ngIf="
+              userAggregateData !== undefined &&
+              userAggregateData.mostProfitableDay
+            "
+            class="fw-bold mt-1"
+            matTooltip="Highest Profit Day"
+            matTooltipPosition="after"
+          >
+            <i class="fa-solid fa-trophy mx-2"></i
+            >{{ properDateFormat(userAggregateData.mostProfitableDay) }}
+          </div>
+          <div
+            *ngIf="
+              userAggregateData !== undefined &&
+              userAggregateData.mostSoldStockSymbol
+            "
+            class="fw-bold mt-1"
+            matTooltip="Most Sold Stock"
+            matTooltipPosition="after"
+          >
+            <i class="fa-solid fa-hand-holding-dollar mx-2"></i>
+            {{ userAggregateData.mostSoldStockSymbol }}
+          </div>
+          <div
+            *ngIf="
+              userAggregateData !== undefined &&
+              userAggregateData.mostBoughtStockSymbol
+            "
+            class="fw-bold mt-1"
+            matTooltip="Most Bought Stock"
+            matTooltipPosition="after"
+          >
+            <i class="fa-solid fa-hands-holding-circle mx-2"></i>
+            {{ userAggregateData.mostBoughtStockSymbol }}
+          </div>
+          <div
+            *ngIf="
+              userAggregateData !== undefined &&
+              userAggregateData.avgTradesPerDay
+            "
+            class="fw-bold"
+            matTooltip="Average Trades Per Day"
+            matTooltipPosition="after"
+          >
+            <i class="fa-solid fa-gauge mx-2"></i>
+            {{ userAggregateData.avgTradesPerDay }}
+          </div>
+        </div>
+        <div>
+          <!-- Bottom content -->
+          <button
+            type="button"
+            class="w-100 btn btn-outline-primary border-1 border-start-0 border-end-0 border-bottom-0"
+          >
+            Logout
+          </button>
+        </div>
+        <i
+          class="fa-solid text-light toggle_button bg-dark rounded-pill ms-2 p-2 img-thumbnail"
+          [ngClass]="{
+            'fa-arrow-right': isSidebarExpanded === false,
+            'fa-arrow-left': isSidebarExpanded === true
+          }"
+          matTooltip="{{ getToggleButtonTooltipText() }}"
+          (click)="toggleSidebar()"
+        ></i>
+      </span>
+    </span>
+  </span>
+</div>

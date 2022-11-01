@@ -36,23 +36,47 @@ export class TradeService {
 		if (cost > balance) {
 			return false;
 		}
-		const modifiedBalance = balance - cost;
+		const modifiedBalance = Number(Math.round(balance - cost).toFixed(2));
+		// Adding log of trade
 		const tradeLog: Trade = {
-			loss: cost,
+			loss: Number(Math.round(cost).toFixed(2)),
 			stockAmount: amt,
+			stockSymbol,
 			time: new Date(Date.now()),
 			type: TRADE_TYPE.BUY,
 		};
 		const trades = [...portfolio.trades];
 		trades.push(tradeLog);
+		// Updating stocks
+		const stocks = [...portfolio.stocks];
+		const isStockAlreadyPresent = stocks.some(
+			(eachStock: OwnedStock) =>
+				eachStock.symbol.toLowerCase() === stockSymbol.toLowerCase(),
+		);
+		if (isStockAlreadyPresent) {
+			// stock is already present
+			const ind = stocks.findIndex(
+				(eachOwnedStock: OwnedStock) =>
+					eachOwnedStock.symbol.toLowerCase() ===
+					stockSymbol.toLowerCase(),
+			);
+			stocks[ind] = { ...stocks[ind], amount: stocks[ind].amount + amt };
+		} else {
+			stocks.push({ amount: amt, symbol: stockSymbol });
+		}
 		await userCollection.updateOne(
 			{ username },
-			{ balance: modifiedBalance, portfolio: trades },
+			{
+				$set: {
+					balance: modifiedBalance,
+					portfolio: { stocks, trades },
+				},
+			},
 		);
 		await stockCollection.updateOne(
 			{ symbol: stockSymbol },
 			{
-				shares: shares - amt,
+				$set: { shares: shares - amt },
 			},
 		);
 		return true;
@@ -119,14 +143,16 @@ export class TradeService {
 				await stockCollection.updateOne(
 					{ symbol: stockSymbol },
 					{
-						shares: currentStock.shares + amt,
+						$set: { shares: currentStock.shares + amt },
 					},
 				);
 				await userCollection.updateOne(
 					{ username },
 					{
-						balance: modifiedBalance,
-						portfolio: { ...portfolio, stocks: updatedStocks },
+						$set: {
+							balance: modifiedBalance,
+							portfolio: { ...portfolio, stocks: updatedStocks },
+						},
 					},
 				);
 			}
