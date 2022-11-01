@@ -38,7 +38,6 @@ export class SidebarComponent implements OnInit {
         `${ROUTE_PREFIXES.user}data?username=${parsedUsername.value}`
       );
       dataRequest.subscribe((result: { user: Partial<User> }) => {
-        console.log('found user = ', result);
         this.currentUser = result.user;
         if (result.user.portfolio) {
           this.currentUserStockSymbols = result.user.portfolio.stocks.map(
