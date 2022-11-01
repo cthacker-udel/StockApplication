@@ -16,8 +16,8 @@ import { dateToMMDDYYYY } from 'src/shared/helpers/dateToMMDDYYYY';
   templateUrl: './sidebar.component.html',
 })
 export class SidebarComponent implements OnInit {
-  isSidebarExpanded: boolean = true;
-  touched: boolean = true;
+  isSidebarExpanded: boolean = false;
+  touched: boolean = false;
   currentUser: Partial<User>;
   currentUserStockSymbols: string[];
   userAggregateData: UserAggregateData;
