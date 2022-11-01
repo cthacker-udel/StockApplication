@@ -35,6 +35,7 @@ import { DeleteStockModal } from './_components/admin/dashboard/modals/deleteSto
 import { MatButtonModule } from '@angular/material/button';
 import { AddStockModal } from './_components/admin/dashboard/modals/addStock/addStockModal.component';
 import { SidebarComponent } from './_components/sidebar/sidebar.component';
+import { SidebarService } from './_services/sidebar.service';
 
 @NgModule({
   declarations: [
@@ -87,6 +88,7 @@ import { SidebarComponent } from './_components/sidebar/sidebar.component';
     UserService,
     TradingService,
     SocketService,
+    SidebarService,
   ],
   bootstrap: [AppComponent],
 })

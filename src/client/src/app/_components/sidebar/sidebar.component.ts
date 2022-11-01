@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ConfigService } from 'src/app/config/config.service';
+import { OwnedStock } from 'src/app/_models/OwnedStock';
 import { SessionCookie } from 'src/app/_models/SessionCookie';
+import { Stock } from 'src/app/_models/Stock';
 import { User } from 'src/app/_models/User';
 import { UserAggregateData } from 'src/app/_models/UserAggregateData';
-import { TradingService } from 'src/app/_services/trading.service';
+import { SidebarService } from 'src/app/_services/sidebar.service';
 import { SECRETS } from 'src/secrets';
 import { ROUTE_PREFIXES } from 'src/shared/constants/api';
 import { dateToMMDDYYYY } from 'src/shared/helpers/dateToMMDDYYYY';
@@ -17,11 +19,12 @@ export class SidebarComponent implements OnInit {
   isSidebarExpanded: boolean = true;
   touched: boolean = true;
   currentUser: Partial<User>;
+  currentUserStockSymbols: string[];
   userAggregateData: UserAggregateData;
 
   constructor(
     private configService: ConfigService,
-    private tradingService: TradingService
+    private sidebarService: SidebarService
   ) {}
 
   ngOnInit(): void {
@@ -37,12 +40,25 @@ export class SidebarComponent implements OnInit {
       dataRequest.subscribe((result: { user: Partial<User> }) => {
         console.log('found user = ', result);
         this.currentUser = result.user;
+        if (result.user.portfolio) {
+          this.currentUserStockSymbols = result.user.portfolio.stocks.map(
+            (eachStock: OwnedStock) => eachStock.symbol
+          );
+        }
       });
       const aggregateRequest = this.configService.getConfig<UserAggregateData>(
         `${ROUTE_PREFIXES.user}aggregate?username=${parsedUsername.value}`
       );
       aggregateRequest.subscribe((result: UserAggregateData) => {
         this.userAggregateData = result;
+      });
+
+      this.sidebarService.getUpdates().subscribe((changedStock: Stock) => {
+        if (this.currentUserStockSymbols.includes(changedStock.symbol)) {
+          aggregateRequest.subscribe((result: UserAggregateData) => {
+            this.userAggregateData = result;
+          });
+        }
       });
     }
   }
