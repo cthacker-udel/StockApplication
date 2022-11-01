@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this -- disabled */
 /* eslint-disable wrap-regex -- not needed*/
 import type { FoundUserEmailByUsernameReturn, Role, User } from "../../@types";
 import { BaseService, Roles } from "../../common";
@@ -9,7 +10,10 @@ import { RolesService } from "../roles";
 import { generateRandomBalance } from "../../common/api/generateRandomBalance";
 import { API_CONSTANTS } from "../../common/api/apiConstants";
 import type { UserAggregateData } from "../../@types/api/user/UserAggregateData";
-import { withUsername } from "../../modules/helpers/getAggregateDataHelpers";
+import {
+	withUsername,
+	withUsernamePotentialProfit,
+} from "../../modules/helpers/getAggregateDataHelpers";
 
 export class UserService extends BaseService {
 	public constructor() {
@@ -298,9 +302,14 @@ export class UserService extends BaseService {
 		return { ...rest, roles: [maxValue.toString()] };
 	};
 
-	// eslint-disable-next-line class-methods-use-this -- special case where helper is needed to reduce overhead
 	public getUserAggregateDataWithUsername = async (
 		client: StockMongoClient,
 		username: string,
 	): Promise<UserAggregateData | undefined> => withUsername(client, username);
+
+	public getUserPotentialProfit = async (
+		client: StockMongoClient,
+		username: string,
+	): Promise<Partial<UserAggregateData> | undefined> =>
+		withUsernamePotentialProfit(client, username);
 }

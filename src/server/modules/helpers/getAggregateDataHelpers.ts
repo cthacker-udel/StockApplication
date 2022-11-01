@@ -180,3 +180,61 @@ export const withUsername = async (
 		totalSpent,
 	};
 };
+
+export const withUsernamePotentialProfit = async (
+	client: StockMongoClient,
+	username: string,
+): Promise<Partial<UserAggregateData> | undefined> => {
+	const userCollection = client
+		.getClient()
+		.db(MONGO_COMMON.DATABASE_NAME)
+		.collection("user");
+	const stockCollection = client
+		.getClient()
+		.db(MONGO_COMMON.DATABASE_NAME)
+		.collection("stock");
+
+	const foundUser = await userCollection.findOne<User>({ username });
+	if (foundUser === null) {
+		return undefined;
+	}
+
+	// user exists, start generating aggregate data, organize trades by day
+	const { portfolio } = foundUser;
+	const { stocks } = portfolio;
+
+	const allStockInformationPromises: Promise<Stock | null>[] = [];
+	const allStockInformationSymbols: string[] = [];
+	for (const eachOwnedStock of stocks) {
+		allStockInformationPromises.push(
+			stockCollection.findOne<Stock>({
+				symbol: eachOwnedStock.symbol,
+			}),
+		);
+		allStockInformationSymbols.push(eachOwnedStock.symbol);
+	}
+
+	const allStockInformation: (Stock | null)[] = await Promise.all(
+		allStockInformationPromises,
+	);
+
+	const totalPotentialProfit = stocks
+		.map((eachStock: OwnedStock) => {
+			const foundStockInfo = allStockInformationSymbols.indexOf(
+				eachStock.symbol,
+			);
+			const stockInfo = allStockInformation[foundStockInfo];
+			if (stockInfo !== null) {
+				return eachStock.amount * stockInfo.price;
+			}
+			return 0;
+		})
+		.reduce(
+			(previousValue: number, currentValue: number) =>
+				previousValue + currentValue,
+			0,
+		);
+	return {
+		totalPotentialProfit,
+	};
+};

@@ -53,11 +53,22 @@ export class SidebarComponent implements OnInit {
         this.userAggregateData = result;
       });
 
+      const potentialProfitRequest = this.configService.getConfig<
+        Partial<UserAggregateData>
+      >(
+        `${ROUTE_PREFIXES.user}potentialProfit?username=${parsedUsername.value}`
+      );
+
       this.sidebarService.getUpdates().subscribe((changedStock: Stock) => {
         if (this.currentUserStockSymbols.includes(changedStock.symbol)) {
-          aggregateRequest.subscribe((result: UserAggregateData) => {
-            this.userAggregateData = result;
-          });
+          potentialProfitRequest.subscribe(
+            (updatedPotentialProfit: Partial<UserAggregateData>) => {
+              if (updatedPotentialProfit.totalPotentialProfit) {
+                this.userAggregateData.totalPotentialProfit =
+                  updatedPotentialProfit.totalPotentialProfit;
+              }
+            }
+          );
         }
       });
     }
