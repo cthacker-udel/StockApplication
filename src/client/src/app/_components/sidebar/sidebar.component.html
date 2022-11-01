@@ -24,7 +24,7 @@
               class="ms-1 fa-solid fa-minus"
             ></i>
           </div>
-          <div *ngIf="currentUser !== undefined" class="fw-bold mt-1">
+          <div *ngIf="currentUser !== undefined" class="fw-bold mt-1" matTooltip="Current Balance" matTooltipPosition="after">
             <i class="fa-solid fa-vault mx-2"></i>${{
               currentUser.balance?.toFixed(2)
             }}
@@ -35,6 +35,8 @@
               userAggregateData?.totalPotentialProfit !== undefined
             "
             class="fw-bold mt-1"
+            matTooltip="Potential Profit"
+            matTooltipPosition="after"
           >
             <i class="fa-solid fa-comment-dollar mx-2"></i> ${{
               userAggregateData.totalPotentialProfit
@@ -46,6 +48,8 @@
               currentUser.portfolio?.stocks !== undefined
             "
             class="fw-bold mt-1"
+            matTooltip="# of stocks"
+            matTooltipPosition="after"
           >
             <i class="fa-solid fa-cubes-stacked mx-2"></i
             >{{
@@ -58,6 +62,8 @@
               currentUser.portfolio?.trades !== undefined
             "
             class="fw-bold"
+            matTooltip="# of trades"
+            matTooltipPosition="after"
           >
             <i class="fa-solid fa-right-left mx-2"></i
             >{{
@@ -70,10 +76,10 @@
               class="fa-solid fa-minus ms-1"
             ></i>
           </div>
-          <div *ngIf="userAggregateData !== undefined && userAggregateData.totalSpent" class="fw-bold mt-1">
+          <div *ngIf="userAggregateData !== undefined && userAggregateData.totalSpent" class="fw-bold mt-1" matTooltip="Total Spent" matTooltipPosition="after">
             <i class="fa-solid fa-hand-holding-dollar mx-2"></i> ${{ userAggregateData.totalSpent }}
           </div>
-          <div *ngIf="userAggregateData !== undefined && userAggregateData.totalProfit" class="fw-bold mt-1">
+          <div *ngIf="userAggregateData !== undefined && userAggregateData.totalProfit" class="fw-bold mt-1" matTooltip="Total Profit" matTooltipPosition="after">
             <i class="fa-solid fa-money-bill-trend-up"></i> ${{ userAggregateData.totalProfit }}
           </div>
           <div
@@ -81,6 +87,8 @@
               userAggregateData !== undefined && userAggregateData.mostLossDay
             "
             class="fw-bold mt-1"
+            matTooltip="Highest Loss Day"
+            matTooltipPosition="after"
           >
             <i class="fa-solid fa-dumpster-fire mx-2"></i
             >{{ properDateFormat(userAggregateData.mostLossDay) }}
@@ -91,6 +99,8 @@
               userAggregateData.mostProfitableDay
             "
             class="fw-bold mt-1"
+            matTooltip="Highest Profit Day"
+            matTooltipPosition="after"
           >
             <i class="fa-solid fa-trophy mx-2"></i
             >{{ properDateFormat(userAggregateData.mostProfitableDay) }}
@@ -101,6 +111,8 @@
               userAggregateData.mostSoldStockSymbol
             "
             class="fw-bold mt-1"
+            matTooltip="Most Sold Stock"
+            matTooltipPosition="after"
           >
             <i class="fa-solid fa-hand-holding-dollar mx-2"></i>
             {{ userAggregateData.mostSoldStockSymbol }}
@@ -111,6 +123,8 @@
               userAggregateData.mostBoughtStockSymbol
             "
             class="fw-bold mt-1"
+            matTooltip="Most Bought Stock"
+            matTooltipPosition="after"
           >
             <i class="fa-solid fa-hands-holding-circle mx-2"></i>
             {{ userAggregateData.mostBoughtStockSymbol }}
@@ -121,6 +135,8 @@
               userAggregateData.avgTradesPerDay
             "
             class="fw-bold"
+            matTooltip="Average Trades Per Day"
+            matTooltipPosition="after"
           >
             <i class="fa-solid fa-gauge mx-2"></i>
             {{ userAggregateData.avgTradesPerDay }}
