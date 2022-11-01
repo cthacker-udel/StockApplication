@@ -10,15 +10,25 @@
           sidebar_contents_not_touched: touched === false
         }"
       >
-        <div class="d-flex flex-row sidebar_text">
-          <i class="fa-solid fa-user my-auto mx-2"></i>
-          <div *ngIf="currentUser !== undefined" class="me-2">
-            {{ currentUser.username }}
+        <div>
+          <div class="d-flex flex-row sidebar_text my-2">
+            <i class="fa-solid fa-user my-auto mx-2"></i>
+            <div *ngIf="currentUser !== undefined" class="me-2 fw-bold">
+              {{ currentUser.username }}
+            </div>
           </div>
+          <div *ngIf="currentUser !== undefined" class="ms-2 fw-bold">${{ currentUser.balance?.toFixed(2) }}</div>
+          <div *ngIf="currentUser !== undefined && currentUser.portfolio?.stocks !== undefined" class="fw-bold my-2"><i class="fa-solid fa-cubes-stacked mx-2"></i>{{ properPluralEnding(currentUser.portfolio?.stocks?.length, 'Stock') }}</div>
+          <div *ngIf="currentUser !== undefined && currentUser.portfolio?.trades !== undefined" class="fw-bold"><i class="fa-solid fa-right-left mx-2"></i>{{ properPluralEnding(currentUser.portfolio?.trades?.length, 'Trade') }}</div>
         </div>
-        <div>Contents2</div>
-        <div>Contents3</div>
-        <div>Contents4</div>
+        <div>
+          <button
+            type="button"
+            class="w-100 btn btn-outline-primary border-1 border-start-0 border-end-0 border-bottom-0"
+          >
+            Logout
+          </button>
+        </div>
         <i
           class="fa-solid text-light toggle_button bg-dark rounded-pill ms-2 p-2 img-thumbnail"
           [ngClass]="{

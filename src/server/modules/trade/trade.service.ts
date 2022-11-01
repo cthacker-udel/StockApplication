@@ -37,6 +37,7 @@ export class TradeService {
 			return false;
 		}
 		const modifiedBalance = Number(Math.round(balance - cost).toFixed(2));
+		// Adding log of trade
 		const tradeLog: Trade = {
 			loss: Number(Math.round(cost).toFixed(2)),
 			stockAmount: amt,
@@ -46,9 +47,31 @@ export class TradeService {
 		};
 		const trades = [...portfolio.trades];
 		trades.push(tradeLog);
+		// Updating stocks
+		const stocks = [...portfolio.stocks];
+		const isStockAlreadyPresent = stocks.some(
+			(eachStock: OwnedStock) =>
+				eachStock.symbol.toLowerCase() === stockSymbol.toLowerCase(),
+		);
+		if (isStockAlreadyPresent) {
+			// stock is already present
+			const ind = stocks.findIndex(
+				(eachOwnedStock: OwnedStock) =>
+					eachOwnedStock.symbol.toLowerCase() ===
+					stockSymbol.toLowerCase(),
+			);
+			stocks[ind] = { ...stocks[ind], amount: stocks[ind].amount + amt };
+		} else {
+			stocks.push({ amount: amt, symbol: stockSymbol });
+		}
 		await userCollection.updateOne(
 			{ username },
-			{ $set: { balance: modifiedBalance, portfolio: trades } },
+			{
+				$set: {
+					balance: modifiedBalance,
+					portfolio: { stocks, trades },
+				},
+			},
 		);
 		await stockCollection.updateOne(
 			{ symbol: stockSymbol },

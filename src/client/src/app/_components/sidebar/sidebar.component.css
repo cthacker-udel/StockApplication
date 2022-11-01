@@ -21,9 +21,10 @@
     position: absolute;
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: space-between;
     height: 100vh;
     min-width: 10vw;
+    max-width: 20vw;
     z-index: 1000;
 }
 

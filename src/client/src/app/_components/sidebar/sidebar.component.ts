@@ -48,4 +48,8 @@ export class SidebarComponent implements OnInit {
   getToggleButtonTooltipText() {
     return this.isSidebarExpanded ? 'Shrink Toolbar' : 'Expand Toolbar';
   }
+
+  properPluralEnding(amt: number | undefined, text: string): string {
+    return amt ? (amt > 1 ? `${amt} ${text}s` : `${amt} ${text}`) : '';
+  }
 }
