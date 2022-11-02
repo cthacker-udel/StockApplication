@@ -118,12 +118,14 @@ export class TradeController implements BaseController {
 						usernameHeader,
 					) as SessionCookie;
 					const { value: username } = parsedUsername;
-					await this.tradeService.sellStock(
+					const result = await this.tradeService.sellStock(
 						this.client,
 						Number.parseInt(amt as string, 10),
 						stockSymbol as string,
 						username,
 					);
+					response.status(200);
+					response.send(result);
 				}
 			}
 		} catch (error: unknown) {

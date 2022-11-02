@@ -1,6 +1,11 @@
 /* eslint-disable class-methods-use-this -- disabled */
 /* eslint-disable wrap-regex -- not needed*/
-import type { FoundUserEmailByUsernameReturn, Role, User } from "../../@types";
+import type {
+	FoundUserEmailByUsernameReturn,
+	OwnedStock,
+	Role,
+	User,
+} from "../../@types";
 import { BaseService, Roles } from "../../common";
 import { MONGO_COMMON, type StockMongoClient } from "../../mongo";
 import { pbkdf2Encryption } from "../encryption";
@@ -312,4 +317,19 @@ export class UserService extends BaseService {
 		username: string,
 	): Promise<Partial<UserAggregateData> | undefined> =>
 		withUsernamePotentialProfit(client, username);
+
+	public getUserOwnedStockWithUsername = async (
+		client: StockMongoClient,
+		username: string,
+	): Promise<OwnedStock[]> => {
+		const userCollection = client
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection(this.COLLECTION_NAME);
+		const foundUser = await userCollection.findOne<User>({ username });
+		if (foundUser === null) {
+			return [];
+		}
+		return foundUser.portfolio.stocks;
+	};
 }
