@@ -20,6 +20,9 @@ import {
 	withUsernamePotentialProfit,
 } from "../../modules/helpers/getAggregateDataHelpers";
 
+/**
+ * Handles all database logic for user involved database actions
+ */
 export class UserService extends BaseService {
 	public constructor() {
 		super("user");

@@ -1,6 +1,6 @@
 import { type Collection, ObjectId, type InsertOneResult } from "mongodb";
 import type { SortByOptions, Stock, User } from "../../@types";
-import { BaseService } from "../../common/api/baseservice";
+import { BaseService } from "../../common";
 import { MONGO_COMMON, type StockMongoClient } from "../../mongo";
 
 /**

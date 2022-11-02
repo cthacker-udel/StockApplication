@@ -1,9 +1,13 @@
 /* eslint-disable sonarjs/cognitive-complexity -- not need */
 /* eslint-disable class-methods-use-this -- not needed */
-import type { Stock, User } from "@types";
-import { type Trade, TRADE_TYPE } from "../../@types/api/trade/Trade";
+import {
+	type Stock,
+	type User,
+	type OwnedStock,
+	type Trade,
+	TRADE_TYPE,
+} from "../../@types";
 import { MONGO_COMMON, type StockMongoClient } from "../../mongo";
-import type { OwnedStock } from "../../@types/api/stock/OwnedStock";
 
 export class TradeService {
 	public buyStock = async (

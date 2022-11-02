@@ -1,20 +1,22 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment -- not needed */
-import type { StockMongoClient } from "../../mongo/stockMongoClient";
+import type { StockMongoClient } from "../../mongo";
 import {
 	type BaseController,
 	updateRoutes,
-} from "../../common/api/basecontroller";
+	generateApiMessage,
+	Roles,
+} from "../../common";
 import type { Server } from "socket.io";
-import type { RouteMapping } from "@types";
 import type { Request, Response, Router } from "express";
-import { generateApiMessage, Roles } from "../../common";
 import { SECRETS } from "../../secrets";
-import type { SessionCookie } from "../../@types/api/session/SessionCookie";
+import type { SessionCookie, RouteMapping } from "../../@types";
 import { TradeService } from "./trade.service";
-import { rolesValidator } from "../../middleware/rolesValidator/rolesValidator";
-import type { SessionService } from "../../modules/session";
-import { asyncMiddlewareHandler } from "../../middleware/asyncMiddlewareHandler";
-import { cookieValidator } from "../../middleware/cookieValidator/cookieValidator";
+import {
+	rolesValidator,
+	asyncMiddlewareHandler,
+	cookieValidator,
+} from "../../middleware";
+import type { SessionService } from "../../modules";
 
 export class TradeController implements BaseController {
 	public readonly ROUTE_PREFIX: string = "/trade/";

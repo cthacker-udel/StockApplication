@@ -1,16 +1,16 @@
 import type { Request, Response, Router } from "express";
-import { updateRoutes } from "../../common/api/basecontroller";
 import type { RouteMapping, SortByOptions, Stock } from "../../@types";
 import {
 	type BaseController,
 	ERROR_CODE_ENUM,
 	generateApiMessage,
 	Roles,
+	updateRoutes,
 } from "../../common";
 import { MONGO_COMMON, type StockMongoClient } from "../../mongo";
 import { StockService } from "./stock.service";
 import type { SessionService } from "../session";
-import { rolesValidator } from "../../middleware/rolesValidator/rolesValidator";
+import { rolesValidator } from "../../middleware";
 import type { ChangeStreamUpdateDocument } from "mongodb";
 import type { Server } from "socket.io";
 

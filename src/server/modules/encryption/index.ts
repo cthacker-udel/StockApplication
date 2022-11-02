@@ -1,1 +1,5 @@
-export { pbkdf2Encryption } from "./encryption";
+export {
+	pbkdf2Encryption,
+	fixedPbkdf2Encryption,
+	generateToken,
+} from "./encryption";

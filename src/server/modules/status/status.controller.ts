@@ -1,7 +1,6 @@
 import type { Request, Response, Router } from "express";
 import type { RouteMapping } from "../../@types";
-import { type BaseController } from "../../common";
-import { updateRoutes } from "../../common/api/basecontroller";
+import { type BaseController, updateRoutes } from "../../common";
 import type { StockMongoClient } from "../../mongo";
 import { StatusService } from "./status.service";
 

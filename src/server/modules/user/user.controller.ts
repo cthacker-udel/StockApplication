@@ -6,19 +6,19 @@ import {
 	generateApiMessage,
 	generateEmail,
 	Roles,
-} from "../../common";
-import type { StockMongoClient } from "../../mongo";
-import {
 	type BaseController,
 	updateRoutes,
-} from "../../common/api/basecontroller";
+} from "../../common";
+import type { StockMongoClient } from "../../mongo";
 import { UserService } from "./user.service";
 import type { MailService } from "@sendgrid/mail";
-import { generateToken } from "../encryption/encryption";
+import { generateToken } from "../encryption";
 import type { SessionService } from "../session";
-import { rolesValidator } from "../../middleware/rolesValidator/rolesValidator";
-import { asyncMiddlewareHandler } from "../../middleware/asyncMiddlewareHandler";
-import { cookieValidator } from "../../middleware/cookieValidator/cookieValidator";
+import {
+	rolesValidator,
+	cookieValidator,
+	asyncMiddlewareHandler,
+} from "../../middleware";
 
 export class UserController implements BaseController {
 	public ROUTE_PREFIX = "/user/";
