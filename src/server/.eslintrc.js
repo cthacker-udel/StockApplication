@@ -49,7 +49,6 @@ module.exports = {
 				SwitchCase: 1,
 			},
 		],
-		"linebreak-style": ["error", "windows"],
 		quotes: ["error", "double"],
 		semi: ["error", "always"],
 		"for-direction": "error",

@@ -21,4 +21,7 @@ export type User = {
 
 	// trade records
 	portfolio: Portfolio;
+
+	// Users profit/loss
+	profitLoss: number;
 };

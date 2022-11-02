@@ -1,5 +1,8 @@
+/* eslint-disable spaced-comment -- no */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access -- not needed*/
+/* eslint-disable @typescript-eslint/no-unsafe-assignment -- not needed*/
 /* eslint-disable wrap-regex -- not needed*/
-import type { FoundUserEmailByUsernameReturn, Role, User } from "../../@types";
+import type { FoundUserEmailByUsernameReturn, Role, Stock, User } from "../../@types";
 import { BaseService, Roles } from "../../common";
 import { MONGO_COMMON, type StockMongoClient } from "../../mongo";
 import { pbkdf2Encryption } from "../encryption";
@@ -317,5 +320,46 @@ export class UserService extends BaseService {
 			{ ...foundUser, pfpLink: imageLink },
 		);
 		return updateResult.modifiedCount > 0;
+	};
+
+	// eslint-disable-next-line class-methods-use-this -- not needed
+	public getProfitLoss = async (
+		client: StockMongoClient,
+		stockSymbol: string,
+		username: string,
+		oldPrice: Number,
+	): Promise<boolean> => {
+		const userCollection = client
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection("user");
+		const stockCollection = client
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection("stock");
+		const foundUser = await userCollection.findOne<User>({ username });
+		const foundStock = await stockCollection.findOne<Stock>({ symbol: stockSymbol });
+		if (foundUser === null || foundStock === null) {
+			return false;
+		}
+		const { balance, portfolio, profitLoss } = foundUser;
+		// eslint-disable-next-line @typescript-eslint/no-for-in-array, guard-for-in -- not needed
+		for (const stock in portfolio.stocks) {
+			if (stock === stockSymbol) {
+				/*
+				const stockAmount = stock.amount;
+				const OldTotal = stockAmount * oldPrice
+				const currPrice = stock.price
+				const newTotal = stockAmount * currPrice
+				modifiedProfitLoss = profitLoss + (newTotal-OldTotal)
+				*/
+			}
+		}
+		const modifiedProfitLoss = 1;
+		await userCollection.updateOne(
+			{ username },
+			{ profit_loss: modifiedProfitLoss },
+		);
+		return false;
 	};
 }
