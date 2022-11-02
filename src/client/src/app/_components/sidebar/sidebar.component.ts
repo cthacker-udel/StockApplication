@@ -98,4 +98,8 @@ export class SidebarComponent implements OnInit {
   properDateFormat(date: Date | string): string {
     return dateToMMDDYYYY(date);
   }
+
+  truncateDecimal(decimal: number, amount: number) {
+    return decimal.toFixed(amount);
+  }
 }

@@ -4,5 +4,7 @@ export const dateToMMDDYYYY = (date: Date | string): string => {
     return `${date.getMonth()}/${date.getDate()}/${date.getFullYear()}`;
   }
   const newDate = new Date(date);
-  return `${newDate.getMonth()}/${newDate.getDate()}/${newDate.getFullYear()}`;
+  return `${
+    newDate.getMonth() + 1
+  }/${newDate.getDate()}/${newDate.getFullYear()}`;
 };

@@ -39,7 +39,7 @@
             matTooltipPosition="after"
           >
             <i class="fa-solid fa-comment-dollar mx-2"></i> ${{
-              userAggregateData.totalPotentialProfit
+              truncateDecimal(userAggregateData.totalPotentialProfit ?? 0, 2)
             }}
           </div>
           <div
