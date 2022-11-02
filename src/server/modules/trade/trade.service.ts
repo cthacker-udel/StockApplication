@@ -73,7 +73,7 @@ export class TradeService {
 			{
 				$set: {
 					balance: modifiedBalance,
-					portfolio: { stocks, trades },
+					portfolio: { ...portfolio, stocks, trades },
 				},
 			},
 		);

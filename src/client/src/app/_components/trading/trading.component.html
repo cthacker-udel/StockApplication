@@ -196,7 +196,7 @@
                 matInput
                 readonly
                 type="text"
-                value="{{ isBuying ? actionStock.symbol : sellStock.symbol }}"
+                value="{{ isBuying ? (actionStock ? actionStock.symbol : '') : sellStock ? sellStock.symbol : '' }}"
               />
             </mat-form-field>
           </form>

@@ -59,7 +59,10 @@ export class SidebarComponent implements OnInit {
       );
 
       this.sidebarService.getUpdates().subscribe((changedStock: Stock) => {
-        if (this.currentUserStockSymbols.includes(changedStock.symbol)) {
+        if (
+          this.currentUserStockSymbols &&
+          this.currentUserStockSymbols.includes(changedStock.symbol)
+        ) {
           potentialProfitRequest.subscribe(
             (updatedPotentialProfit: Partial<UserAggregateData>) => {
               if (updatedPotentialProfit.totalPotentialProfit) {

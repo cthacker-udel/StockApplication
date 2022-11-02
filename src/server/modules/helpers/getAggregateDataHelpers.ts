@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function -- not needed */
 /* eslint-disable no-restricted-syntax -- disabled */
 /* eslint-disable sonarjs/cognitive-complexity -- disabled */
 /* eslint-disable max-statements -- disabled */
@@ -33,7 +34,11 @@ export const withUsername = async (
 		.collection("stock");
 
 	const foundUser = await userCollection.findOne<User>({ username });
-	if (foundUser === null) {
+	if (
+		foundUser === null ||
+		foundUser.portfolio?.stocks === undefined ||
+		foundUser.portfolio?.trades === undefined
+	) {
 		return undefined;
 	}
 
