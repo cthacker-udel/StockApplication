@@ -1,4 +1,4 @@
-import type { Stock } from "@types";
+import type { Stock } from "../../@types";
 
 export const processStocksForDashboard = (stocks: Stock[]) => {
 	stocks.sort((stock1: Stock, stock2: Stock) => {

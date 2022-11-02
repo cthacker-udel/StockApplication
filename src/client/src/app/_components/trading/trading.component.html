@@ -31,7 +31,7 @@
       </button>
     </div>
   </div>
-  <div class="mat-elevation-z8 w-75 mx-auto mt-3">
+  <div class="mat-elevation-z8 w-75 mx-auto mt-3" *ngIf="isBuying">
     <table class="w-100" mat-table [dataSource]="stocks">
       <ng-container matColumnDef="Symbol">
         <th class="text-center" mat-header-cell *matHeaderCellDef>Symbol</th>
@@ -127,6 +127,44 @@
       aria-label="Select page of stocks"
     ></mat-paginator>
   </div>
+  <div class="mat-elevation-z8 w-75 mx-auto mt-3" *ngIf="isBuying === false">
+    <table class="w-100" mat-table [dataSource]="ownedStocks">
+      <ng-container matColumnDef="Symbol">
+        <th class="text-center" mat-header-cell *matHeaderCellDef>Symbol</th>
+        <td class="text-center" mat-cell *matCellDef="let element">
+          {{ element.symbol }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="Amount">
+        <th class="text-center" mat-header-cell *matHeaderCellDef>Amount</th>
+        <td class="text-center" mat-cell *matCellDef="let element">
+          {{ element.amount }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="Sell">
+        <th class="text-center" mat-header-cell *matHeaderCellDef>
+          <span>Sell Stock</span>
+        </th>
+        <td class="text-center" mat-cell *matCellDef="let element">
+          <button
+            class="{{ actionBtnClass }} action_btn_text"
+            (click)="fireActionSell(element)"
+            data-bs-toggle="modal"
+            data-bs-target="#actionModal"
+          >
+            {{ generateActionBtnText() }}
+          </button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="sellingColumnDefs"></tr>
+      <tr mat-row *matRowDef="let row; columns: sellingColumnDefs"></tr>
+    </table>
+    <mat-paginator
+    [pageSizeOptions]="[5, 10, 20]"
+    showFirstLastButtons
+    aria-label="Select page of stocks"
+  ></mat-paginator>
+  </div>
   <div
     class="modal fade"
     id="actionModal"
@@ -150,7 +188,7 @@
           </div>
         </div>
         <div class="modal-body d-flex flex-row justify-content-center">
-          <form *ngIf="actionStock !== undefined">
+          <form *ngIf="actionStock !== undefined || sellStock !== undefined">
             <mat-form-field appearance="fill">
               <mat-label>{{ generateActionBtnText() }}ing Stock</mat-label>
               <input
@@ -158,27 +196,27 @@
                 matInput
                 readonly
                 type="text"
-                value="{{ actionStock.symbol }}"
+                value="{{ isBuying ? (actionStock ? actionStock.symbol : '') : sellStock ? sellStock.symbol : '' }}"
               />
             </mat-form-field>
           </form>
         </div>
         <div class="d-flex flex-row justify-content-around">
-          <div class="w-50" *ngIf="actionStock !== undefined">
+          <div class="w-50" *ngIf="actionStock !== undefined || sellStock !== undefined">
             <div class="text-center">Amount</div>
             <mat-slider
               class="amount_slider_width"
               (input)="selectedStockAmountChangeHandler($event)"
               thumbLabel
               tickInterval="100"
-              step="{{ calculateSliderStep(actionStock.shares) }}"
+              step="{{ calculateSliderStep(isBuying ? actionStock.shares : sellStock.amount) }}"
               min="0"
-              max="{{ actionStock.shares }}"
+              max="{{ isBuying ? actionStock.shares : sellStock.amount }}"
               aria-label="units"
             ></mat-slider>
           </div>
-          <div *ngIf="actionStock !== undefined">
-            Total Price {{ displayPrice() }}$
+          <div *ngIf="actionStock !== undefined || sellStock !== undefined">
+            Total Price {{ displayPrice(isBuying ? "buy" : "sell") }}$
           </div>
         </div>
         <div class="modal-footer">

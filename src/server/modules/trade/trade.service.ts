@@ -1,9 +1,13 @@
 /* eslint-disable sonarjs/cognitive-complexity -- not need */
 /* eslint-disable class-methods-use-this -- not needed */
-import type { Stock, User } from "@types";
-import { type Trade, TRADE_TYPE } from "../../@types/api/trade/Trade";
+import {
+	type Stock,
+	type User,
+	type OwnedStock,
+	type Trade,
+	TRADE_TYPE,
+} from "../../@types";
 import { MONGO_COMMON, type StockMongoClient } from "../../mongo";
-import type { OwnedStock } from "../../@types/api/stock/OwnedStock";
 
 export class TradeService {
 	public buyStock = async (
@@ -69,7 +73,7 @@ export class TradeService {
 			{
 				$set: {
 					balance: modifiedBalance,
-					portfolio: { stocks, trades },
+					portfolio: { ...portfolio, stocks, trades },
 				},
 			},
 		);
@@ -101,7 +105,11 @@ export class TradeService {
 			return false;
 		}
 		// found user
-		const { portfolio, balance } = foundUser;
+		const {
+			portfolio,
+			balance,
+			portfolio: { trades },
+		} = foundUser;
 		const isStockOwned = portfolio.stocks.some(
 			(eachOwnedStock: OwnedStock) =>
 				eachOwnedStock.symbol === stockSymbol,
@@ -131,29 +139,48 @@ export class TradeService {
 				const updatedStocks = [...portfolio.stocks].filter(
 					(eachOwnedStock: OwnedStock) =>
 						(() => {
-							if (
-								eachOwnedStock.symbol === stockSymbol &&
-								modifiedAmount !== 0
-							) {
+							if (eachOwnedStock.symbol === stockSymbol) {
+								if (modifiedAmount === 0) {
+									return;
+								}
 								return eachOwnedStock;
 							}
+							return eachOwnedStock;
 						})() !== undefined,
 				);
+
+				const sellTradeEntry: Trade = {
+					profit,
+					stockAmount: amt,
+					stockSymbol,
+					time: new Date(Date.now()),
+					type: TRADE_TYPE.SELL,
+				};
+
 				const modifiedBalance = balance + profit;
-				await stockCollection.updateOne(
+
+				const stockUpdateResult = await stockCollection.updateOne(
 					{ symbol: stockSymbol },
 					{
 						$set: { shares: currentStock.shares + amt },
 					},
 				);
-				await userCollection.updateOne(
+				const userUpdateResult = await userCollection.updateOne(
 					{ username },
 					{
 						$set: {
 							balance: modifiedBalance,
-							portfolio: { ...portfolio, stocks: updatedStocks },
+							portfolio: {
+								...portfolio,
+								stocks: updatedStocks,
+								trades: [sellTradeEntry, ...trades],
+							},
 						},
 					},
+				);
+				return (
+					stockUpdateResult.modifiedCount > 0 &&
+					userUpdateResult.modifiedCount > 0
 				);
 			}
 			return false;

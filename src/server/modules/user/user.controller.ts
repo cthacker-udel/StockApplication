@@ -6,19 +6,19 @@ import {
 	generateApiMessage,
 	generateEmail,
 	Roles,
-} from "../../common";
-import type { StockMongoClient } from "../../mongo";
-import {
 	type BaseController,
 	updateRoutes,
-} from "../../common/api/basecontroller";
+} from "../../common";
+import type { StockMongoClient } from "../../mongo";
 import { UserService } from "./user.service";
 import type { MailService } from "@sendgrid/mail";
-import { generateToken } from "../encryption/encryption";
+import { generateToken } from "../encryption";
 import type { SessionService } from "../session";
-import { rolesValidator } from "../../middleware/rolesValidator/rolesValidator";
-import { asyncMiddlewareHandler } from "../../middleware/asyncMiddlewareHandler";
-import { cookieValidator } from "../../middleware/cookieValidator/cookieValidator";
+import {
+	rolesValidator,
+	cookieValidator,
+	asyncMiddlewareHandler,
+} from "../../middleware";
 
 export class UserController implements BaseController {
 	public ROUTE_PREFIX = "/user/";
@@ -386,6 +386,45 @@ export class UserController implements BaseController {
 		}
 	};
 
+	public getUserOwnedStocksWithUsername = async (
+		request: Request,
+		response: Response,
+	): Promise<void> => {
+		try {
+			const { username } = request.query;
+			if (username === undefined) {
+				response.status(400);
+				response.send(
+					generateApiMessage(
+						"Failed to fetch user owned stock, no username supplied",
+					),
+				);
+			} else {
+				const result =
+					await this.userService.getUserOwnedStockWithUsername(
+						this.client,
+						username as string,
+					);
+				if (result.length === 0) {
+					response.status(204);
+				} else {
+					response.status(200);
+					response.send(result);
+				}
+			}
+		} catch (error: unknown) {
+			console.error(
+				`Failed to fetch user owned stocks ${(error as Error).stack}`,
+			);
+			response.status(400);
+			response.send(
+				generateApiMessage(
+					"Failed to fetch user owned stocks via username",
+				),
+			);
+		}
+	};
+
 	/**
 	 * Fetches all the routes and their methods
 	 *
@@ -407,6 +446,11 @@ export class UserController implements BaseController {
 			[
 				"potentialProfit",
 				this.getUserPotentialProfitWithUsername,
+				[rolesValidator(Roles.USER, this.client)],
+			],
+			[
+				"ownedStocks",
+				this.getUserOwnedStocksWithUsername,
 				[rolesValidator(Roles.USER, this.client)],
 			],
 		],

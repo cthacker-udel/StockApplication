@@ -39,13 +39,14 @@
             matTooltipPosition="after"
           >
             <i class="fa-solid fa-comment-dollar mx-2"></i> ${{
-              userAggregateData.totalPotentialProfit
+              truncateDecimal(userAggregateData.totalPotentialProfit ?? 0, 2)
             }}
           </div>
           <div
             *ngIf="
               currentUser !== undefined &&
-              currentUser.portfolio?.stocks !== undefined
+              currentUser.portfolio?.stocks !== undefined &&
+              currentUser.portfolio!.stocks!.length
             "
             class="fw-bold mt-1"
             matTooltip="# of stocks"
@@ -59,7 +60,7 @@
           <div
             *ngIf="
               currentUser !== undefined &&
-              currentUser.portfolio?.trades !== undefined
+              currentUser.portfolio?.trades !== undefined && currentUser.portfolio!.trades.length > 0
             "
             class="fw-bold"
             matTooltip="# of trades"

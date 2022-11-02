@@ -5,8 +5,11 @@ import { MatSliderChange } from '@angular/material/slider';
 import { MatTableDataSource } from '@angular/material/table';
 import { map, Observable, startWith } from 'rxjs';
 import { ConfigService } from 'src/app/config/config.service';
+import { OwnedStock } from 'src/app/_models/OwnedStock';
+import { SessionCookie } from 'src/app/_models/SessionCookie';
 import { Stock } from 'src/app/_models/Stock';
 import { TradingService } from 'src/app/_services/trading.service';
+import { SECRETS } from 'src/secrets';
 import { ROUTE_PREFIXES } from 'src/shared/constants/api';
 
 @Component({
@@ -18,6 +21,7 @@ export class TradingComponent implements AfterViewInit {
   isBuying: boolean = true;
   rawStockData: Stock[];
   stocks: MatTableDataSource<Stock>;
+  ownedStocks: MatTableDataSource<OwnedStock>;
   columndefs: any[] = [
     'Symbol',
     'Price',
@@ -29,7 +33,11 @@ export class TradingComponent implements AfterViewInit {
     'Actions',
   ];
 
+  sellingColumnDefs: any[] = ['Symbol', 'Amount', 'Sell'];
+
   actionStock: Stock;
+  sellStock: OwnedStock;
+
   selectedStockAmount = 0;
 
   actionBtnClass = this.isBuying
@@ -45,6 +53,7 @@ export class TradingComponent implements AfterViewInit {
     this.tradingService.getAllInitialStocks().subscribe((stocks: Stock[]) => {
       this.rawStockData = stocks;
       this.stocks = new MatTableDataSource<Stock>(this.rawStockData);
+      this.ownedStocks = new MatTableDataSource<OwnedStock>();
       const updateObservable = this.tradingService.getUpdates();
       updateObservable.subscribe((latestUpdate: Stock) => {
         const index = this.rawStockData.findIndex(
@@ -56,6 +65,19 @@ export class TradingComponent implements AfterViewInit {
         this.stocks.data = this.rawStockData;
       });
     });
+    const usernameHeader = localStorage.getItem(
+      SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_ID
+    );
+    if (usernameHeader !== null) {
+      const parsedUsername = JSON.parse(usernameHeader) as SessionCookie;
+      const ownedStocks = this.configService.getConfig<OwnedStock[]>(
+        `${ROUTE_PREFIXES.user}ownedStocks?username=${parsedUsername.value}`
+      );
+      ownedStocks.subscribe((userOwnedStocks: OwnedStock[]) => {
+        console.log('found = ', userOwnedStocks);
+        this.ownedStocks.data = userOwnedStocks;
+      });
+    }
   }
 
   ngAfterViewInit(): void {
@@ -80,6 +102,10 @@ export class TradingComponent implements AfterViewInit {
     this.actionStock = element;
   };
 
+  fireActionSell = (element: OwnedStock) => {
+    this.sellStock = element;
+  };
+
   generateActionBtnText = () => (this.isBuying ? 'Buy' : 'Sell');
 
   roundPriceChange = (price: number): string => {
@@ -96,16 +122,19 @@ export class TradingComponent implements AfterViewInit {
     }
   }
 
-  displayPrice = (): string =>
-    Math.round(this.actionStock.price * this.selectedStockAmount).toFixed(2);
+  displayPrice = (type: string): string =>
+    type === 'buy'
+      ? Math.round(this.actionStock.price * this.selectedStockAmount).toFixed(2)
+      : (
+          this.stocks.data.find(
+            (eachStock: Stock) => eachStock.symbol === this.sellStock.symbol
+          )!.price * this.selectedStockAmount
+        ).toFixed(2);
 
   executeTrade() {
     this.isBuying
       ? this.tradingService.buyStock(this.actionStock, this.selectedStockAmount)
-      : this.tradingService.sellStock(
-          this.actionStock,
-          this.selectedStockAmount
-        );
+      : this.tradingService.sellStock(this.sellStock, this.selectedStockAmount);
     this.selectedStockAmount = 0;
   }
 }
