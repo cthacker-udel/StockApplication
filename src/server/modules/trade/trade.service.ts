@@ -1,3 +1,7 @@
+/* eslint-disable max-statements -- not needed */
+/* eslint-disable indent -- not needed */
+/* eslint-disable @typescript-eslint/indent -- not needed */
+/* eslint-disable no-mixed-spaces-and-tabs -- not needed */
 /* eslint-disable sonarjs/cognitive-complexity -- not need */
 /* eslint-disable class-methods-use-this -- not needed */
 import {
@@ -110,6 +114,7 @@ export class TradeService {
 			balance,
 			portfolio: { trades },
 		} = foundUser;
+
 		const isStockOwned = portfolio.stocks.some(
 			(eachOwnedStock: OwnedStock) =>
 				eachOwnedStock.symbol === stockSymbol,
@@ -120,34 +125,65 @@ export class TradeService {
 				(eachOwnedStock: OwnedStock) =>
 					eachOwnedStock.symbol === stockSymbol,
 			);
+
 			if (foundStock) {
 				const { amount: foundStockAmt } = foundStock;
 				if (foundStockAmt < amt) {
 					// not enough amount available to sell
 					return false;
 				}
+
 				// has enough amount, execute transaction
 				const modifiedAmount = foundStockAmt - amt;
 				const currentStock = await stockCollection.findOne<Stock>({
 					symbol: stockSymbol,
 				});
+
 				if (currentStock === null) {
 					// stock does not exist
 					return false;
 				}
+
 				const profit = currentStock.price * amt;
-				const updatedStocks = [...portfolio.stocks].filter(
-					(eachOwnedStock: OwnedStock) =>
-						(() => {
-							if (eachOwnedStock.symbol === stockSymbol) {
-								if (modifiedAmount === 0) {
-									return;
+
+				const updatedStocks =
+					modifiedAmount === 0
+						? [...portfolio.stocks].filter(
+								(eachStock: OwnedStock) =>
+									eachStock.symbol !== stockSymbol,
+						  )
+						: [...portfolio.stocks].map((eachStock: OwnedStock) => {
+								if (eachStock.symbol === stockSymbol) {
+									return {
+										...eachStock,
+										amount: modifiedAmount,
+									};
 								}
-								return eachOwnedStock;
-							}
-							return eachOwnedStock;
-						})() !== undefined,
-				);
+								return eachStock;
+						  });
+
+				const allStocksPromise = [];
+				for (const eachStock of updatedStocks) {
+					allStocksPromise.push(
+						stockCollection.findOne<Stock>({
+							symbol: eachStock.symbol,
+						}),
+					);
+				}
+				const allStocks = await Promise.all(allStocksPromise);
+
+				const newPortfolioBalance = allStocks
+					.map((stock: Stock | null, _ind: number) => {
+						if (stock === null) {
+							return 0;
+						}
+						return updatedStocks[_ind].amount * stock.price;
+					})
+					.reduce(
+						(element1: number, element2: number) =>
+							element1 + element2,
+						0,
+					);
 
 				const sellTradeEntry: Trade = {
 					profit,
@@ -165,6 +201,7 @@ export class TradeService {
 						$set: { shares: currentStock.shares + amt },
 					},
 				);
+
 				const userUpdateResult = await userCollection.updateOne(
 					{ username },
 					{
@@ -172,6 +209,7 @@ export class TradeService {
 							balance: modifiedBalance,
 							portfolio: {
 								...portfolio,
+								balance: newPortfolioBalance,
 								stocks: updatedStocks,
 								trades: [sellTradeEntry, ...trades],
 							},

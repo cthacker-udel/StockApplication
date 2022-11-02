@@ -64,6 +64,7 @@ export class AppController {
 			client,
 			_mailClient,
 			this.sessionService,
+			this.socketServer,
 		);
 		this.statusController = new StatusController(client);
 

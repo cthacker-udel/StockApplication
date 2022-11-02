@@ -19,6 +19,7 @@ import {
 	withUsername,
 	withUsernamePotentialProfit,
 } from "../../modules/helpers/getAggregateDataHelpers";
+import type { ObjectId } from "mongodb";
 
 /**
  * Handles all database logic for user involved database actions
@@ -334,5 +335,20 @@ export class UserService extends BaseService {
 			return [];
 		}
 		return foundUser.portfolio.stocks;
+	};
+
+	public getUsernameFromObjectId = async (
+		client: StockMongoClient,
+		id: ObjectId,
+	): Promise<User | undefined> => {
+		const userCollection = client
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection(this.COLLECTION_NAME);
+		const foundUser = await userCollection.findOne<User>({ _id: id });
+		if (foundUser === null) {
+			return;
+		}
+		return foundUser;
 	};
 }
