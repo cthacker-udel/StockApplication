@@ -139,29 +139,33 @@ export class TradeService {
 				const updatedStocks = [...portfolio.stocks].filter(
 					(eachOwnedStock: OwnedStock) =>
 						(() => {
-							if (
-								eachOwnedStock.symbol === stockSymbol &&
-								modifiedAmount !== 0
-							) {
+							if (eachOwnedStock.symbol === stockSymbol) {
+								if (modifiedAmount === 0) {
+									return;
+								}
 								return eachOwnedStock;
 							}
+							return eachOwnedStock;
 						})() !== undefined,
 				);
-				const newTrade: Trade = {
+
+				const sellTradeEntry: Trade = {
 					profit,
 					stockAmount: amt,
 					stockSymbol,
 					time: new Date(Date.now()),
 					type: TRADE_TYPE.SELL,
 				};
+
 				const modifiedBalance = balance + profit;
-				const stockResult = await stockCollection.updateOne(
+
+				const stockUpdateResult = await stockCollection.updateOne(
 					{ symbol: stockSymbol },
 					{
 						$set: { shares: currentStock.shares + amt },
 					},
 				);
-				const userResult = await userCollection.updateOne(
+				const userUpdateResult = await userCollection.updateOne(
 					{ username },
 					{
 						$set: {
@@ -169,14 +173,14 @@ export class TradeService {
 							portfolio: {
 								...portfolio,
 								stocks: updatedStocks,
-								trades: [newTrade, ...trades],
+								trades: [sellTradeEntry, ...trades],
 							},
 						},
 					},
 				);
 				return (
-					stockResult.modifiedCount > 0 &&
-					userResult.modifiedCount > 0
+					stockUpdateResult.modifiedCount > 0 &&
+					userUpdateResult.modifiedCount > 0
 				);
 			}
 			return false;
