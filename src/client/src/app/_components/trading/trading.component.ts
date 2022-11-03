@@ -8,6 +8,8 @@ import { ConfigService } from 'src/app/config/config.service';
 import { OwnedStock } from 'src/app/_models/OwnedStock';
 import { SessionCookie } from 'src/app/_models/SessionCookie';
 import { Stock } from 'src/app/_models/Stock';
+import { User } from 'src/app/_models/User';
+import { StockAppSocketService } from 'src/app/_services/stockappsocket.service';
 import { TradingService } from 'src/app/_services/trading.service';
 import { SECRETS } from 'src/secrets';
 import { ROUTE_PREFIXES } from 'src/shared/constants/api';
@@ -45,16 +47,19 @@ export class TradingComponent implements AfterViewInit {
     : 'btn btn-outline-success';
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator) ownedStocksPaginator: MatPaginator;
 
   constructor(
     public configService: ConfigService,
-    public tradingService: TradingService
+    public tradingService: TradingService,
+    public stockAppSocketService: StockAppSocketService
   ) {
     this.tradingService.getAllInitialStocks().subscribe((stocks: Stock[]) => {
       this.rawStockData = stocks;
       this.stocks = new MatTableDataSource<Stock>(this.rawStockData);
       this.ownedStocks = new MatTableDataSource<OwnedStock>();
-      const updateObservable = this.tradingService.getUpdates();
+
+      const updateObservable = this.stockAppSocketService.getStockUpdated();
       updateObservable.subscribe((latestUpdate: Stock) => {
         const index = this.rawStockData.findIndex(
           (eachStock) => eachStock.symbol === latestUpdate.symbol
@@ -74,21 +79,30 @@ export class TradingComponent implements AfterViewInit {
         `${ROUTE_PREFIXES.user}ownedStocks?username=${parsedUsername.value}`
       );
       ownedStocks.subscribe((userOwnedStocks: OwnedStock[]) => {
-        console.log('found = ', userOwnedStocks);
-        this.ownedStocks.data = userOwnedStocks;
+        if (this.ownedStocks) {
+          this.ownedStocks.data = userOwnedStocks;
+        }
       });
+      this.stockAppSocketService
+        .getUserUpdated()
+        .subscribe((_res: Partial<User>) => {
+          if (this.ownedStocks && _res.portfolio) {
+            const {
+              portfolio: { stocks },
+            } = _res;
+            this.ownedStocks.data = stocks;
+          }
+        });
     }
   }
 
   ngAfterViewInit(): void {
     if (this.stocks) {
       this.stocks.paginator = this.paginator;
+    } else if (this.ownedStocks) {
+      this.ownedStocks.paginator = this.ownedStocksPaginator;
     }
   }
-
-  calculateSliderStep = (totalShares: number) => {
-    return totalShares > 100 ? totalShares / 500 : 1;
-  };
 
   calculateDifferenceAndReturnClass = (
     price1: number,

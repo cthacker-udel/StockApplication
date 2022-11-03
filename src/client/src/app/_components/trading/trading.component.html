@@ -160,10 +160,10 @@
       <tr mat-row *matRowDef="let row; columns: sellingColumnDefs"></tr>
     </table>
     <mat-paginator
-    [pageSizeOptions]="[5, 10, 20]"
-    showFirstLastButtons
-    aria-label="Select page of stocks"
-  ></mat-paginator>
+      [pageSizeOptions]="[5, 10, 20]"
+      showFirstLastButtons
+      aria-label="Select page of stocks"
+    ></mat-paginator>
   </div>
   <div
     class="modal fade"
@@ -196,20 +196,31 @@
                 matInput
                 readonly
                 type="text"
-                value="{{ isBuying ? (actionStock ? actionStock.symbol : '') : sellStock ? sellStock.symbol : '' }}"
+                value="{{
+                  isBuying
+                    ? actionStock
+                      ? actionStock.symbol
+                      : ''
+                    : sellStock
+                    ? sellStock.symbol
+                    : ''
+                }}"
               />
             </mat-form-field>
           </form>
         </div>
         <div class="d-flex flex-row justify-content-around">
-          <div class="w-50" *ngIf="actionStock !== undefined || sellStock !== undefined">
+          <div
+            class="w-50"
+            *ngIf="actionStock !== undefined || sellStock !== undefined"
+          >
             <div class="text-center">Amount</div>
             <mat-slider
               class="amount_slider_width"
               (input)="selectedStockAmountChangeHandler($event)"
               thumbLabel
               tickInterval="100"
-              step="{{ calculateSliderStep(isBuying ? actionStock.shares : sellStock.amount) }}"
+              step="1"
               min="0"
               max="{{ isBuying ? actionStock.shares : sellStock.amount }}"
               aria-label="units"

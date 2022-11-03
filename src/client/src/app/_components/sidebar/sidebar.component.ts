@@ -5,7 +5,7 @@ import { SessionCookie } from 'src/app/_models/SessionCookie';
 import { Stock } from 'src/app/_models/Stock';
 import { User } from 'src/app/_models/User';
 import { UserAggregateData } from 'src/app/_models/UserAggregateData';
-import { SidebarService } from 'src/app/_services/sidebar.service';
+import { StockAppSocketService } from 'src/app/_services/stockappsocket.service';
 import { SECRETS } from 'src/secrets';
 import { ROUTE_PREFIXES } from 'src/shared/constants/api';
 import { dateToMMDDYYYY } from 'src/shared/helpers/dateToMMDDYYYY';
@@ -24,7 +24,7 @@ export class SidebarComponent implements OnInit {
 
   constructor(
     private configService: ConfigService,
-    private sidebarService: SidebarService
+    private stockAppSocketService: StockAppSocketService
   ) {}
 
   ngOnInit(): void {
@@ -58,11 +58,28 @@ export class SidebarComponent implements OnInit {
         `${ROUTE_PREFIXES.user}potentialProfit?username=${parsedUsername.value}`
       );
 
-      this.sidebarService.getUpdates().subscribe((changedStock: Stock) => {
-        if (
-          this.currentUserStockSymbols &&
-          this.currentUserStockSymbols.includes(changedStock.symbol)
-        ) {
+      this.stockAppSocketService
+        .getStockUpdated()
+        .subscribe((changedStock: Stock) => {
+          if (
+            this.currentUserStockSymbols &&
+            this.currentUserStockSymbols.includes(changedStock.symbol)
+          ) {
+            potentialProfitRequest.subscribe(
+              (updatedPotentialProfit: Partial<UserAggregateData>) => {
+                if (updatedPotentialProfit.totalPotentialProfit) {
+                  this.userAggregateData.totalPotentialProfit =
+                    updatedPotentialProfit.totalPotentialProfit;
+                }
+              }
+            );
+          }
+        });
+
+      this.stockAppSocketService
+        .getUserUpdated()
+        .subscribe((updatedUser: Partial<User>) => {
+          this.currentUser = { ...this.currentUser, ...updatedUser };
           potentialProfitRequest.subscribe(
             (updatedPotentialProfit: Partial<UserAggregateData>) => {
               if (updatedPotentialProfit.totalPotentialProfit) {
@@ -71,8 +88,7 @@ export class SidebarComponent implements OnInit {
               }
             }
           );
-        }
-      });
+        });
     }
   }
 

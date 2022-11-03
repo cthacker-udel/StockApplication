@@ -18,18 +18,6 @@ export class TradingService {
     return this.httpClient.getConfig<Stock[]>(`${ROUTE_PREFIXES.stock}get/all`);
   }
 
-  getUpdates() {
-    const socket = this.socketService.getSocket();
-    const socketSub = new Subject<Stock>();
-    const socketObservable = from(socketSub);
-
-    socket.on('stockUpdated', (stock: Stock) => {
-      socketSub.next(stock);
-    });
-
-    return socketObservable;
-  }
-
   buyStock = (selectedStock: Stock, selectedAmount: number) => {
     const username = localStorage.getItem(
       SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_ID

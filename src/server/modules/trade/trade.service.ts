@@ -1,11 +1,18 @@
+/* eslint-disable sonarjs/prefer-immediate-return -- not needed */
+/* eslint-disable max-statements -- not needed */
+/* eslint-disable indent -- not needed */
+/* eslint-disable @typescript-eslint/indent -- not needed */
+/* eslint-disable no-mixed-spaces-and-tabs -- not needed */
 /* eslint-disable sonarjs/cognitive-complexity -- not need */
 /* eslint-disable class-methods-use-this -- not needed */
+import { computeOverallValueFromPortfolio } from "../../modules";
 import {
 	type Stock,
 	type User,
 	type OwnedStock,
 	type Trade,
 	TRADE_TYPE,
+	type LeaderboardUser,
 } from "../../@types";
 import { MONGO_COMMON, type StockMongoClient } from "../../mongo";
 
@@ -24,6 +31,11 @@ export class TradeService {
 			.getClient()
 			.db(MONGO_COMMON.DATABASE_NAME)
 			.collection("stock");
+		const tradeCollection = client
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection("trade");
+
 		const foundUser = await userCollection.findOne<User>({ username });
 		const foundStock = await stockCollection.findOne<Stock>({
 			symbol: stockSymbol,
@@ -68,7 +80,8 @@ export class TradeService {
 		} else {
 			stocks.push({ amount: amt, symbol: stockSymbol });
 		}
-		await userCollection.updateOne(
+		await tradeCollection.insertOne(tradeLog);
+		const userUpdateResult = await userCollection.updateOne(
 			{ username },
 			{
 				$set: {
@@ -77,13 +90,13 @@ export class TradeService {
 				},
 			},
 		);
-		await stockCollection.updateOne(
+		const stockUpdateResult = await stockCollection.updateOne(
 			{ symbol: stockSymbol },
 			{
 				$set: { shares: shares - amt },
 			},
 		);
-		return true;
+		return userUpdateResult.acknowledged && stockUpdateResult.acknowledged;
 	};
 
 	public sellStock = async (
@@ -100,6 +113,10 @@ export class TradeService {
 			.getClient()
 			.db(MONGO_COMMON.DATABASE_NAME)
 			.collection("stock");
+		const tradeCollection = client
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection("trade");
 		const foundUser = await userCollection.findOne<User>({ username });
 		if (foundUser === null) {
 			return false;
@@ -110,6 +127,7 @@ export class TradeService {
 			balance,
 			portfolio: { trades },
 		} = foundUser;
+
 		const isStockOwned = portfolio.stocks.some(
 			(eachOwnedStock: OwnedStock) =>
 				eachOwnedStock.symbol === stockSymbol,
@@ -120,34 +138,65 @@ export class TradeService {
 				(eachOwnedStock: OwnedStock) =>
 					eachOwnedStock.symbol === stockSymbol,
 			);
+
 			if (foundStock) {
 				const { amount: foundStockAmt } = foundStock;
 				if (foundStockAmt < amt) {
 					// not enough amount available to sell
 					return false;
 				}
+
 				// has enough amount, execute transaction
 				const modifiedAmount = foundStockAmt - amt;
 				const currentStock = await stockCollection.findOne<Stock>({
 					symbol: stockSymbol,
 				});
+
 				if (currentStock === null) {
 					// stock does not exist
 					return false;
 				}
+
 				const profit = currentStock.price * amt;
-				const updatedStocks = [...portfolio.stocks].filter(
-					(eachOwnedStock: OwnedStock) =>
-						(() => {
-							if (eachOwnedStock.symbol === stockSymbol) {
-								if (modifiedAmount === 0) {
-									return;
+
+				const updatedStocks =
+					modifiedAmount === 0
+						? [...portfolio.stocks].filter(
+								(eachStock: OwnedStock) =>
+									eachStock.symbol !== stockSymbol,
+						  )
+						: [...portfolio.stocks].map((eachStock: OwnedStock) => {
+								if (eachStock.symbol === stockSymbol) {
+									return {
+										...eachStock,
+										amount: modifiedAmount,
+									};
 								}
-								return eachOwnedStock;
-							}
-							return eachOwnedStock;
-						})() !== undefined,
-				);
+								return eachStock;
+						  });
+
+				const allStocksPromise = [];
+				for (const eachStock of updatedStocks) {
+					allStocksPromise.push(
+						stockCollection.findOne<Stock>({
+							symbol: eachStock.symbol,
+						}),
+					);
+				}
+				const allStocks = await Promise.all(allStocksPromise);
+
+				const newPortfolioBalance = allStocks
+					.map((stock: Stock | null, _ind: number) => {
+						if (stock === null) {
+							return 0;
+						}
+						return updatedStocks[_ind].amount * stock.price;
+					})
+					.reduce(
+						(element1: number, element2: number) =>
+							element1 + element2,
+						0,
+					);
 
 				const sellTradeEntry: Trade = {
 					profit,
@@ -165,6 +214,9 @@ export class TradeService {
 						$set: { shares: currentStock.shares + amt },
 					},
 				);
+
+				await tradeCollection.insertOne(sellTradeEntry);
+
 				const userUpdateResult = await userCollection.updateOne(
 					{ username },
 					{
@@ -172,6 +224,7 @@ export class TradeService {
 							balance: modifiedBalance,
 							portfolio: {
 								...portfolio,
+								balance: newPortfolioBalance,
 								stocks: updatedStocks,
 								trades: [sellTradeEntry, ...trades],
 							},
@@ -187,5 +240,90 @@ export class TradeService {
 		}
 		// user is valid, and they own the stock, check the balance
 		return false;
+	};
+
+	public getLeaderboardUsers = async (
+		client: StockMongoClient,
+	): Promise<LeaderboardUser[]> => {
+		const database = client.getClient().db(MONGO_COMMON.DATABASE_NAME);
+		const userCollection = database.collection<User>("user");
+		const leaderboardCollection =
+			database.collection<LeaderboardUser>("leaderboard");
+		const numberDocuments = await leaderboardCollection.countDocuments();
+		if (numberDocuments > 0) {
+			const allTopUsers = await leaderboardCollection
+				.find<LeaderboardUser>({})
+				.toArray();
+			const sortedAllTopUsers = allTopUsers.sort(
+				(user1: LeaderboardUser, user2: LeaderboardUser) =>
+					user1.rank - user2.rank,
+			);
+			return sortedAllTopUsers;
+		}
+		const allUsers = await userCollection.find<User>({}).toArray();
+		const allUsersRankIndex: [
+			username: string,
+			index: number,
+			rank: number,
+		][] = allUsers.map((eachUser: User, index: number) => {
+			if (eachUser.portfolio?.trades.length > 0) {
+				const computedValue = computeOverallValueFromPortfolio(
+					eachUser.portfolio,
+				);
+				return [eachUser.username, index, computedValue];
+			}
+			return [eachUser.username, index, eachUser.portfolio.balance];
+		});
+		allUsersRankIndex.sort(
+			(
+				array1: [username: string, index: number, rank: number],
+				array2: [username: string, index: number, rank: number],
+			) => {
+				const user1Rank = array1[2];
+				const user2Rank = array2[2];
+				if (user1Rank === user2Rank) {
+					return array1[0].localeCompare(array2[0]);
+				}
+				return user1Rank - user2Rank;
+			},
+		);
+		const topUserPromises = [];
+		let indAllUsersRank = 0;
+		while (indAllUsersRank < allUsersRankIndex.length) {
+			if (topUserPromises.length === 4) {
+				break;
+			}
+			const topUser = allUsersRankIndex[indAllUsersRank];
+			if (topUser.length > 0) {
+				topUserPromises.push(
+					userCollection.findOne<User>({ username: topUser[0] }),
+				);
+			}
+			indAllUsersRank += 1;
+		}
+		const topUsers = await Promise.all(topUserPromises);
+		const formattedTopUsers: LeaderboardUser[] = topUsers.map(
+			(eachTopUser: User | null, _index: number) => ({
+				rank: _index + 1,
+				totalValue: allUsersRankIndex[_index][2],
+				username: eachTopUser ? eachTopUser.username : "",
+			}),
+		);
+		const insertionResult = await leaderboardCollection.insertMany(
+			formattedTopUsers,
+		);
+		return insertionResult.insertedCount > 0 ? formattedTopUsers : [];
+	};
+
+	public getMostRecentTrades = async (
+		client: StockMongoClient,
+	): Promise<Trade[]> => {
+		const tradeCollection = client
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection<Trade>("trade");
+		// eslint-disable-next-line newline-per-chained-call -- eslint/prettier conflict
+		const top5Trades = await tradeCollection.find({}).limit(5).toArray();
+		return top5Trades;
 	};
 }
