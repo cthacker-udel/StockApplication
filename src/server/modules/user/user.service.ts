@@ -1,28 +1,29 @@
 /* eslint-disable class-methods-use-this -- disabled */
 /* eslint-disable wrap-regex -- not needed*/
-import {
+import type {
 	FoundUserEmailByUsernameReturn,
+	LeaderboardUser,
 	OwnedStock,
 	Role,
-	Trade,
-	TRADE_TYPE,
 	User,
+	UserAggregateData,
 } from "../../@types";
-import { BaseService, Roles } from "../../common";
+import {
+	BaseService,
+	Roles,
+	generateRandomBalance,
+	API_CONSTANTS,
+} from "../../common";
 import { MONGO_COMMON, type StockMongoClient } from "../../mongo";
-import { pbkdf2Encryption } from "../encryption";
-import { fixedPbkdf2Encryption } from "../encryption/encryption";
+import { pbkdf2Encryption, fixedPbkdf2Encryption } from "../encryption";
 import { v4 } from "uuid";
 import { RolesService } from "../roles";
-import { generateRandomBalance } from "../../common/api/generateRandomBalance";
-import { API_CONSTANTS } from "../../common/api/apiConstants";
-import type { UserAggregateData } from "../../@types/api/user/UserAggregateData";
 import {
 	withUsername,
 	withUsernamePotentialProfit,
-} from "../../modules/helpers/getAggregateDataHelpers";
+	computeOverallValueFromPortfolio,
+} from "../../modules";
 import type { ObjectId } from "mongodb";
-import { computeOverallValueFromPortfolio } from "modules/helpers";
 
 /**
  * Handles all database logic for user involved database actions
@@ -357,26 +358,48 @@ export class UserService extends BaseService {
 
 	public compareToLeaderboardUsers = async (
 		client: StockMongoClient,
-		user: User,
+		user: Partial<User>,
 	): Promise<boolean> => {
 		const leaderboardCollection = client
 			.getClient()
 			.db(MONGO_COMMON.DATABASE_NAME)
 			.collection("leaderboard");
-		const foundUsers = await leaderboardCollection.find<User>({}).toArray();
+		const foundUsers = await leaderboardCollection
+			.find<LeaderboardUser>({})
+			.toArray();
 		if (foundUsers.length < 5) {
 			await leaderboardCollection.insertOne(user);
 			return true;
-		} else {
-			if (user.portfolio) {
-				const userValue = computeOverallValueFromPortfolio(
-					user.portfolio,
-				);
-				const doesSmallerExist = foundUsers.findIndex(
-					(eachUser: User) => {},
-				);
-			}
-			return false;
 		}
+		if (user.portfolio !== undefined) {
+			const currentUserTotal = computeOverallValueFromPortfolio(
+				user.portfolio,
+			);
+			let foundIndex = -1;
+			let loopIndex = 0;
+			for (const eachUser of foundUsers) {
+				if (eachUser.totalValue < currentUserTotal) {
+					foundIndex = loopIndex;
+					break;
+				}
+				loopIndex += 1;
+			}
+			const removedUser = foundUsers[foundIndex];
+			const deleteResult = await leaderboardCollection.deleteOne({
+				username: removedUser.username,
+			});
+			const insertedUser: LeaderboardUser = {
+				rank: removedUser.rank,
+				totalValue: currentUserTotal,
+				username: user.username ?? "",
+			};
+			const insertionResult = await leaderboardCollection.insertOne(
+				insertedUser,
+			);
+			return (
+				deleteResult.deletedCount === 1 && insertionResult.acknowledged
+			);
+		}
+		return false;
 	};
 }

@@ -88,7 +88,26 @@ export class UserController implements BaseController {
 										updateDescription.updatedFields
 											?.portfolio
 									) {
-										_socket.emit();
+										this.userService
+											.compareToLeaderboardUsers(
+												this.client,
+												sanitizedUser,
+											)
+											.then((result: boolean) => {
+												if (result) {
+													_socket.emit(
+														"leaderboardUpdated",
+														result,
+													);
+												}
+											})
+											.catch((error: unknown) => {
+												console.error(
+													`Failed to emit leaderboard updated event ${
+														(error as Error).stack
+													}`,
+												);
+											});
 									}
 									_socket.emit("userUpdated", {
 										...sanitizedUser,

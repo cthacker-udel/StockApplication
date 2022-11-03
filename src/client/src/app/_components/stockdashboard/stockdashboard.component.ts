@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { ConfigService } from 'src/app/config/config.service';
+import { LeaderboardUser } from 'src/app/_models/LeaderboardUser';
 import { SessionCookie } from 'src/app/_models/SessionCookie';
 import { Stock } from 'src/app/_models/Stock';
 import { User } from 'src/app/_models/User';
@@ -25,6 +26,7 @@ export class StockDashboardComponent implements OnInit {
 
   stocks: Stock[] = [];
   username: string = '';
+  leaderboardUsers: LeaderboardUser[];
 
   ngOnInit(): void {
     const query = new URL(window.location.href);
@@ -39,6 +41,19 @@ export class StockDashboardComponent implements OnInit {
     if (username) {
       this.username = (JSON.parse(username) as SessionCookie).value;
     }
+
+    const leaderboardRequest = this.configService.getConfig<LeaderboardUser[]>(
+      `${ROUTE_PREFIXES.trade}leaderboard`
+    );
+
+    leaderboardRequest.subscribe(
+      (fetchedLeaderboardUsers: LeaderboardUser[]) => {
+        if (fetchedLeaderboardUsers) {
+          this.leaderboardUsers = fetchedLeaderboardUsers;
+        }
+      }
+    );
+
     this.dashboardService
       .getInitialMarketStatus()
       .subscribe((value: Stock[]) => {
@@ -54,8 +69,19 @@ export class StockDashboardComponent implements OnInit {
           );
         });
       });
+
     this.stockAppSocketService
-      .getUserUpdated()
-      .subscribe((updatedUser: User) => {});
+      .getLeaderboardUpdated()
+      .subscribe((result: boolean) => {
+        if (result) {
+          leaderboardRequest.subscribe(
+            (fetchedLeaderboardUsers: LeaderboardUser[]) => {
+              if (fetchedLeaderboardUsers) {
+                this.leaderboardUsers = fetchedLeaderboardUsers;
+              }
+            }
+          );
+        }
+      });
   }
 }

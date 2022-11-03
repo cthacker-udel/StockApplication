@@ -84,12 +84,8 @@
             <span class="text-dark">Leaderboard</span>
             <i class="fa-solid fa-trophy text-dark ms-1"></i>
           </div>
-          <div class="list-group list-group-flush list-group-numbered">
-            <div class="list-group-item list-group-item-action">User</div>
-            <div class="list-group-item list-group-item-action">User</div>
-            <div class="list-group-item list-group-item-action">User</div>
-            <div class="list-group-item list-group-item-action">User</div>
-            <div class="list-group-item list-group-item-action">User</div>
+          <div class="list-group list-group-flush list-group-numbered" *ngFor="let user of leaderboardUsers; index as i; first as isFirst">
+            <div class="list-group-item list-group-item-action fs-5 fw-bold">{{ user.username }}</div>
           </div>
         </div>
       </div>

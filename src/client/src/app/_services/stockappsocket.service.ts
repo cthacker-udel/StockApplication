@@ -31,4 +31,18 @@ export class StockAppSocketService {
 
     return userSubObservable;
   }
+
+  getLeaderboardUpdated() {
+    const socket = this.socketService.getSocket();
+    const leaderboardUpdatedSub = new Subject<boolean>();
+    const leaderboardSubObservable = from(leaderboardUpdatedSub);
+
+    socket.on('leaderboardUpdated', (result: boolean) => {
+      if (result) {
+        leaderboardUpdatedSub.next(result);
+      }
+    });
+
+    return leaderboardSubObservable;
+  }
 }

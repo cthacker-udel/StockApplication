@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"description": "",
 	"scripts": {
-		"start": "tsc && node ./build/app.js",
+		"start": "node ./build/app.js",
 		"clean": "rimraf build",
 		"full-clean": "rimraf build node_modules package-lock.json dist",
 		"build": "rimraf build && tsc",

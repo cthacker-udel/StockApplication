@@ -1,4 +1,4 @@
-import { type Portfolio, type Trade, TRADE_TYPE } from "@types";
+import { type Portfolio, type Trade, TRADE_TYPE } from "../../@types";
 
 export const computeOverallValueFromPortfolio = (
 	portfolio: Portfolio,
