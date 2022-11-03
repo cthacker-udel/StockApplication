@@ -11,7 +11,6 @@ export const cookieValidator = async (
 	next: NextFunction,
 	sessionService: SessionService,
 ) => {
-	console.log(request.originalUrl);
 	if (request.header(SECRETS.STOCK_APP_SESSION_COOKIE_ID) === undefined) {
 		next();
 	} else {

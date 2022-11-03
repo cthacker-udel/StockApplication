@@ -305,8 +305,5 @@ export class AdminDashboardComponent implements OnInit {
         break;
       }
     }
-    dialogRef?.afterClosed().subscribe((result) => {
-      console.log('Dialog result', result);
-    });
   }
 }

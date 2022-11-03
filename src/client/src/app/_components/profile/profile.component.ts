@@ -20,9 +20,7 @@ export class ProfileComponent implements OnInit {
     const username = localStorage.getItem(
       SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_ID
     );
-    console.log('username = ', username);
     if (username !== null) {
-      console.log('in if');
       const parsedUsername = JSON.parse(username) as SessionCookie;
       this.userService
         .getUserDataWithUsername(parsedUsername.value)
