@@ -1,22 +1,24 @@
 .signin_page_main {
-    background-color: rgb(120, 147, 149);
+    background-color: var(--main-background-color);
 }
 
 .signin_page_card {
-    background-color: rgb(148, 180, 159);
-    border-color: rgb(148, 180, 159);
+    background-color: var(--sub2-background-color);
+    border-color: white;
 }
 
 #signin_card {
-    background-color: rgb(148, 180, 159);
+    background-color: var(--sub2-background-color);
 }
 
 #signin_password {
-    background-color: rgb(148, 180, 159);
-    border-color: rgb(229, 227, 201);
+    background-color: var(--sub1-background-color);
+    border-color: var(--sub4-background-color);
+    color: white;
 }
 
 #signin_username {
-    background-color: rgb(148, 180, 159);
-    border-color: rgb(229, 227, 201);
+    background-color: var(--sub1-background-color);
+    border-color: var(--sub4-background-color);
+    color: white;
 }

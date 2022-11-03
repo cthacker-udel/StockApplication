@@ -7,7 +7,7 @@
 }
 
 #background {
-    background-color: rgb(120, 147, 149);
+    background-color: var(--main-background-color);
     height: 100vh;
 }
 
@@ -22,58 +22,66 @@
 }
 
 #landing_page_left_card {
-    background-color: rgb(148, 180, 159);
+    background-color: var(--sub2-background-color);
     border-color: rgb(229, 227, 201);
 }
 
 .list-group > * {
-    background-color: rgb(148, 180, 159);
+    background-color: var(--main-background-color);
     border-color: rgb(229, 227, 201);
-    color: black;
+    color: white;
 }
 
 #landing_page_right_card {
-    background-color: rgb(180, 207, 176);
+    background-color: var(--main-background-color);
     font-weight: bold;
 }
 
 #landing_page_right_card {
-    background-color: rgb(148, 180, 159);
-    border-color: rgb(148, 180, 159);
+    background-color: var(--sub2-background-color);
+    border-color: var(--main-background-color);
+    color: black;
     height: fit-content;
 }
 
 #username_landing_input {
-    background-color: rgb(229, 227, 201);
-    border-color: rgb(148, 180, 159);
+    background-color: var(--sub1-background-color);
+    border-color: var(--main-background-color);
+    color: white;
 }
 
 #first_name_landing_input {
-    background-color: rgb(229, 227, 201);
-    border-color: rgb(148, 180, 159);
+    background-color: var(--sub1-background-color);
+    border-color: var(--main-background-color);
+    color: white;
 }
 
 #last_name_landing_input {
-    background-color: rgb(229, 227, 201);
-    border-color: rgb(148, 180, 159);
+    background-color: var(--sub1-background-color);
+    border-color: var(--main-background-color);
+    color: white;
 }
 
 #date_of_birth_landing_input {
-    background-color: rgb(229, 227, 201);
-    border-color: rgb(148, 180, 159);
+    background-color: var(--sub1-background-color);
+    border-color: var(--main-background-color);
+    color: white;
 }
 
 #email_address_landing_input {
-    background-color: rgb(229, 227, 201);
-    border-color: rgb(148, 180, 159);
+    background-color: var(--sub1-background-color);
+    border-color: var(--main-background-color);
+    color: white;
 }
 
 #password_landing_input {
-    background-color: rgb(229, 227, 201);
-    border-color: rgb(148, 180, 159);
+    background-color: var(--sub1-background-color);
+    border-color: var(--main-background-color);
+    color: white;
 }
 
 #confirm_password_landing_input {
-    background-color: rgb(229, 227, 201);
-    border-color: rgb(148, 180, 159);
+    background-color: var(--sub1-background-color);
+    border-color: var(--main-background-color);
+    color: white;
 }

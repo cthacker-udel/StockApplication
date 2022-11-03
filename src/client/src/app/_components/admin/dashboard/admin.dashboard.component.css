@@ -20,7 +20,7 @@ Styles
 
 
 #admin_dashboard {
-    background-color: rgb(120, 147, 149);
+    background-color: var(--main-background-color)
 }
 
 .middle_area {
@@ -35,7 +35,7 @@ Styles
 }
 
 .middle_button_contents {
-    background-color: #212529;
+    background-color: var(--sub1-background-color)
 }
 
 .middle_button_contents:hover {
@@ -46,7 +46,7 @@ Styles
 }
 
 .first_option {
-    background-color: #212529;
+    background-color: var(--sub1-background-color);
     cursor: pointer;
     bottom: calc(100%);
     left: calc(100% + 1vw);
@@ -55,7 +55,7 @@ Styles
 }
 
 .first_option_contents {
-    background-color: #212529;
+    background-color: var(--sub1-background-color);
 }
 
 .first_option_contents:hover {
@@ -66,7 +66,7 @@ Styles
 }
 
 .second_option_contents {
-    background-color: #212529;
+    background-color: var(--sub1-background-color);
 }
 
 .second_option_contents:hover {
@@ -77,7 +77,7 @@ Styles
 }
 
 .second_option {
-    background-color: #212529;
+    background-color: var(--sub1-background-color);
     cursor: pointer;
     bottom: calc(100%);
     right: calc(100% + 1vw);
@@ -90,7 +90,7 @@ Styles
     bottom: calc(100% - 5.5vh);
     height: 7vh;
     width: 7vh;
-    background-color: #212529;
+    background-color: var(--sub1-background-color);
     z-index: 1;
 }
 
@@ -99,7 +99,7 @@ Styles
     bottom: calc(100% - 5.5vh);
     height: 7vh;
     width: 7vh;
-    background-color: #212529;
+    background-color: var(--sub1-background-color);
     z-index: 1;
 }
 
@@ -108,7 +108,7 @@ Styles
     top: calc(100% - 5.5vh);
     height: 7vh;
     width: 7vh;
-    background-color: #212529;
+    background-color: var(--sub1-background-color);
     z-index: 1;
 }
 
@@ -117,7 +117,7 @@ Styles
     top: calc(100% - 5.5vh);
     height: 7vh;
     width: 7vh;
-    background-color: #212529;
+    background-color: var(--sub1-background-color);
     z-index: 1;
 }
 

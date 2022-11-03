@@ -11,7 +11,7 @@ import { TradingComponent } from './_components/trading/trading.component';
 const routes: Routes = [
   {
     component: SignInComponent,
-    path: 'signin',
+    path: 'login',
   },
   {
     component: StockDashboardComponent,
