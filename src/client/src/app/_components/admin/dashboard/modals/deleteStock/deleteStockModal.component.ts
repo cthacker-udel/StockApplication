@@ -32,7 +32,6 @@ export class DeleteStockModal implements OnInit {
 
   get hasNotEnteredStock() {
     if (this.autocompleteControl.value) {
-      console.log(this.autocompleteControl.value);
       return this.autocompleteControl.value.length === 0;
     }
     return true;
@@ -53,8 +52,7 @@ export class DeleteStockModal implements OnInit {
     const deleteRequest = this._configService.deleteConfig<boolean>(
       `${ROUTE_PREFIXES.stock}delete?symbol=${symbol}`
     );
-    deleteRequest.subscribe((result: any) => {
-      console.log('result = ', result);
+    deleteRequest.subscribe((_result: any) => {
     });
   }
 }
