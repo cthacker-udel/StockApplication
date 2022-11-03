@@ -45,4 +45,18 @@ export class StockAppSocketService {
 
     return leaderboardSubObservable;
   }
+
+  getMostRecentTradesUpdated() {
+    const socket = this.socketService.getSocket();
+    const mostRecentTradesUpdatedSub = new Subject<boolean>();
+    const mostRecentTradesObservable = from(mostRecentTradesUpdatedSub);
+
+    socket.on('mostRecentTradesUpdated', (result: boolean) => {
+      if (result) {
+        mostRecentTradesUpdatedSub.next(result);
+      }
+    });
+
+    return mostRecentTradesObservable;
+  }
 }

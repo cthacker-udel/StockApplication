@@ -31,6 +31,11 @@ export class TradeService {
 			.getClient()
 			.db(MONGO_COMMON.DATABASE_NAME)
 			.collection("stock");
+		const tradeCollection = client
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection("trade");
+
 		const foundUser = await userCollection.findOne<User>({ username });
 		const foundStock = await stockCollection.findOne<Stock>({
 			symbol: stockSymbol,
@@ -75,7 +80,8 @@ export class TradeService {
 		} else {
 			stocks.push({ amount: amt, symbol: stockSymbol });
 		}
-		await userCollection.updateOne(
+		await tradeCollection.insertOne(tradeLog);
+		const userUpdateResult = await userCollection.updateOne(
 			{ username },
 			{
 				$set: {
@@ -84,13 +90,13 @@ export class TradeService {
 				},
 			},
 		);
-		await stockCollection.updateOne(
+		const stockUpdateResult = await stockCollection.updateOne(
 			{ symbol: stockSymbol },
 			{
 				$set: { shares: shares - amt },
 			},
 		);
-		return true;
+		return userUpdateResult.acknowledged && stockUpdateResult.acknowledged;
 	};
 
 	public sellStock = async (
@@ -107,6 +113,10 @@ export class TradeService {
 			.getClient()
 			.db(MONGO_COMMON.DATABASE_NAME)
 			.collection("stock");
+		const tradeCollection = client
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection("trade");
 		const foundUser = await userCollection.findOne<User>({ username });
 		if (foundUser === null) {
 			return false;
@@ -205,6 +215,8 @@ export class TradeService {
 					},
 				);
 
+				await tradeCollection.insertOne(sellTradeEntry);
+
 				const userUpdateResult = await userCollection.updateOne(
 					{ username },
 					{
@@ -242,7 +254,11 @@ export class TradeService {
 			const allTopUsers = await leaderboardCollection
 				.find<LeaderboardUser>({})
 				.toArray();
-			return allTopUsers;
+			const sortedAllTopUsers = allTopUsers.sort(
+				(user1: LeaderboardUser, user2: LeaderboardUser) =>
+					user1.rank - user2.rank,
+			);
+			return sortedAllTopUsers;
 		}
 		const allUsers = await userCollection.find<User>({}).toArray();
 		const allUsersRankIndex: [
@@ -297,5 +313,17 @@ export class TradeService {
 			formattedTopUsers,
 		);
 		return insertionResult.insertedCount > 0 ? formattedTopUsers : [];
+	};
+
+	public getMostRecentTrades = async (
+		client: StockMongoClient,
+	): Promise<Trade[]> => {
+		const tradeCollection = client
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection<Trade>("trade");
+		// eslint-disable-next-line newline-per-chained-call -- eslint/prettier conflict
+		const top5Trades = await tradeCollection.find({}).limit(5).toArray();
+		return top5Trades;
 	};
 }

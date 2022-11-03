@@ -368,8 +368,15 @@ export class UserService extends BaseService {
 			.find<LeaderboardUser>({})
 			.toArray();
 		if (foundUsers.length < 5) {
-			await leaderboardCollection.insertOne(user);
-			return true;
+			const doesUserAlreadyExist =
+				leaderboardCollection.findOne<LeaderboardUser>({
+					username: user.username,
+				});
+			if (doesUserAlreadyExist === null) {
+				await leaderboardCollection.insertOne(user);
+				return true;
+			}
+			return false;
 		}
 		if (user.portfolio !== undefined) {
 			const currentUserTotal = computeOverallValueFromPortfolio(

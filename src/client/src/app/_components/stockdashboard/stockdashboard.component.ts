@@ -4,6 +4,7 @@ import { ConfigService } from 'src/app/config/config.service';
 import { LeaderboardUser } from 'src/app/_models/LeaderboardUser';
 import { SessionCookie } from 'src/app/_models/SessionCookie';
 import { Stock } from 'src/app/_models/Stock';
+import { Trade, TRADE_TYPE } from 'src/app/_models/Trade';
 import { User } from 'src/app/_models/User';
 import { DashboardService } from 'src/app/_services/dashboard.service';
 import { StockAppSocketService } from 'src/app/_services/stockappsocket.service';
@@ -27,6 +28,7 @@ export class StockDashboardComponent implements OnInit {
   stocks: Stock[] = [];
   username: string = '';
   leaderboardUsers: LeaderboardUser[];
+  mostRecentTrades: Trade[];
 
   ngOnInit(): void {
     const query = new URL(window.location.href);
@@ -45,6 +47,14 @@ export class StockDashboardComponent implements OnInit {
     const leaderboardRequest = this.configService.getConfig<LeaderboardUser[]>(
       `${ROUTE_PREFIXES.trade}leaderboard`
     );
+
+    const mostRecentTradesRequest = this.configService.getConfig<Trade[]>(
+      `${ROUTE_PREFIXES.trade}mostRecent`
+    );
+
+    mostRecentTradesRequest.subscribe((trades: Trade[]) => {
+      this.mostRecentTrades = trades;
+    });
 
     leaderboardRequest.subscribe(
       (fetchedLeaderboardUsers: LeaderboardUser[]) => {
@@ -83,5 +93,38 @@ export class StockDashboardComponent implements OnInit {
           );
         }
       });
+
+    this.stockAppSocketService
+      .getMostRecentTradesUpdated()
+      .subscribe((result: boolean) => {
+        if (result) {
+          mostRecentTradesRequest.subscribe((trades: Trade[]) => {
+            this.mostRecentTrades = trades;
+          });
+        }
+      });
+  }
+
+  formatTradeTime(tradeTime: Date) {
+    const dateifiedTradeTime = new Date(tradeTime);
+    return `${dateifiedTradeTime.getFullYear()}-${
+      dateifiedTradeTime.getMonth() + 1
+    }-${dateifiedTradeTime.getDate()} [${dateifiedTradeTime.getHours()}:${dateifiedTradeTime.getMinutes()}:${dateifiedTradeTime.getSeconds()}]`;
+  }
+
+  getTradeString(trade: Trade) {
+    return `${trade.type === TRADE_TYPE.BUY ? 'BUY' : 'SELL'} ${
+      trade.stockAmount
+    } ${trade.stockSymbol} ${
+      trade.type === TRADE_TYPE.BUY ? `-$${trade.loss}` : `+$${trade.profit}`
+    }`;
+  }
+
+  getTradeTimeString(trade: Trade) {
+    return `${this.formatTradeTime(trade.time)}`;
+  }
+
+  isTradeBuy(trade: Trade) {
+    return trade.type === TRADE_TYPE.BUY;
   }
 }
