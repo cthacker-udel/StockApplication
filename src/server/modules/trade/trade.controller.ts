@@ -137,7 +137,45 @@ export class TradeController implements BaseController {
 		}
 	};
 
+	public getLeaderboardUsers = async (
+		_request: Request,
+		response: Response,
+	) => {
+		try {
+			const topUsers = await this.tradeService.getLeaderboardUsers(
+				this.client,
+			);
+			response.status(200);
+			response.send(topUsers);
+		} catch (error: unknown) {
+			console.error(
+				`Failed to fetch top users from the leaderboard ${
+					(error as Error).stack
+				}`,
+			);
+			response.status(400);
+			response.send(
+				generateApiMessage(
+					"Failed to fetch top users from the database",
+				),
+			);
+		}
+	};
+
 	public getRouteMapping = (): RouteMapping => ({
+		get: [
+			[
+				"leaderboard",
+				this.getLeaderboardUsers,
+				[
+					rolesValidator(Roles.USER, this.client),
+					asyncMiddlewareHandler(
+						cookieValidator,
+						this.sessionService,
+					),
+				],
+			],
+		],
 		post: [
 			[
 				"buy",

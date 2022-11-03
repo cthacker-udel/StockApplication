@@ -3,7 +3,9 @@ import { ToastrService } from 'ngx-toastr';
 import { ConfigService } from 'src/app/config/config.service';
 import { SessionCookie } from 'src/app/_models/SessionCookie';
 import { Stock } from 'src/app/_models/Stock';
+import { User } from 'src/app/_models/User';
 import { DashboardService } from 'src/app/_services/dashboard.service';
+import { StockAppSocketService } from 'src/app/_services/stockappsocket.service';
 import { SECRETS } from 'src/secrets/secrets';
 import { ROUTE_PREFIXES } from 'src/shared/constants/api';
 
@@ -17,7 +19,8 @@ export class StockDashboardComponent implements OnInit {
   constructor(
     public configService: ConfigService,
     private toastr: ToastrService,
-    public dashboardService: DashboardService
+    public dashboardService: DashboardService,
+    public stockAppSocketService: StockAppSocketService
   ) {}
 
   stocks: Stock[] = [];
@@ -51,5 +54,8 @@ export class StockDashboardComponent implements OnInit {
           );
         });
       });
+    this.stockAppSocketService
+      .getUserUpdated()
+      .subscribe((updatedUser: User) => {});
   }
 }

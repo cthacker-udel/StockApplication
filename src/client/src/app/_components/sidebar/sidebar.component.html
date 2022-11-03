@@ -24,9 +24,14 @@
               class="ms-1 fa-solid fa-minus"
             ></i>
           </div>
-          <div *ngIf="currentUser !== undefined" class="fw-bold mt-1" matTooltip="Current Balance" matTooltipPosition="after">
+          <div
+            *ngIf="currentUser !== undefined"
+            class="fw-bold mt-1"
+            matTooltip="Current Balance"
+            matTooltipPosition="after"
+          >
             <i class="fa-solid fa-vault mx-2"></i>${{
-              currentUser.balance?.toFixed(2)
+              truncateDecimal(currentUser.balance ?? 0, 2)
             }}
           </div>
           <div
@@ -60,7 +65,8 @@
           <div
             *ngIf="
               currentUser !== undefined &&
-              currentUser.portfolio?.trades !== undefined && currentUser.portfolio!.trades.length > 0
+              currentUser.portfolio?.trades !== undefined &&
+              currentUser.portfolio!.trades.length > 0
             "
             class="fw-bold"
             matTooltip="# of trades"
@@ -77,11 +83,29 @@
               class="fa-solid fa-minus ms-1"
             ></i>
           </div>
-          <div *ngIf="userAggregateData !== undefined && userAggregateData.totalSpent" class="fw-bold mt-1" matTooltip="Total Spent" matTooltipPosition="after">
-            <i class="fa-solid fa-hand-holding-dollar mx-2"></i> ${{ userAggregateData.totalSpent }}
+          <div
+            *ngIf="
+              userAggregateData !== undefined && userAggregateData.totalSpent
+            "
+            class="fw-bold mt-1"
+            matTooltip="Total Spent"
+            matTooltipPosition="after"
+          >
+            <i class="fa-solid fa-hand-holding-dollar mx-2"></i> ${{
+              truncateDecimal(userAggregateData.totalSpent, 2)
+            }}
           </div>
-          <div *ngIf="userAggregateData !== undefined && userAggregateData.totalProfit" class="fw-bold mt-1" matTooltip="Total Profit" matTooltipPosition="after">
-            <i class="fa-solid fa-money-bill-trend-up"></i> ${{ userAggregateData.totalProfit }}
+          <div
+            *ngIf="
+              userAggregateData !== undefined && userAggregateData.totalProfit
+            "
+            class="fw-bold mt-1"
+            matTooltip="Total Profit"
+            matTooltipPosition="after"
+          >
+            <i class="fa-solid fa-money-bill-trend-up"></i> ${{
+              truncateDecimal(userAggregateData.totalProfit, 2)
+            }}
           </div>
           <div
             *ngIf="
@@ -140,7 +164,7 @@
             matTooltipPosition="after"
           >
             <i class="fa-solid fa-gauge mx-2"></i>
-            {{ userAggregateData.avgTradesPerDay }}
+            {{ truncateDecimal(userAggregateData.avgTradesPerDay, 2) }}
           </div>
         </div>
         <div>

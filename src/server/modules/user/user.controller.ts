@@ -82,8 +82,16 @@ export class UserController implements BaseController {
 								) {
 									const { updateDescription } =
 										changedDocument;
+									const sanitizedUser =
+										sanitizeUserInfo(user);
+									if (
+										updateDescription.updatedFields
+											?.portfolio
+									) {
+										_socket.emit();
+									}
 									_socket.emit("userUpdated", {
-										...sanitizeUserInfo(user),
+										...sanitizedUser,
 										...updateDescription.updatedFields,
 									});
 								}

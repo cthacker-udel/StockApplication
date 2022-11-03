@@ -1,9 +1,11 @@
 /* eslint-disable class-methods-use-this -- disabled */
 /* eslint-disable wrap-regex -- not needed*/
-import type {
+import {
 	FoundUserEmailByUsernameReturn,
 	OwnedStock,
 	Role,
+	Trade,
+	TRADE_TYPE,
 	User,
 } from "../../@types";
 import { BaseService, Roles } from "../../common";
@@ -20,6 +22,7 @@ import {
 	withUsernamePotentialProfit,
 } from "../../modules/helpers/getAggregateDataHelpers";
 import type { ObjectId } from "mongodb";
+import { computeOverallValueFromPortfolio } from "modules/helpers";
 
 /**
  * Handles all database logic for user involved database actions
@@ -350,5 +353,30 @@ export class UserService extends BaseService {
 			return;
 		}
 		return foundUser;
+	};
+
+	public compareToLeaderboardUsers = async (
+		client: StockMongoClient,
+		user: User,
+	): Promise<boolean> => {
+		const leaderboardCollection = client
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection("leaderboard");
+		const foundUsers = await leaderboardCollection.find<User>({}).toArray();
+		if (foundUsers.length < 5) {
+			await leaderboardCollection.insertOne(user);
+			return true;
+		} else {
+			if (user.portfolio) {
+				const userValue = computeOverallValueFromPortfolio(
+					user.portfolio,
+				);
+				const doesSmallerExist = foundUsers.findIndex(
+					(eachUser: User) => {},
+				);
+			}
+			return false;
+		}
 	};
 }

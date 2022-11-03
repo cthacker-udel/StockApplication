@@ -1,9 +1,11 @@
+/* eslint-disable sonarjs/prefer-immediate-return -- not needed */
 /* eslint-disable max-statements -- not needed */
 /* eslint-disable indent -- not needed */
 /* eslint-disable @typescript-eslint/indent -- not needed */
 /* eslint-disable no-mixed-spaces-and-tabs -- not needed */
 /* eslint-disable sonarjs/cognitive-complexity -- not need */
 /* eslint-disable class-methods-use-this -- not needed */
+import { computeOverallValueFromPortfolio } from "modules/helpers";
 import {
 	type Stock,
 	type User,
@@ -225,5 +227,65 @@ export class TradeService {
 		}
 		// user is valid, and they own the stock, check the balance
 		return false;
+	};
+
+	public getLeaderboardUsers = async (
+		client: StockMongoClient,
+	): Promise<User[]> => {
+		const database = client.getClient().db(MONGO_COMMON.DATABASE_NAME);
+		const userCollection = database.collection("user");
+		const leaderboardCollection = database.collection("leaderboard");
+		const numberDocuments = await leaderboardCollection.countDocuments();
+		if (numberDocuments > 0) {
+			const allTopUsers = await leaderboardCollection
+				.find<User>({})
+				.toArray();
+			return allTopUsers;
+		}
+		const allUsers = await userCollection.find<User>({}).toArray();
+		const allUsersRankIndex: [
+			username: string,
+			index: number,
+			rank: number,
+		][] = allUsers.map((eachUser: User, index: number) => {
+			if (eachUser.portfolio?.trades.length > 0) {
+				const computedValue = computeOverallValueFromPortfolio(
+					eachUser.portfolio,
+				);
+				return [eachUser.username, index, computedValue];
+			}
+			return [eachUser.username, index, eachUser.portfolio.balance];
+		});
+		allUsersRankIndex.sort(
+			(
+				array1: [username: string, index: number, rank: number],
+				array2: [username: string, index: number, rank: number],
+			) => {
+				const user1Rank = array1[2];
+				const user2Rank = array1[2];
+				if (user1Rank === user2Rank) {
+					return array1[0].localeCompare(array2[0]);
+				}
+				return user1Rank - user2Rank;
+			},
+		);
+		const topUserPromises = [];
+		while (allUsersRankIndex.length > 0) {
+			if (topUserPromises.length === 4) {
+				break;
+			}
+			const topUser = allUsersRankIndex.shift();
+			if (topUser) {
+				topUserPromises.push(
+					userCollection.findOne<User>({ username: topUser[0] }),
+				);
+			}
+		}
+		const topUsers = await Promise.all(topUserPromises);
+		const insertionResult = await leaderboardCollection.insertMany([
+			topUsers,
+		]);
+		console.log("insertionResult = ", insertionResult.insertedCount);
+		return insertionResult.insertedCount > 0 ? (topUsers as User[]) : [];
 	};
 }
