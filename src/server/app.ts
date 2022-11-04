@@ -4,11 +4,11 @@ import express from "express";
 import { AppController } from "./controller";
 import { StockMongoClient } from "./mongo";
 import { SECRETS } from "./secrets";
-import { SessionService } from "./modules/session";
-import { corsInjector } from "./middleware/corsInjector/corsInjector";
+import { SessionService } from "./modules";
+import { corsInjector } from "./middleware";
 import { Server } from "socket.io";
 import { createServer } from "node:http";
-import { socketCorsHeaders } from "./common/api/corsHeaders";
+import { socketCorsHeaders } from "./common";
 
 /**
  * The main application class, handles the setup of the express server, and the startup of the express server

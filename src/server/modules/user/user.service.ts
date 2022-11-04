@@ -1,12 +1,33 @@
+/* eslint-disable class-methods-use-this -- disabled */
 /* eslint-disable wrap-regex -- not needed*/
-import type { FoundUserEmailByUsernameReturn, Role, User } from "../../@types";
-import { BaseService, Roles } from "../../common";
+import type {
+	FoundUserEmailByUsernameReturn,
+	LeaderboardUser,
+	OwnedStock,
+	Role,
+	User,
+	UserAggregateData,
+} from "../../@types";
+import {
+	BaseService,
+	Roles,
+	generateRandomBalance,
+	API_CONSTANTS,
+} from "../../common";
 import { MONGO_COMMON, type StockMongoClient } from "../../mongo";
-import { pbkdf2Encryption } from "../encryption";
-import { fixedPbkdf2Encryption } from "../encryption/encryption";
+import { pbkdf2Encryption, fixedPbkdf2Encryption } from "../encryption";
 import { v4 } from "uuid";
 import { RolesService } from "../roles";
+import {
+	withUsername,
+	withUsernamePotentialProfit,
+	computeOverallValueFromPortfolio,
+} from "../../modules";
+import type { ObjectId } from "mongodb";
 
+/**
+ * Handles all database logic for user involved database actions
+ */
 export class UserService extends BaseService {
 	public constructor() {
 		super("user");
@@ -33,11 +54,9 @@ export class UserService extends BaseService {
 			username,
 		});
 		if (doesUserAlreadyExist) {
-			console.log("failed user already exists");
 			return false;
 		}
 		if (/\W+/giu.test(username)) {
-			console.log("failed username");
 			return false;
 		}
 		if (
@@ -46,7 +65,6 @@ export class UserService extends BaseService {
 			!/\d/giu.test(password) ||
 			!/\W/giu.test(password)
 		) {
-			console.log("failed password");
 			return false;
 		}
 		if (
@@ -55,30 +73,29 @@ export class UserService extends BaseService {
 				-21 ||
 			Number.isNaN(Date.parse(dob))
 		) {
-			console.log("failed dob");
 			return false;
 		}
 		if (firstName && !/\S/giu.test(firstName.trim())) {
-			console.log("failed firstname");
 			return false;
 		}
-		if (lastName && !/S/giu.test(lastName.trim())) {
-			console.log("failed lastname");
+		if (lastName && !/\S/giu.test(lastName.trim())) {
 			return false;
 		}
 		if (
 			email?.trim() &&
 			!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/giu.test(email.trim())
 		) {
-			console.log("failed email");
 			return false;
 		}
 		const { hash, iterations, salt } = pbkdf2Encryption(password);
+		const balance = generateRandomBalance();
 		const insertionResult = await userCollection.insertOne({
 			...userInformation,
+			balance,
 			iterations,
 			lastLogin: new Date(Date.now()).toUTCString(),
 			password: hash,
+			portfolio: API_CONSTANTS.BASE_PORTFOLIO,
 			salt,
 		});
 		if (insertionResult.acknowledged) {
@@ -291,31 +308,98 @@ export class UserService extends BaseService {
 		return { ...rest, roles: [maxValue.toString()] };
 	};
 
-	/**
-	 * Adds an image link to the user
-	 *
-	 * @param client - the mongo client
-	 * @param username - the username we are adding the image link to
-	 * @param imageLink - the image link we are appending to the user matching the username
-	 * @returns Whether the link was appended or not
-	 */
-	public addImageLinkToUser = async (
+	public getUserAggregateDataWithUsername = async (
 		client: StockMongoClient,
 		username: string,
-		imageLink: string,
-	): Promise<boolean> => {
+	): Promise<UserAggregateData | undefined> => withUsername(client, username);
+
+	public getUserPotentialProfit = async (
+		client: StockMongoClient,
+		username: string,
+	): Promise<Partial<UserAggregateData> | undefined> =>
+		withUsernamePotentialProfit(client, username);
+
+	public getUserOwnedStockWithUsername = async (
+		client: StockMongoClient,
+		username: string,
+	): Promise<OwnedStock[]> => {
 		const userCollection = client
 			.getClient()
 			.db(MONGO_COMMON.DATABASE_NAME)
 			.collection(this.COLLECTION_NAME);
 		const foundUser = await userCollection.findOne<User>({ username });
 		if (foundUser === null) {
+			return [];
+		}
+		return foundUser.portfolio.stocks;
+	};
+
+	public getUsernameFromObjectId = async (
+		client: StockMongoClient,
+		id: ObjectId,
+	): Promise<User | undefined> => {
+		const userCollection = client
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection(this.COLLECTION_NAME);
+		const foundUser = await userCollection.findOne<User>({ _id: id });
+		if (foundUser === null) {
+			return;
+		}
+		return foundUser;
+	};
+
+	public compareToLeaderboardUsers = async (
+		client: StockMongoClient,
+		user: Partial<User>,
+	): Promise<boolean> => {
+		const leaderboardCollection = client
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection("leaderboard");
+		const foundUsers = await leaderboardCollection
+			.find<LeaderboardUser>({})
+			.toArray();
+		if (foundUsers.length < 5) {
+			const doesUserAlreadyExist =
+				leaderboardCollection.findOne<LeaderboardUser>({
+					username: user.username,
+				});
+			if (doesUserAlreadyExist === null) {
+				await leaderboardCollection.insertOne(user);
+				return true;
+			}
 			return false;
 		}
-		const updateResult = await userCollection.updateOne(
-			{ username },
-			{ ...foundUser, pfpLink: imageLink },
-		);
-		return updateResult.modifiedCount > 0;
+		if (user.portfolio !== undefined) {
+			const currentUserTotal = computeOverallValueFromPortfolio(
+				user.portfolio,
+			);
+			let foundIndex = -1;
+			let loopIndex = 0;
+			for (const eachUser of foundUsers) {
+				if (eachUser.totalValue < currentUserTotal) {
+					foundIndex = loopIndex;
+					break;
+				}
+				loopIndex += 1;
+			}
+			const removedUser = foundUsers[foundIndex];
+			const deleteResult = await leaderboardCollection.deleteOne({
+				username: removedUser.username,
+			});
+			const insertedUser: LeaderboardUser = {
+				rank: removedUser.rank,
+				totalValue: currentUserTotal,
+				username: user.username ?? "",
+			};
+			const insertionResult = await leaderboardCollection.insertOne(
+				insertedUser,
+			);
+			return (
+				deleteResult.deletedCount === 1 && insertionResult.acknowledged
+			);
+		}
+		return false;
 	};
 }

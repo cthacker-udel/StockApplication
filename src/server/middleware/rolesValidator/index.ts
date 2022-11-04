@@ -1,0 +1,1 @@
+export { rolesValidator } from "./rolesValidator";

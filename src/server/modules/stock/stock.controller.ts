@@ -3,24 +3,24 @@
 /* eslint-disable no-nested-ternary -- not needed */
 /* eslint-disable @typescript-eslint/indent -- not needed */
 import type { Request, Response, Router } from "express";
-import { updateRoutes } from "../../common/api/basecontroller";
 import type { RouteMapping, SortByOptions, Stock } from "../../@types";
 import {
 	type BaseController,
 	ERROR_CODE_ENUM,
 	generateApiMessage,
 	Roles,
+	updateRoutes,
 } from "../../common";
 import { MONGO_COMMON, type StockMongoClient } from "../../mongo";
 import { StockService } from "./stock.service";
 import type { SessionService } from "../session";
-import { rolesValidator } from "../../middleware/rolesValidator/rolesValidator";
 import type {
 	ChangeStreamUpdateDocument,
 	ChangeStreamDeleteDocument,
 	ChangeStreamCreateDocument,
 	ObjectId,
 } from "mongodb";
+import { rolesValidator } from "../../middleware";
 import type { Server } from "socket.io";
 
 const CONSTANTS = {

@@ -3,6 +3,7 @@ import { from, Subject } from 'rxjs';
 import { SECRETS } from 'src/secrets';
 import { ROUTE_PREFIXES } from 'src/shared/constants/api';
 import { ConfigService } from '../config/config.service';
+import { OwnedStock } from '../_models/OwnedStock';
 import { Stock } from '../_models/Stock';
 import { SocketService } from './socket.service';
 
@@ -15,18 +16,6 @@ export class TradingService {
 
   getAllInitialStocks() {
     return this.httpClient.getConfig<Stock[]>(`${ROUTE_PREFIXES.stock}get/all`);
-  }
-
-  getUpdates() {
-    const socket = this.socketService.getSocket();
-    const socketSub = new Subject<Stock>();
-    const socketObservable = from(socketSub);
-
-    socket.on('stockUpdated', (stock: Stock) => {
-      socketSub.next(stock);
-    });
-
-    return socketObservable;
   }
 
   buyStock = (selectedStock: Stock, selectedAmount: number) => {
@@ -45,7 +34,7 @@ export class TradingService {
     }
   };
 
-  sellStock = (selectedStock: Stock, selectedAmount: number) => {
+  sellStock = (selectedStock: OwnedStock, selectedAmount: number) => {
     const username = localStorage.getItem(
       SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_ID
     );

@@ -1,13 +1,15 @@
 import type { MailService } from "@sendgrid/mail";
 import express, { type Router } from "express";
-import { StockController } from "./modules";
-import { StatusController } from "./modules/status";
-import { UserController } from "./modules/user";
+import {
+	StatusController,
+	UserController,
+	StockController,
+	SessionService,
+	TradeController,
+} from "./modules";
 
 import type { StockMongoClient } from "./mongo";
-import { SessionService } from "./modules/session/session.service";
 import type { Server } from "socket.io";
-import { TradeController } from "./modules/trade";
 
 export class AppController {
 	/**
@@ -62,6 +64,7 @@ export class AppController {
 			client,
 			_mailClient,
 			this.sessionService,
+			this.socketServer,
 		);
 		this.statusController = new StatusController(client);
 

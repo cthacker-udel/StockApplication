@@ -1,20 +1,31 @@
+/* eslint-disable @typescript-eslint/indent -- disabled */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment -- not needed */
-import type { StockMongoClient } from "../../mongo/stockMongoClient";
+import { MONGO_COMMON, type StockMongoClient } from "../../mongo";
 import {
 	type BaseController,
 	updateRoutes,
-} from "../../common/api/basecontroller";
+	generateApiMessage,
+	Roles,
+} from "../../common";
 import type { Server } from "socket.io";
-import type { RouteMapping } from "@types";
 import type { Request, Response, Router } from "express";
-import { generateApiMessage, Roles } from "../../common";
 import { SECRETS } from "../../secrets";
-import type { SessionCookie } from "../../@types/api/session/SessionCookie";
+import type { SessionCookie, RouteMapping, Trade } from "../../@types";
 import { TradeService } from "./trade.service";
-import { rolesValidator } from "../../middleware/rolesValidator/rolesValidator";
-import type { SessionService } from "../../modules/session";
-import { asyncMiddlewareHandler } from "../../middleware/asyncMiddlewareHandler";
-import { cookieValidator } from "../../middleware/cookieValidator/cookieValidator";
+import {
+	rolesValidator,
+	asyncMiddlewareHandler,
+	cookieValidator,
+} from "../../middleware";
+import type { SessionService } from "../../modules";
+import type {
+	ChangeStreamDeleteDocument,
+	ChangeStreamDocument,
+	ChangeStreamDocumentCommon,
+	ChangeStreamDocumentKey,
+	ChangeStreamInsertDocument,
+	ChangeStreamUpdateDocument,
+} from "mongodb";
 
 export class TradeController implements BaseController {
 	public readonly ROUTE_PREFIX: string = "/trade/";
@@ -36,6 +47,34 @@ export class TradeController implements BaseController {
 		this.socketInstance = _socket;
 		this.tradeService = new TradeService();
 		this.sessionService = _sessionService;
+
+		this.client
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection("trade")
+			.watch()
+			.on(
+				"change",
+				(
+					changedDocument: ChangeStreamDocument<Trade> &
+						ChangeStreamDocumentCommon &
+						ChangeStreamDocumentKey<Trade> &
+						(
+							| ChangeStreamDeleteDocument
+							| ChangeStreamInsertDocument
+							| ChangeStreamUpdateDocument
+						),
+				): void => {
+					const { operationType } = changedDocument;
+					if (
+						operationType === "insert" ||
+						operationType === "delete"
+					) {
+						// update most recent
+						_socket.emit("mostRecentTradesUpdated", true);
+					}
+				},
+			);
 	}
 
 	public buyStock = async (request: Request, response: Response) => {
@@ -48,7 +87,7 @@ export class TradeController implements BaseController {
 					),
 				);
 			} else {
-				const { amt, stockSymbol } = request.query;
+				const { amt, stockSymbol } = request.body;
 				const usernameHeader = request.header(
 					SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_ID,
 				);
@@ -73,6 +112,10 @@ export class TradeController implements BaseController {
 						Number.parseInt(amt as string, 10),
 						stockSymbol as string,
 						username,
+					);
+					response.status(200);
+					response.send(
+						generateApiMessage("Successfully bought stock", true),
 					);
 				}
 			}
@@ -114,12 +157,14 @@ export class TradeController implements BaseController {
 						usernameHeader,
 					) as SessionCookie;
 					const { value: username } = parsedUsername;
-					await this.tradeService.sellStock(
+					const result = await this.tradeService.sellStock(
 						this.client,
 						Number.parseInt(amt as string, 10),
 						stockSymbol as string,
 						username,
 					);
+					response.status(200);
+					response.send(result);
 				}
 			}
 		} catch (error: unknown) {
@@ -129,7 +174,76 @@ export class TradeController implements BaseController {
 		}
 	};
 
+	public getLeaderboardUsers = async (
+		_request: Request,
+		response: Response,
+	) => {
+		try {
+			const topUsers = await this.tradeService.getLeaderboardUsers(
+				this.client,
+			);
+			response.status(200);
+			response.send(topUsers);
+		} catch (error: unknown) {
+			console.error(
+				`Failed to fetch top users from the leaderboard ${
+					(error as Error).stack
+				}`,
+			);
+			response.status(400);
+			response.send(
+				generateApiMessage(
+					"Failed to fetch top users from the database",
+				),
+			);
+		}
+	};
+
+	public getMostRecentTrades = async (
+		_request: Request,
+		response: Response,
+	) => {
+		try {
+			const mostRecentTrades =
+				await this.tradeService.getMostRecentTrades(this.client);
+			response.status(200);
+			response.send(mostRecentTrades);
+		} catch (error: unknown) {
+			console.error(
+				`Failed to fetch most recent trades ${(error as Error).stack}`,
+			);
+			response.status(400);
+			response.send(
+				generateApiMessage("Failed to fetch most recent trades"),
+			);
+		}
+	};
+
 	public getRouteMapping = (): RouteMapping => ({
+		get: [
+			[
+				"leaderboard",
+				this.getLeaderboardUsers,
+				[
+					rolesValidator(Roles.USER, this.client),
+					asyncMiddlewareHandler(
+						cookieValidator,
+						this.sessionService,
+					),
+				],
+			],
+			[
+				"mostRecent",
+				this.getMostRecentTrades,
+				[
+					rolesValidator(Roles.USER, this.client),
+					asyncMiddlewareHandler(
+						cookieValidator,
+						this.sessionService,
+					),
+				],
+			],
+		],
 		post: [
 			[
 				"buy",

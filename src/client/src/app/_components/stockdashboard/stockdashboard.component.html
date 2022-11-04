@@ -40,16 +40,33 @@
     <div class="rounded p-4">
       <div class="card border-0">
         <div class="card-body" id="stock_dashboard_card_body">
-          <div class="card-title fs-4 fw-bold">
+          <div class="card-title fs-4 fw-bold text-center">
             <span class="text-dark">Most Recent Trades</span>
             <i class="ms-1 fa-solid fa-stopwatch fa-shake fa-lg text-dark"></i>
           </div>
-          <div class="list-group list-group-flush list-group-numbered">
-            <div class="list-group-item list-group-item-action">Trade 1</div>
-            <div class="list-group-item list-group-item-action">Trade 2</div>
-            <div class="list-group-item list-group-item-action">Trade 3</div>
-            <div class="list-group-item list-group-item-action">Trade 4</div>
-            <div class="list-group-item list-group-item-action">Trade 5</div>
+          <div
+            class="list-group list-group-flush"
+            *ngFor="let eachTrade of mostRecentTrades"
+          >
+            <div
+              class="list-group-item list-group-item-action fw-semibold" [ngClass]="{
+                'text-success': isTradeBuy(eachTrade),
+                'text-danger': isTradeBuy(eachTrade) === false
+              }"
+            >
+              <i class="fa-solid fa-lg me-2 my-auto" [ngClass]="{
+                'fa-money-bill text-success': isTradeBuy(eachTrade),
+                'fa-hand-holding-dollar text-danger': isTradeBuy(eachTrade) === false
+              }"></i>{{ getTradeString(eachTrade) }}<i class="fa-solid fa-calendar-days ms-3 me-1"></i>{{ getTradeTimeString(eachTrade) }}
+            </div>
+          </div>
+          <div
+            class="list-group list-group-flush"
+            *ngIf="mostRecentTrades && mostRecentTrades.length === 0"
+          >
+            <div class="list-group-item list-group-item-action">
+              No Trades To Report
+            </div>
           </div>
         </div>
       </div>
@@ -84,12 +101,21 @@
             <span class="text-dark">Leaderboard</span>
             <i class="fa-solid fa-trophy text-dark ms-1"></i>
           </div>
-          <div class="list-group list-group-flush list-group-numbered">
-            <div class="list-group-item list-group-item-action">User</div>
-            <div class="list-group-item list-group-item-action">User</div>
-            <div class="list-group-item list-group-item-action">User</div>
-            <div class="list-group-item list-group-item-action">User</div>
-            <div class="list-group-item list-group-item-action">User</div>
+          <div
+            class="list-group list-group-flush list-group-numbered"
+            *ngFor="let user of leaderboardUsers; index as i; first as isFirst"
+          >
+            <div class="list-group-item list-group-item-action fs-5 fw-bold">
+              {{ user.username }}
+            </div>
+          </div>
+          <div
+            class="list-group list-group-flush"
+            *ngIf="leaderboardUsers && leaderboardUsers.length === 0"
+          >
+            <div class="list-group-item list-group-item-action fs-5 fw-bold">
+              No Users To Report
+            </div>
           </div>
         </div>
       </div>

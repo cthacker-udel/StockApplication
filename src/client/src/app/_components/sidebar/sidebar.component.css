@@ -1,0 +1,65 @@
+@keyframes sidebar_open_animation {
+    from {
+        left: calc(-10%);
+    }
+    to {
+        left: calc(100%);
+    }
+}
+
+@keyframes sidebar_closed_animation {
+    from {
+        left: calc(100%);
+    }
+    to {
+        left: calc(-10%);
+    }
+}
+
+.main_container {
+    right: 100%;
+    height: 100vh;
+    width: 10vw;
+}
+
+
+.sidebar_contents {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100vh;
+    min-width: 10vw;
+    max-width: 20vw;
+    z-index: 1000;
+}
+
+.sidebar_contents_closed {
+    animation-name: sidebar_closed_animation;
+    animation-duration: 1s;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
+}
+
+.sidebar_contents_open {
+    animation-name: sidebar_open_animation;
+    animation-duration: 1s;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
+}
+
+.sidebar_contents_not_touched {
+    left: calc(-10%);
+}
+
+.sidebar_text {
+    font-size: .85em;
+}
+
+.toggle_button {
+    position: absolute;
+    cursor: pointer;
+    z-index: 1000;
+    bottom: calc(95%);
+    left: calc(100%);
+}

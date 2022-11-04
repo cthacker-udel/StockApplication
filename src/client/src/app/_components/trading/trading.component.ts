@@ -5,8 +5,13 @@ import { MatSliderChange } from '@angular/material/slider';
 import { MatTableDataSource } from '@angular/material/table';
 import { map, Observable, startWith } from 'rxjs';
 import { ConfigService } from 'src/app/config/config.service';
+import { OwnedStock } from 'src/app/_models/OwnedStock';
+import { SessionCookie } from 'src/app/_models/SessionCookie';
 import { Stock } from 'src/app/_models/Stock';
+import { User } from 'src/app/_models/User';
+import { StockAppSocketService } from 'src/app/_services/stockappsocket.service';
 import { TradingService } from 'src/app/_services/trading.service';
+import { SECRETS } from 'src/secrets';
 import { ROUTE_PREFIXES } from 'src/shared/constants/api';
 
 @Component({
@@ -18,6 +23,7 @@ export class TradingComponent implements AfterViewInit {
   isBuying: boolean = true;
   rawStockData: Stock[];
   stocks: MatTableDataSource<Stock>;
+  ownedStocks: MatTableDataSource<OwnedStock>;
   columndefs: any[] = [
     'Symbol',
     'Price',
@@ -29,8 +35,11 @@ export class TradingComponent implements AfterViewInit {
     'Actions',
   ];
 
+  sellingColumnDefs: any[] = ['Symbol', 'Amount', 'Sell'];
+
   actionStock: Stock;
-  selectedStock = new FormControl();
+  sellStock: OwnedStock;
+
   selectedStockAmount = 0;
 
   actionBtnClass = this.isBuying
@@ -38,15 +47,19 @@ export class TradingComponent implements AfterViewInit {
     : 'btn btn-outline-success';
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator) ownedStocksPaginator: MatPaginator;
 
   constructor(
     public configService: ConfigService,
-    public tradingService: TradingService
+    public tradingService: TradingService,
+    public stockAppSocketService: StockAppSocketService
   ) {
     this.tradingService.getAllInitialStocks().subscribe((stocks: Stock[]) => {
       this.rawStockData = stocks;
       this.stocks = new MatTableDataSource<Stock>(this.rawStockData);
-      const updateObservable = this.tradingService.getUpdates();
+      this.ownedStocks = new MatTableDataSource<OwnedStock>();
+
+      const updateObservable = this.stockAppSocketService.getStockUpdated();
       updateObservable.subscribe((latestUpdate: Stock) => {
         const index = this.rawStockData.findIndex(
           (eachStock) => eachStock.symbol === latestUpdate.symbol
@@ -57,17 +70,39 @@ export class TradingComponent implements AfterViewInit {
         this.stocks.data = this.rawStockData;
       });
     });
+    const usernameHeader = localStorage.getItem(
+      SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_ID
+    );
+    if (usernameHeader !== null) {
+      const parsedUsername = JSON.parse(usernameHeader) as SessionCookie;
+      const ownedStocks = this.configService.getConfig<OwnedStock[]>(
+        `${ROUTE_PREFIXES.user}ownedStocks?username=${parsedUsername.value}`
+      );
+      ownedStocks.subscribe((userOwnedStocks: OwnedStock[]) => {
+        if (this.ownedStocks) {
+          this.ownedStocks.data = userOwnedStocks;
+        }
+      });
+      this.stockAppSocketService
+        .getUserUpdated()
+        .subscribe((_res: Partial<User>) => {
+          if (this.ownedStocks && _res.portfolio) {
+            const {
+              portfolio: { stocks },
+            } = _res;
+            this.ownedStocks.data = stocks;
+          }
+        });
+    }
   }
 
   ngAfterViewInit(): void {
     if (this.stocks) {
       this.stocks.paginator = this.paginator;
+    } else if (this.ownedStocks) {
+      this.ownedStocks.paginator = this.ownedStocksPaginator;
     }
   }
-
-  calculateSliderStep = (totalShares: number) => {
-    return totalShares > 100 ? totalShares / 500 : 1;
-  };
 
   calculateDifferenceAndReturnClass = (
     price1: number,
@@ -79,6 +114,10 @@ export class TradingComponent implements AfterViewInit {
 
   fireAction = (element: Stock) => {
     this.actionStock = element;
+  };
+
+  fireActionSell = (element: OwnedStock) => {
+    this.sellStock = element;
   };
 
   generateActionBtnText = () => (this.isBuying ? 'Buy' : 'Sell');
@@ -97,15 +136,19 @@ export class TradingComponent implements AfterViewInit {
     }
   }
 
+  displayPrice = (type: string): string =>
+    type === 'buy'
+      ? Math.round(this.actionStock.price * this.selectedStockAmount).toFixed(2)
+      : (
+          this.stocks.data.find(
+            (eachStock: Stock) => eachStock.symbol === this.sellStock.symbol
+          )!.price * this.selectedStockAmount
+        ).toFixed(2);
+
   executeTrade() {
     this.isBuying
-      ? this.tradingService.buyStock(
-          this.selectedStock.value,
-          this.selectedStockAmount
-        )
-      : this.tradingService.sellStock(
-          this.selectedStock.value,
-          this.selectedStockAmount
-        );
+      ? this.tradingService.buyStock(this.actionStock, this.selectedStockAmount)
+      : this.tradingService.sellStock(this.sellStock, this.selectedStockAmount);
+    this.selectedStockAmount = 0;
   }
 }

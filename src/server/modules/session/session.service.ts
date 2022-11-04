@@ -1,13 +1,11 @@
-import type { SessionCookie } from "../../@types/api/session/SessionCookie";
-import { mockCookieManager } from "../../common/api/mockCookieManager";
+import { mockCookieManager, BaseService } from "../../common";
 import type { Request, Response } from "express";
 import type { Collection } from "mongodb";
 import { v4, validate } from "uuid";
-import type { User } from "../../@types";
-import { BaseService } from "../../common";
+import type { User, SessionCookie } from "../../@types";
 import { MONGO_COMMON, type StockMongoClient } from "../../mongo";
 import { SECRETS } from "../../secrets";
-import { fixedPbkdf2Encryption } from "../encryption/encryption";
+import { fixedPbkdf2Encryption } from "../encryption";
 
 export class SessionService extends BaseService {
 	private readonly stockMongoClient: StockMongoClient;

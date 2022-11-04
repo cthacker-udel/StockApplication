@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/indent -- prettier/eslint conflict */
 import { type Collection, ObjectId, type InsertOneResult } from "mongodb";
-import type { SortByOptions, Stock, User } from "../../@types";
-import { BaseService } from "../../common/api/baseservice";
+import type { OwnedStock, SortByOptions, Stock, User } from "../../@types";
+import { BaseService } from "../../common";
 import { MONGO_COMMON, type StockMongoClient } from "../../mongo";
 
 /**
@@ -214,12 +215,52 @@ export class StockService extends BaseService {
 			.getClient()
 			.db(MONGO_COMMON.DATABASE_NAME)
 			.collection(this.COLLECTION_NAME);
+
+		const foundStock = await stockCollection.findOne<Stock>({ symbol });
 		const usersWithStock = await userCollection
 			.find<User>({
-				portfolio: { stocks: { $elemMatch: { symbol } } },
+				"portfolio.stocks.symbol": { $eq: symbol },
 			})
 			.toArray();
-		console.log(usersWithStock);
-		return false;
+		const updateUserPromises = [];
+
+		if (usersWithStock.length > 0 && foundStock !== null) {
+			// issue proper refunds if any users hold the stock
+			for (const eachUser of usersWithStock) {
+				const {
+					username,
+					balance,
+					portfolio,
+					portfolio: { stocks },
+				} = eachUser;
+				const ind = stocks.findIndex(
+					(eachStock: OwnedStock) => eachStock.symbol === symbol,
+				);
+				const ownedStock = stocks[ind];
+				const calculatedRefund = ownedStock.amount * foundStock?.price;
+				const updatedStocks = [...stocks].filter(
+					(_, index) => index !== ind,
+				);
+				updateUserPromises.push(
+					userCollection.updateOne(
+						{
+							username,
+						},
+						{
+							$set: {
+								balance: balance + calculatedRefund,
+								portfolio: {
+									...portfolio,
+									stocks: updatedStocks,
+								},
+							},
+						},
+					),
+				);
+			}
+			await Promise.all(updateUserPromises);
+		}
+		const deleteResult = await stockCollection.deleteOne({ symbol });
+		return deleteResult.deletedCount === 1;
 	};
 }

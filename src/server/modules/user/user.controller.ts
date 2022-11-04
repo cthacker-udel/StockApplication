@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/indent -- disabled */
 import type { Request, Response, Router } from "express";
 import type { ChangeCredentialPayload, RouteMapping, User } from "../../@types";
 import {
@@ -6,19 +7,29 @@ import {
 	generateApiMessage,
 	generateEmail,
 	Roles,
-} from "../../common";
-import type { StockMongoClient } from "../../mongo";
-import {
 	type BaseController,
 	updateRoutes,
-} from "../../common/api/basecontroller";
+} from "../../common";
+import { type StockMongoClient, MONGO_COMMON } from "../../mongo";
 import { UserService } from "./user.service";
 import type { MailService } from "@sendgrid/mail";
-import { generateToken } from "../encryption/encryption";
+import { generateToken } from "../encryption";
 import type { SessionService } from "../session";
-import { rolesValidator } from "../../middleware/rolesValidator/rolesValidator";
-import { asyncMiddlewareHandler } from "../../middleware/asyncMiddlewareHandler";
-import { cookieValidator } from "../../middleware/cookieValidator/cookieValidator";
+import {
+	rolesValidator,
+	cookieValidator,
+	asyncMiddlewareHandler,
+} from "../../middleware";
+import type { Server } from "socket.io";
+import type {
+	ChangeStreamDeleteDocument,
+	ChangeStreamDocument,
+	ChangeStreamDocumentCommon,
+	ChangeStreamDocumentKey,
+	ChangeStreamInsertDocument,
+	ChangeStreamUpdateDocument,
+} from "mongodb";
+import { sanitizeUserInfo } from "../../modules";
 
 export class UserController implements BaseController {
 	public ROUTE_PREFIX = "/user/";
@@ -35,11 +46,85 @@ export class UserController implements BaseController {
 		client: StockMongoClient,
 		sendgridClient: MailService,
 		_sessionService: SessionService,
+		_socket: Server,
 	) {
 		this.userService = new UserService();
 		this.client = client;
 		this.sendgridClient = sendgridClient;
 		this.sessionService = _sessionService;
+
+		this.client
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection("user")
+			.watch()
+			.on(
+				"change",
+				(
+					changedDocument: ChangeStreamDocument<User> &
+						ChangeStreamDocumentCommon &
+						ChangeStreamDocumentKey<User> &
+						(
+							| ChangeStreamDeleteDocument
+							| ChangeStreamInsertDocument
+							| ChangeStreamUpdateDocument
+						),
+				): void => {
+					const { documentKey, operationType } = changedDocument;
+					if (documentKey !== undefined) {
+						const { _id } = documentKey;
+						this.userService
+							.getUsernameFromObjectId(this.client, _id)
+							.then((user: User | undefined) => {
+								if (
+									operationType === "update" &&
+									user !== undefined
+								) {
+									const { updateDescription } =
+										changedDocument;
+									const sanitizedUser =
+										sanitizeUserInfo(user);
+									if (
+										updateDescription.updatedFields
+											?.portfolio
+									) {
+										this.userService
+											.compareToLeaderboardUsers(
+												this.client,
+												sanitizedUser,
+											)
+											.then((result: boolean) => {
+												if (result) {
+													_socket.emit(
+														"leaderboardUpdated",
+														result,
+													);
+												}
+											})
+											.catch((error: unknown) => {
+												console.error(
+													`Failed to emit leaderboard updated event ${
+														(error as Error).stack
+													}`,
+												);
+											});
+									}
+									_socket.emit("userUpdated", {
+										...sanitizedUser,
+										...updateDescription.updatedFields,
+									});
+								}
+							})
+							.catch((error: unknown) => {
+								console.error(
+									`Failed in onchange user trigger ${
+										(error as Error).stack
+									}`,
+								);
+							});
+					}
+				},
+			);
 	}
 
 	/**
@@ -304,6 +389,127 @@ export class UserController implements BaseController {
 		}
 	};
 
+	public getUserAggregateDataWithUsername = async (
+		request: Request,
+		response: Response,
+	): Promise<void> => {
+		try {
+			const { username } = request.query;
+			if (username === undefined) {
+				response.status(400);
+				response.send(
+					generateApiMessage(
+						"Failed fetching user aggregate data, must send username in query string",
+					),
+				);
+			} else {
+				const result =
+					await this.userService.getUserAggregateDataWithUsername(
+						this.client,
+						username as string,
+					);
+				if (result === undefined) {
+					response.status(400);
+					response.send(
+						generateApiMessage(
+							"Failed fetching user aggregate data, no response from the backend",
+						),
+					);
+				}
+				response.status(200);
+				response.send(result);
+			}
+		} catch (error: unknown) {
+			console.error(
+				`Failed fetching user aggregate data ${(error as Error).stack}`,
+			);
+			response.status(400);
+			response.send(
+				generateApiMessage("Failed fetching user aggregate data"),
+			);
+		}
+	};
+
+	public getUserPotentialProfitWithUsername = async (
+		request: Request,
+		response: Response,
+	) => {
+		try {
+			const { username } = request.query;
+			if (username === undefined) {
+				response.status(400);
+				response.send(
+					generateApiMessage(
+						"Unable to find potential profit from user, username must be supplied in query",
+					),
+				);
+			} else {
+				const result = await this.userService.getUserPotentialProfit(
+					this.client,
+					username as string,
+				);
+				if (result === undefined) {
+					response.status(400);
+					response.send(
+						generateApiMessage(
+							"Unable to find user's potential profit, value returned was undefined",
+						),
+					);
+				} else {
+					response.status(200);
+					response.send(result);
+				}
+			}
+		} catch (error: unknown) {
+			console.error(
+				`Unable to find user's potential profit ${
+					(error as Error).stack
+				}`,
+			);
+			response.status(401);
+			response.send("Unable to find user's potential profit");
+		}
+	};
+
+	public getUserOwnedStocksWithUsername = async (
+		request: Request,
+		response: Response,
+	): Promise<void> => {
+		try {
+			const { username } = request.query;
+			if (username === undefined) {
+				response.status(400);
+				response.send(
+					generateApiMessage(
+						"Failed to fetch user owned stock, no username supplied",
+					),
+				);
+			} else {
+				const result =
+					await this.userService.getUserOwnedStockWithUsername(
+						this.client,
+						username as string,
+					);
+				if (result.length === 0) {
+					response.status(204);
+				} else {
+					response.status(200);
+					response.send(result);
+				}
+			}
+		} catch (error: unknown) {
+			console.error(
+				`Failed to fetch user owned stocks ${(error as Error).stack}`,
+			);
+			response.status(400);
+			response.send(
+				generateApiMessage(
+					"Failed to fetch user owned stocks via username",
+				),
+			);
+		}
+	};
+
 	/**
 	 * Fetches all the routes and their methods
 	 *
@@ -315,6 +521,21 @@ export class UserController implements BaseController {
 			[
 				"data",
 				this.getUserDataWithUsername,
+				[rolesValidator(Roles.USER, this.client)],
+			],
+			[
+				"aggregate",
+				this.getUserAggregateDataWithUsername,
+				[rolesValidator(Roles.USER, this.client)],
+			],
+			[
+				"potentialProfit",
+				this.getUserPotentialProfitWithUsername,
+				[rolesValidator(Roles.USER, this.client)],
+			],
+			[
+				"ownedStocks",
+				this.getUserOwnedStocksWithUsername,
 				[rolesValidator(Roles.USER, this.client)],
 			],
 		],
