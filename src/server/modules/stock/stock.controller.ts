@@ -1,3 +1,7 @@
+/* eslint-disable indent -- not needed */
+/* eslint-disable unicorn/no-nested-ternary -- not needed */
+/* eslint-disable no-nested-ternary -- not needed */
+/* eslint-disable @typescript-eslint/indent -- not needed */
 import type { Request, Response, Router } from "express";
 import type { RouteMapping, SortByOptions, Stock } from "../../@types";
 import {
@@ -10,8 +14,13 @@ import {
 import { MONGO_COMMON, type StockMongoClient } from "../../mongo";
 import { StockService } from "./stock.service";
 import type { SessionService } from "../session";
+import type {
+	ChangeStreamUpdateDocument,
+	ChangeStreamDeleteDocument,
+	ChangeStreamCreateDocument,
+	ObjectId,
+} from "mongodb";
 import { rolesValidator } from "../../middleware";
-import type { ChangeStreamUpdateDocument } from "mongodb";
 import type { Server } from "socket.io";
 
 const CONSTANTS = {
@@ -60,17 +69,29 @@ export class StockController implements BaseController {
 			.watch()
 			.on(
 				"change",
-				(changedDocument: ChangeStreamUpdateDocument): void => {
+				(
+					changedDocument:
+						| ChangeStreamCreateDocument
+						| ChangeStreamDeleteDocument
+						| ChangeStreamUpdateDocument,
+				): void => {
+					const documentId: ObjectId =
+						changedDocument.operationType === "create"
+							? (changedDocument._id as ObjectId)
+							: changedDocument.documentKey._id;
+					const emitEvent =
+						changedDocument.operationType === "create"
+							? "stockCreated"
+							: changedDocument.operationType === "delete"
+							? "stockDeleted"
+							: "stockUpdated";
 					this.stockService
-						.getStockById(
-							this.client,
-							changedDocument.documentKey._id.toString(),
-						)
+						.getStockById(this.client, documentId.toString())
 						.then((result: Stock | undefined) => {
 							if (result === undefined) {
 								throw new Error("Unable to find updated stock");
 							}
-							_socket.sockets.emit("stockUpdated", result);
+							_socket.sockets.emit(emitEvent, result);
 						})
 						.catch((error: unknown) => {
 							console.error(
