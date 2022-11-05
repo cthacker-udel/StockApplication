@@ -18,7 +18,6 @@ export class AppComponent {
     this.router.events.subscribe((e) => {
       if (e instanceof NavigationEnd) {
         const isSessionValid = sessionService.validateSession();
-        console.log('isSessionValid = ', isSessionValid);
         if (!isSessionValid) {
           router.navigateByUrl('/login');
           if (

@@ -82,7 +82,6 @@ export class SignInComponent implements OnInit {
               }>(`${ROUTE_PREFIXES.user}data?username=${parsedUsername.value}`);
               getUserDataRequest.subscribe(
                 (foundUser: { user: Partial<User> }) => {
-                  console.log('foundUser = ', foundUser);
                   this.userService.updateUser(foundUser);
                 }
               );

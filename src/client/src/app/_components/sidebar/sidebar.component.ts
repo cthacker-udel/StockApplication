@@ -87,7 +87,6 @@ export class SidebarComponent implements OnInit {
       this.stockAppSocketService
         .getUserUpdated()
         .subscribe((updatedUser: Partial<User>) => {
-          console.log('updatedUser = ', updatedUser);
           this.currentUser = { ...this.currentUser, ...updatedUser };
           potentialProfitRequest.subscribe(
             (updatedPotentialProfit: Partial<UserAggregateData>) => {
