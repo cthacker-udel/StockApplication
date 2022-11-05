@@ -11,12 +11,14 @@ export class SessionService {
       SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_ID
     );
     if (sessionInfo !== null) {
-      localStorage.setItem(SECRETS.STOCK_APP_SESSION_COOKIE_ID, sessionInfo);
+      const parsedSessionInfo = JSON.parse(sessionInfo) as SessionCookie;
+      localStorage.setItem(SECRETS.STOCK_APP_SESSION_COOKIE_ID, JSON.stringify({...parsedSessionInfo, expiration: new Date(parsedSessionInfo.expiration).getTime()}));
     }
     if (sessionUsername !== null) {
+      const parsedSessionUsername = JSON.parse(sessionUsername) as SessionCookie;
       localStorage.setItem(
         SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_ID,
-        sessionUsername
+        JSON.stringify({...parsedSessionUsername, expiration: new Date(parsedSessionUsername.expiration).getTime()})
       );
     }
   };
@@ -93,14 +95,14 @@ export class SessionService {
     }
   };
 
-  private validateSession = (): boolean => {
+  public validateSession = (): boolean => {
     // validates solely off of expiration
     const sessionInfo = localStorage.getItem(
       SECRETS.STOCK_APP_SESSION_COOKIE_ID
     );
     if (sessionInfo !== null) {
       const validateSession = JSON.parse(sessionInfo) as SessionCookie;
-      if (Date.now() - Number.parseInt(validateSession.expiration, 10) < 0) {
+      if (Date.now() - new Date(validateSession.expiration).getTime() > 0) {
         return false;
       }
       return true;
