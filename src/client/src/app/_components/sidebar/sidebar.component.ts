@@ -6,6 +6,7 @@ import { Stock } from 'src/app/_models/Stock';
 import { User } from 'src/app/_models/User';
 import { UserAggregateData } from 'src/app/_models/UserAggregateData';
 import { StockAppSocketService } from 'src/app/_services/stockappsocket.service';
+import { UserService } from 'src/app/_services/user.service';
 import { SECRETS } from 'src/secrets';
 import { ROUTE_PREFIXES } from 'src/shared/constants/api';
 import { dateToMMDDYYYY } from 'src/shared/helpers/dateToMMDDYYYY';
@@ -24,10 +25,17 @@ export class SidebarComponent implements OnInit {
 
   constructor(
     private configService: ConfigService,
-    private stockAppSocketService: StockAppSocketService
+    private stockAppSocketService: StockAppSocketService,
+    private userService: UserService
   ) {}
 
   ngOnInit(): void {
+    this.userService.currentUser.subscribe((value: { user: Partial<User> }) => {
+      if (value && Object.keys(value?.user).length > 0) {
+        const { user } = value;
+        this.currentUser = user;
+      }
+    });
     const storedUsername = localStorage.getItem(
       SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_ID
     );
@@ -79,10 +87,11 @@ export class SidebarComponent implements OnInit {
       this.stockAppSocketService
         .getUserUpdated()
         .subscribe((updatedUser: Partial<User>) => {
+          console.log('updatedUser = ', updatedUser);
           this.currentUser = { ...this.currentUser, ...updatedUser };
           potentialProfitRequest.subscribe(
             (updatedPotentialProfit: Partial<UserAggregateData>) => {
-              if (updatedPotentialProfit.totalPotentialProfit) {
+              if (updatedPotentialProfit.totalPotentialProfit !== undefined) {
                 this.userAggregateData.totalPotentialProfit =
                   updatedPotentialProfit.totalPotentialProfit;
               }

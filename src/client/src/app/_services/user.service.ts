@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { ROUTE_PREFIXES } from 'src/shared/constants/api';
 import { ConfigService } from '../config/config.service';
 import { User } from '../_models/User';
@@ -9,7 +9,15 @@ import { User } from '../_models/User';
  */
 @Injectable()
 export class UserService {
-  constructor(private httpClient: ConfigService) {}
+  currentUser: BehaviorSubject<{ user: Partial<User> }>;
+
+  constructor(private httpClient: ConfigService) {
+    this.currentUser = new BehaviorSubject({ user: {} });
+  }
+
+  updateUser(user: { user: Partial<User> }) {
+    this.currentUser.next(user);
+  }
 
   getUserDataWithUsername(username: string): Observable<User> {
     return this.httpClient.getConfig<User>(

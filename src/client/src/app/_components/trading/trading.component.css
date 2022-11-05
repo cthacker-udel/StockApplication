@@ -24,3 +24,7 @@
 #toggle_buttons {
     width: fit-content;
 }
+
+.trading_table {
+    height: 50vh;
+}
