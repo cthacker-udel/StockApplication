@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment -- not neeeded*/
 /* eslint-disable class-methods-use-this -- disabled */
 /* eslint-disable wrap-regex -- not needed*/
 import type {
@@ -401,5 +402,19 @@ export class UserService extends BaseService {
 			);
 		}
 		return false;
+	};
+
+	public getProfitLoss = async (
+		client: StockMongoClient,
+		username: string,
+	): Promise<OwnedStock[]> => {
+		const userCollection = client
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection(this.COLLECTION_NAME);
+		const foundUser = await userCollection.findOne<User>({ username });
+		const poteinalProfit = this.getUserPotentialProfit(client, username);
+		const currentProfit = foundUser?.balance;
+		return currentProfit/poteinalProfit;
 	};
 }
