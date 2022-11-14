@@ -8,6 +8,7 @@ import type {
 	Role,
 	User,
 	UserAggregateData,
+	Stock,
 } from "../../@types";
 import {
 	BaseService,
@@ -404,17 +405,34 @@ export class UserService extends BaseService {
 		return false;
 	};
 
-	public getProfitLoss = async (
+	public getPortfolioGainLoss = async (
 		client: StockMongoClient,
 		username: string,
-	): Promise<OwnedStock[]> => {
+	): Promise<number> => {
 		const userCollection = client
 			.getClient()
 			.db(MONGO_COMMON.DATABASE_NAME)
 			.collection(this.COLLECTION_NAME);
+		const stockCollection = client
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection(this.COLLECTION_NAME);
 		const foundUser = await userCollection.findOne<User>({ username });
-		const poteinalProfit = this.getUserPotentialProfit(client, username);
 		const currentProfit = foundUser?.balance;
-		return currentProfit/poteinalProfit;
+		const stocksOwned = foundUser?.portfolio.stocks;
+		if (stocksOwned === undefined) {
+			return 0;
+		};
+		let GainLoss = 0;
+		for (let i = 0; i < stocksOwned?.length; i++) {
+			let portfolioStock = stocksOwned[i];
+			let stockSymbol = portfolioStock.symbol;
+			let buyPrice = portfolioStock.buyPrice;
+			// eslint-disable-next-line no-await-in-loop -- needed
+			const stock = await stockCollection.findOne<Stock>({ stockSymbol });
+			let currentPrice = stock?.price;
+			GainLoss += (currentPrice - buyPrice);
+		};
+		return GainLoss;
 	};
 }
