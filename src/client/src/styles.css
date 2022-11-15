@@ -1,9 +1,16 @@
+body {
+    height: calc(100vh - 44px);
+    overflow-y: hidden;
+}
+
 .stock_navbar {
-    font-family: 'Roboto Condensed', sans-serif
+    font-family: 'Roboto Condensed', sans-serif;
+    height: 44px;
 }
 
 .stock_navbar > div:hover {
-    background-color: aliceblue;
+    background-color: #d7e9c8;
+    color: #202e32;
 }
 
 .stock_navbar > div {
@@ -19,4 +26,8 @@
 
 #toast-container > div {
     opacity: 1;
+}
+
+.btn-secondary {
+    background-color: #202e32;
 }

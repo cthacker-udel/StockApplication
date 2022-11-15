@@ -1,19 +1,69 @@
 <div
-  class="w-100 h-100 d-flex flex-column justify-content-around stock_dashboard_background"
+  class="w-100 h-100 d-flex flex-column stock_dashboard_background"
 >
-  <div
-    class="fw-bold text-center p-4 fs-5 w-25 mx-auto mt-4 rounded"
-    id="stock_dashboard_card_body"
-  >
-    Welcome {{ username }}!
+  <div class="flex-row" id="stock_dashboard_header">
+    <div class="flex-column" id="stock_dashboard_title">
+      <div class="card-title fs-2 fw-bold text-dark">{{ username }}'s Dashboard</div>
+    </div>
+    
+    <div class="flex-column" id="stock_dashboard_icon_buttons">
+      <div class="p-2 mx-2 rounded shadow btn" routerLink="/profile">
+        <i class="fa-solid fa-user fa-2x text-light"></i>
+      </div>
+      <div class="p-2 mx-2 rounded shadow btn" routerLink="/trading">
+        <i class="fa-solid fa-money-bill-trend-up fa-2x text-light"></i>
+      </div>
+      <div class="p-2 mx-2 rounded shadow btn">
+        <i class="fa-solid fa-chart-simple fa-2x text-light"></i>
+      </div>
+      <div
+        class="p-2 mx-2 rounded shadow btn"
+        data-bs-toggle="tooltip"
+        data-bs-placement="top"
+        data-bs-title="User settings"
+      >
+        <i class="fa-solid fa-cog fa-2x text-light"></i>
+      </div>
+    </div>
   </div>
-  <div class="bg bg-light w-75 mx-auto rounded">
-    <div class="card" id="stock_dashboard_card_body">
-      <div class="card-body text-center fs-3 fw-bold">
-        <div class="card-title d-flex flex-row justify-content-center">
-          <i class="fa-solid fa-fire text-danger fa-beat p-2"></i>
-          <div class="fa-beat px-3 text-dark">Top Stocks</div>
-          <i class="fa-solid fa-fire text-danger fa-beat p-2"></i>
+
+  <div class="flex-row">
+    <div class="flex-colum rounded" id="left-column">
+      <div class="card-title rounded fs-4 fw-bold text-center" id="stock_dashboard_recent">
+        <i class="ms-1 p-2 fa-solid fa-stopwatch fa-lg"></i>
+        Most Recent Trades
+      </div>
+      <div
+        class="list-group list-group-flush"
+        *ngFor="let eachTrade of mostRecentTrades"
+      >
+        <div
+          class="list-group-item list-group-item-action fw-semibold" [ngClass]="{
+            'text-success': isTradeBuy(eachTrade),
+            'text-danger': isTradeBuy(eachTrade) === false
+          }"
+        >
+          <i class="fa-solid fa-lg me-2 my-auto" [ngClass]="{
+            'fa-money-bill text-success': isTradeBuy(eachTrade),
+            'fa-hand-holding-dollar text-danger': isTradeBuy(eachTrade) === false
+          }"></i>{{ getTradeString(eachTrade) }}<i class="fa-solid fa-calendar-days ms-3 me-1"></i>{{ getTradeTimeString(eachTrade) }}
+        </div>
+      </div>
+      <div
+        class="list-group list-group-flush"
+        *ngIf="mostRecentTrades && mostRecentTrades.length === 0"
+      >
+        <div class="list-group-item list-group-item-action">
+          No Trades To Report
+        </div>
+      </div>
+    </div>
+
+    <div class="flex-column w-50" id="right-column">
+      <div class="card-body rounded text-center fs-3 fw-bold" id="stock-dashboard-top-stocks">
+        <div class="card-title d-flex fs-4 flex-row justify-content-center">
+          <i class="ms-1 p-2 fa-solid fa-fire text-danger "></i>
+          Top Stocks
         </div>
         <div
           *ngIf="stocks.length > 0"
@@ -34,88 +84,26 @@
           </div>
         </div>
       </div>
-    </div>
-  </div>
-  <div class="d-flex flex-row justify-content-around">
-    <div class="rounded p-4">
-      <div class="card border-0">
-        <div class="card-body" id="stock_dashboard_card_body">
-          <div class="card-title fs-4 fw-bold text-center">
-            <span class="text-dark">Most Recent Trades</span>
-            <i class="ms-1 fa-solid fa-stopwatch fa-shake fa-lg text-dark"></i>
-          </div>
-          <div
-            class="list-group list-group-flush"
-            *ngFor="let eachTrade of mostRecentTrades"
-          >
-            <div
-              class="list-group-item list-group-item-action fw-semibold" [ngClass]="{
-                'text-success': isTradeBuy(eachTrade),
-                'text-danger': isTradeBuy(eachTrade) === false
-              }"
-            >
-              <i class="fa-solid fa-lg me-2 my-auto" [ngClass]="{
-                'fa-money-bill text-success': isTradeBuy(eachTrade),
-                'fa-hand-holding-dollar text-danger': isTradeBuy(eachTrade) === false
-              }"></i>{{ getTradeString(eachTrade) }}<i class="fa-solid fa-calendar-days ms-3 me-1"></i>{{ getTradeTimeString(eachTrade) }}
-            </div>
-          </div>
-          <div
-            class="list-group list-group-flush"
-            *ngIf="mostRecentTrades && mostRecentTrades.length === 0"
-          >
-            <div class="list-group-item list-group-item-action">
-              No Trades To Report
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="d-flex flex-column" id="stock_dashboard_icon_buttons">
-      <div class="d-flex flex-row justify-content-center">
-        <div class="p-5 rounded shadow me-4 btn" routerLink="/profile">
-          <i class="fa-solid fa-user fa-3x text-dark"></i>
-        </div>
-        <div class="p-5 rounded shadow ms-4 btn" routerLink="/trading">
-          <i class="fa-solid fa-money-bill-trend-up fa-3x text-success"></i>
-        </div>
-      </div>
-      <div class="d-flex flex-row justify-content-center mt-5">
-        <div class="p-5 rounded me-4 shadow btn" id="stock_btn">
-          <i class="fa-solid fa-chart-simple fa-3x text-primary"></i>
+
+      <div class="card-body rounded text-center fs-3 fw-bold" id="stock_dashboard_leaderboard">
+        <div class="card-title fs-4 fw-bold">
+          <i class="fa-solid fa-trophy text-dark ms-1 p-2"></i>
+          Leaderboard
         </div>
         <div
-          class="p-5 rounded ms-4 shadow btn"
-          data-bs-toggle="tooltip"
-          data-bs-placement="top"
-          data-bs-title="User settings"
+          class="list-group list-group-flush list-group-numbered"
+          *ngFor="let user of leaderboardUsers; index as i; first as isFirst"
         >
-          <i class="fa-solid fa-cog fa-3x text-secondary"></i>
+          <div class="list-group-item list-group-item-action fs-5 fw-bold">
+            {{ user.username }}
+          </div>
         </div>
-      </div>
-    </div>
-    <div class="rounded p-4">
-      <div class="card border-0">
-        <div class="card-body" id="stock_dashboard_card_body">
-          <div class="card-title fs-4 fw-bold">
-            <span class="text-dark">Leaderboard</span>
-            <i class="fa-solid fa-trophy text-dark ms-1"></i>
-          </div>
-          <div
-            class="list-group list-group-flush list-group-numbered"
-            *ngFor="let user of leaderboardUsers; index as i; first as isFirst"
-          >
-            <div class="list-group-item list-group-item-action fs-5 fw-bold">
-              {{ user.username }}
-            </div>
-          </div>
-          <div
-            class="list-group list-group-flush"
-            *ngIf="leaderboardUsers && leaderboardUsers.length === 0"
-          >
-            <div class="list-group-item list-group-item-action fs-5 fw-bold">
-              No Users To Report
-            </div>
+        <div
+          class="list-group list-group-flush"
+          *ngIf="leaderboardUsers && leaderboardUsers.length === 0"
+        >
+          <div class="list-group-item list-group-item-action fs-5 fw-bold">
+            No Users To Report
           </div>
         </div>
       </div>

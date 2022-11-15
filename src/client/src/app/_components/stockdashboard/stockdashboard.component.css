@@ -1,20 +1,69 @@
 .stock_dashboard_background {
-    background-color: rgb(120, 147, 149);
+    background-color: #202e32;
 }
 
-#stock_dashboard_icon_buttons > div > div {
-    background-color: rgb(148, 180, 159);
-    border-color: rgb(148, 180, 159);
+#stock_dashboard_header {
+    margin-top: 40px;
+    background-color: white;
+    color: #202e32;
+    padding: 20px;
+    position: relative;
 }
 
-#stock_dashboard_icon_buttons > div > div:hover {
-    background-color: rgb(180, 207, 176);
-    border-color: rgb(180, 207, 176);
+#stock_dashboard_icon_buttons {
+    float: right;
+}
+
+#stock_dashboard_title {
+    float: left;
+    top: 50%;
+    transform: translateY(-50%);
+    position: absolute;
+}
+
+#stock_dashboard_recent {
+    background-color: white;
+    float: left;
+    padding: 20px;
+    margin-top: 40px;
+    color: #202e32;
+}
+
+#stock-dashboard-top-stocks {
+    background-color: white;
+    padding: 20px;
+    margin-top: 40px;
+}
+
+#stock_dashboard_leaderboard {
+    background-color: white;
+    padding: 20px;
+    margin-top: 40px;
+}
+
+#right-column {
+    margin-right: 40px;
+    float: right;
+}
+
+#left-column {
+    margin-left: 40px;
+    float: left;
+}
+
+#stock_dashboard_icon_buttons > div {
+    width: 50px;
+    height: 50px;
+    background-color: #202e32;
+}
+
+#stock_dashboard_icon_buttons > div:hover {
+    background-color: #586c5c;
 }
 
 #stock_dashboard_card_body {
-    background-color: rgb(148, 180, 159);
-    color: rgb(229, 227, 201);
+    background-color: white;
+    color: #202e32;
 }
 
 #stock_dashboard_card_body > .list-group > div {

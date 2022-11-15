@@ -7,7 +7,7 @@
 }
 
 #background {
-    background-color: rgb(120, 147, 149);
+    background-color: #202e32;
     height: 100vh;
 }
 
@@ -22,58 +22,57 @@
 }
 
 #landing_page_left_card {
-    background-color: rgb(148, 180, 159);
-    border-color: rgb(229, 227, 201);
+    background-color: white;
+    color: #202e32;
 }
 
 .list-group > * {
-    background-color: rgb(148, 180, 159);
-    border-color: rgb(229, 227, 201);
-    color: black;
+    background-color: #202e32;
+    border-color: white;
+    color: white;
 }
 
 #landing_page_right_card {
-    background-color: rgb(180, 207, 176);
+    background-color: white;
     font-weight: bold;
 }
 
 #landing_page_right_card {
-    background-color: rgb(148, 180, 159);
-    border-color: rgb(148, 180, 159);
+    background-color: white;
     height: fit-content;
 }
 
 #username_landing_input {
-    background-color: rgb(229, 227, 201);
-    border-color: rgb(148, 180, 159);
+    background-color: #d7e9c8;
+    border-color: #202e32;
 }
 
 #first_name_landing_input {
-    background-color: rgb(229, 227, 201);
-    border-color: rgb(148, 180, 159);
+    background-color: #d7e9c8;
+    border-color: #202e32;
 }
 
 #last_name_landing_input {
-    background-color: rgb(229, 227, 201);
-    border-color: rgb(148, 180, 159);
+    background-color: #d7e9c8;
+    border-color: #202e32;
 }
 
 #date_of_birth_landing_input {
-    background-color: rgb(229, 227, 201);
-    border-color: rgb(148, 180, 159);
+    background-color: #d7e9c8;;
+    border-color: #202e32;
 }
 
 #email_address_landing_input {
-    background-color: rgb(229, 227, 201);
-    border-color: rgb(148, 180, 159);
+    background-color: #d7e9c8;
+    border-color: #202e32;
 }
 
 #password_landing_input {
-    background-color: rgb(229, 227, 201);
-    border-color: rgb(148, 180, 159);
+    background-color: #d7e9c8;
+    border-color: #202e32;
 }
 
 #confirm_password_landing_input {
-    background-color: rgb(229, 227, 201);
-    border-color: rgb(148, 180, 159);
+    background-color: #d7e9c8;
+    border-color: #202e32;
 }

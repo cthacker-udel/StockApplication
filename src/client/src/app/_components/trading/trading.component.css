@@ -1,6 +1,15 @@
 
 .trading_background {
-    background-color: rgb(120, 147, 149);
+    background-color: #202e32;
+}
+
+#trading_icon_buttons {
+    float: right;
+}
+
+#trading_icon_button {
+    width: 50px;
+    height: 50px;
 }
 
 .action_btn_text {
@@ -11,15 +20,19 @@
     width: calc(100% - 30px);
 }
 
-#trading_header {
-    background-color: rgb(148, 180, 159);
+#trading-header {
+    margin-top: 40px;
+    margin-bottom: 10px;
+    background-color: white;
+    color: #202e32;
+    padding: 20px;
+    position: relative;
 }
 
-#trading_header_title {
-    color: rgb(229, 227, 201);
+#trading-header-title {
+    float: left;
+    top: 50%;
+    transform: translateY(-50%);
+    position: absolute;
     letter-spacing: .05em;
-}
-
-#toggle_buttons {
-    width: fit-content;
 }
