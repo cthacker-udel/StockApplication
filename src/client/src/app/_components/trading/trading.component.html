@@ -2,16 +2,16 @@
   class="h-100 w-100 d-flex flex-column trading_background"
 >
   <div class="flex-row" id="trading-header">
-    <div class="text-left fs-2 fw-bold" id="trading-header-title">Trading</div>
+    <div class="flex-column text-left fs-2 fw-bold" id="trading-header-title">Trading</div>
       <div
-        class="d-flex flex-row mt-2 mx-auto p-2 rounded"
+        class="d-flex flex-row mx-auto rounded"
         id="trading_icon_buttons"
       >
-      <div>
+      <div class="flex-column">
         <button
           id="trading_icon_button"
           type="button"
-          class="btn p-2 mx-2 rounded shadow"
+          class="btn mx-2 rounded"
           [ngClass]="{
             'btn-primary': isBuying,
             'btn-outline-primary': !isBuying
@@ -23,7 +23,7 @@
         <button
           id="trading_icon_button"
           type="button"
-          class="btn p-2 mx-2 rounded shadow"
+          class="btn mx-2 rounded"
           [ngClass]="{
             'btn-success': !isBuying,
             'btn-outline-success': isBuying
@@ -131,7 +131,7 @@
       aria-label="Select page of stocks"
     ></mat-paginator>
   </div>
-  <div class="mat-elevation-z8 w-75 mx-auto mt-3" *ngIf="isBuying === false">
+  <div class="mat-elevation-z8 w-100 mx-auto mt-3" *ngIf="isBuying === false">
     <table class="w-100" mat-table [dataSource]="ownedStocks">
       <ng-container matColumnDef="Symbol">
         <th class="text-center" mat-header-cell *matHeaderCellDef>Symbol</th>
