@@ -87,14 +87,15 @@ export class TradeController implements BaseController {
 					),
 				);
 			} else {
-				const { amt, stockSymbol } = request.body;
+				const { amt, stockSymbol, buyPrice } = request.body;
 				const usernameHeader = request.header(
 					SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_ID,
 				);
 				if (
 					usernameHeader === undefined ||
 					amt === undefined ||
-					stockSymbol === undefined
+					stockSymbol === undefined ||
+					buyPrice === undefined
 				) {
 					response.status(400);
 					response.send(
@@ -111,6 +112,7 @@ export class TradeController implements BaseController {
 						this.client,
 						Number.parseInt(amt as string, 10),
 						stockSymbol as string,
+						Number.parseInt(buyPrice as string, 10),
 						username,
 					);
 					response.status(200);

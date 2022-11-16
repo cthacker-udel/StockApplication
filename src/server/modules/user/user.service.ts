@@ -418,7 +418,6 @@ export class UserService extends BaseService {
 			.db(MONGO_COMMON.DATABASE_NAME)
 			.collection(this.COLLECTION_NAME);
 		const foundUser = await userCollection.findOne<User>({ username });
-		const currentProfit = foundUser?.balance;
 		const stocksOwned = foundUser?.portfolio.stocks;
 		if (stocksOwned === undefined) {
 			return 0;
