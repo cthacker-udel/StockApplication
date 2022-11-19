@@ -5,7 +5,7 @@ body {
 
 .stock_navbar {
     font-family: 'Roboto Condensed', sans-serif;
-    height: 44px;
+    height: 5vh;
 }
 
 .stock_navbar > div:hover {

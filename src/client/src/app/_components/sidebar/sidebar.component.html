@@ -168,13 +168,20 @@
             {{ truncateDecimal(userAggregateData.avgTradesPerDay, 2) }}
           </div>
         </div>
-        <div>
+        <div *ngIf="currentUser === undefined">
+          <div class="m-2 text-center fw-bold">
+          Not logged in.
+        </div>
+        </div>
+        <div class="d-flex flex-row justify-content-center">
           <!-- Bottom content -->
           <button
             type="button"
-            class="w-100 btn btn-outline-primary border-1 border-start-0 border-end-0 border-bottom-0"
+            class="w-50 mb-1 btn btn-outline-primary"
+            matTooltip="Logout"
+            matTooltipPosition="above"
           >
-            Logout
+            <i class="fa-solid fa-right-from-bracket"></i>
           </button>
         </div>
         <i

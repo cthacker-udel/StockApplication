@@ -24,6 +24,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.2.0",
     "@fortawesome/free-solid-svg-icons": "^6.2.0",
     "@nguniversal/express-engine": "^14.2.0",
+    "bootstrap": "^5.2.2",
     "ngx-toastr": "^15.2.1",
     "rxjs": "~7.5.0",
     "socket.io-client": "^4.5.3",
