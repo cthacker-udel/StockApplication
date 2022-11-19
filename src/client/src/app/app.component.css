@@ -2,3 +2,16 @@
     height: 100vh;
     width: 100vw;
 }
+
+.loading_container {
+    right: 0%;
+    top: 0%;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    background-color: rgba(100, 100, 100, 0.9);
+}
+
+#loading_img {
+    margin-left: 10vw;
+}

@@ -1,4 +1,4 @@
 
 html > body *:not(i) {
-    font-family: 'Rubik' !important;
+    font-family: 'Rubik', 'serif' !important;
 }

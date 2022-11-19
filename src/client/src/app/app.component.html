@@ -41,6 +41,9 @@
   </header>
   <body>
     <sidebar></sidebar>
+    <ng-container *ngIf="loadingService.isLoading$ | async">
+      <div class="position-absolute loading_container d-flex flex-column justify-content-center align-items-center"><img src="assets/bullrotate.gif" id="loading_img"></div>
+    </ng-container>
     <router-outlet></router-outlet>
   </body>
 </div>
