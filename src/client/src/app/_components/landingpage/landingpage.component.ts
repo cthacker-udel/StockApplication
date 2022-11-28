@@ -143,6 +143,7 @@ export class LandingPageComponent implements OnInit {
           email: controls['email']?.value,
           username: controls['username'].value,
           password: controls['password'].value,
+          balance: 1200,
         })
         .subscribe((result: ApiMessage) => {
           if (result.success) {
