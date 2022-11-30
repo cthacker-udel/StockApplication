@@ -31,6 +31,7 @@ export class LandingPageComponent implements OnInit {
     'email',
     'password',
     'confirmPassword',
+    'balance'
   ];
   landingPageFormGroup: FormGroup = new FormGroup({});
 
@@ -101,6 +102,14 @@ export class LandingPageComponent implements OnInit {
         Validators.maxLength(35),
         this.confirmPasswordDoesNotMatch,
       ]),
+      balance: new FormControl(
+        '',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.maxLength(6),
+          Validators.pattern(REGEX_EXPRESSIONS.NO_SPACES),
+        ]),
     });
   }
 
@@ -132,6 +141,10 @@ export class LandingPageComponent implements OnInit {
     return this.landingPageFormGroup.get('confirmPassword');
   }
 
+  get balance() {
+    return this.landingPageFormGroup.get('balance')
+  }
+
   signUp() {
     if (this.landingPageFormGroup.valid) {
       const { controls } = this.landingPageFormGroup;
@@ -143,7 +156,7 @@ export class LandingPageComponent implements OnInit {
           email: controls['email']?.value,
           username: controls['username'].value,
           password: controls['password'].value,
-          balance: 1200,
+          balance: parseInt(controls['balance'].value),
         })
         .subscribe((result: ApiMessage) => {
           if (result.success) {
