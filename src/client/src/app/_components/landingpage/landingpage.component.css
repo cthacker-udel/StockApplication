@@ -1,3 +1,13 @@
+
+@keyframes landing_page_opacity_anim {
+    from {
+        opacity: 0%;
+    }
+    to {
+        opacity: 100%;
+    }
+}
+
 #landing_page_signup_inputs > div > input {
     float: right;
 }
@@ -24,6 +34,10 @@
 #landing_page_left_card {
     background-color: white;
     color: #202e32;
+    animation-name: landing_page_opacity_anim;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease-in-out;
 }
 
 .list-group > * {
@@ -35,6 +49,10 @@
 #landing_page_right_card {
     background-color: white;
     font-weight: bold;
+    animation-name: landing_page_opacity_anim;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease-in-out;
 }
 
 #landing_page_right_card {

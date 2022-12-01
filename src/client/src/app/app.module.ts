@@ -36,6 +36,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { AddStockModal } from './_components/admin/dashboard/modals/addStock/addStockModal.component';
 import { SidebarComponent } from './_components/sidebar/sidebar.component';
 import { StockAppSocketService } from './_services/stockappsocket.service';
+import { LoadingInterceptor } from './config/loadingInterceptor';
+import { LoadingService } from './config/loading.service';
 
 @NgModule({
   declarations: [
@@ -77,6 +79,12 @@ import { StockAppSocketService } from './_services/stockappsocket.service';
   ],
   providers: [
     ConfigService,
+    LoadingService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: LoadingInterceptor,
+      multi: true,
+    },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: RequestInterceptor,

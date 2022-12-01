@@ -54,9 +54,11 @@ export class UserService extends BaseService {
 			username,
 		});
 		if (doesUserAlreadyExist) {
+			console.log("user already exists");
 			return false;
 		}
 		if (/\W+/giu.test(username)) {
+			console.log("user regex");
 			return false;
 		}
 		if (
@@ -65,26 +67,31 @@ export class UserService extends BaseService {
 			!/\d/giu.test(password) ||
 			!/\W/giu.test(password)
 		) {
+			console.log("password regex");
 			return false;
 		}
 		if (
-			new Date(dob).getUTCFullYear() -
-				new Date(Date.now()).getUTCFullYear() <
-				-21 ||
+			new Date(Date.now()).getUTCFullYear() -
+				new Date(dob).getUTCFullYear() <
+				21 ||
 			Number.isNaN(Date.parse(dob))
 		) {
+			console.log("dob regex");
 			return false;
 		}
 		if (firstName && !/\S/giu.test(firstName.trim())) {
+			console.log("firstname regex");
 			return false;
 		}
 		if (lastName && !/\S/giu.test(lastName.trim())) {
+			console.log("lastname regex");
 			return false;
 		}
 		if (
 			email?.trim() &&
 			!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/giu.test(email.trim())
 		) {
+			console.log("email regex");
 			return false;
 		}
 		const { hash, iterations, salt } = pbkdf2Encryption(password);

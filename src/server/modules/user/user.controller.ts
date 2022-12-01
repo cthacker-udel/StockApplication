@@ -476,6 +476,7 @@ export class UserController implements BaseController {
 		response: Response,
 	): Promise<void> => {
 		try {
+			console.log("in found stocks");
 			const { username } = request.query;
 			if (username === undefined) {
 				response.status(400);
@@ -494,8 +495,8 @@ export class UserController implements BaseController {
 					response.status(204);
 				} else {
 					response.status(200);
-					response.send(result);
 				}
+				response.send(result);
 			}
 		} catch (error: unknown) {
 			console.error(

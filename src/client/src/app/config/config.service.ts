@@ -1,6 +1,8 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { catchError, retry, throwError } from 'rxjs';
+import { SessionService } from '../_services/session.service';
 
 @Injectable()
 export class ConfigService {
@@ -10,7 +12,11 @@ export class ConfigService {
     'Access-Control-Allow-Credentials': 'true',
   };
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private _router: Router,
+    private sessionService: SessionService
+  ) {}
 
   getConfig<T>(endpoint: string) {
     return this.http
@@ -18,7 +24,10 @@ export class ConfigService {
         headers: this.corsHeaders,
         withCredentials: true,
       })
-      .pipe(retry(3), catchError(this.handleError));
+      .pipe(
+        retry(3),
+        catchError((error: HttpErrorResponse) => this.handleError(error, this))
+      );
   }
 
   getConfigResponse<T>(endpoint: string) {
@@ -53,10 +62,17 @@ export class ConfigService {
     });
   }
 
-  private handleError(error: HttpErrorResponse) {
+  handleError(error: HttpErrorResponse, context: ConfigService) {
     console.log('error = ', error);
     if (error.status === 0) {
       console.error('Client-side error occurred ', error.error);
+    } else if (error.status === 401) {
+      this.sessionService.clearSessionInformation();
+      if (document && !document.URL.endsWith('login')) {
+        context._router
+          .navigate(['login'])
+          .then((result) => console.log('res = ', result));
+      }
     } else {
       console.error(
         `Backend returned code ${error.status}, body was : ${error.error}`
