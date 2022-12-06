@@ -10,12 +10,22 @@ import { TradingService } from 'src/app/_services/trading.service';
 import { SECRETS } from 'src/secrets';
 import { ROUTE_PREFIXES } from 'src/shared/constants/api';
 
+type LivePriceReaction = {
+  positive: boolean;
+  negative: boolean;
+  neutral: boolean;
+};
+
 type UserPortfolioStock = {
   symbol: string;
   balance: number;
+  balanceReaction: LivePriceReaction;
   change: number;
+  changeReaction: LivePriceReaction;
   currentPrice: number;
+  currentPriceReaction: LivePriceReaction;
   gainLoss: number;
+  gainLossReaction: LivePriceReaction;
 };
 
 @Component({
@@ -70,14 +80,39 @@ export class PortfolioComponent {
               );
               console.log(matchedStock);
               if (matchedStock !== undefined) {
-                console.log('pushing');
+                const changeResult =
+                  (eachStock.price - eachStock.oldPrice) * 100;
+                const gainLoss =
+                  matchedStock.amount * eachStock.price -
+                  matchedStock.amount * eachStock.oldPrice;
+                ('');
                 convertedUserStocks.push({
                   balance: matchedStock.amount * eachStock.price,
+                  balanceReaction: {
+                    positive: false,
+                    negative: false,
+                    neutral: true,
+                  },
                   change: (eachStock.price - eachStock.oldPrice) * 100,
+                  changeReaction: {
+                    positive: changeResult > 0,
+                    negative: changeResult < 0,
+                    neutral: changeResult === 0,
+                  },
                   currentPrice: eachStock.price,
+                  currentPriceReaction: {
+                    positive: false,
+                    negative: false,
+                    neutral: true,
+                  },
                   gainLoss:
                     matchedStock.amount * eachStock.price -
                     matchedStock.amount * eachStock.oldPrice,
+                  gainLossReaction: {
+                    positive: gainLoss > 0,
+                    negative: gainLoss < 0,
+                    neutral: gainLoss === 0,
+                  },
                   symbol: matchedStock.symbol,
                 });
               }
@@ -94,13 +129,58 @@ export class PortfolioComponent {
       this.stockAppSocketService
         .getStockUpdated()
         .subscribe((_res: Partial<Stock>) => {
-          const { symbol } = _res;
-          const foundUserStock = this.userOwnedStocks.data.findIndex(
-            (eachOwnedStock: UserPortfolioStock) =>
-              eachOwnedStock.symbol === symbol
-          );
-          if (foundUserStock !== -1) {
-            // this.userOwnedStocks.data[foundUserStock];, put whatever logic you want in here.
+          console.log('stock updated ', _res);
+          const { symbol, price, oldPrice } = _res;
+          if (price) {
+            // price changed, begin computation
+            const displayedStockIndex = this.userOwnedStocks.data.findIndex(
+              (eachDisplayedStock: UserPortfolioStock) =>
+                eachDisplayedStock.symbol === symbol
+            );
+            if (displayedStockIndex !== -1) {
+              console.log('updating stock');
+              const foundStock = this.userOwnedStocks.data[displayedStockIndex];
+              const changeResult =
+                price - (oldPrice ?? foundStock.currentPrice);
+              const gainLossResult =
+                foundStock.balance * foundStock.currentPrice -
+                foundStock.balance * price;
+              const cloneUserStockData = [...this.userOwnedStocks.data];
+              const balanceDifference =
+                cloneUserStockData[displayedStockIndex].balance -
+                foundStock.balance * price;
+              const currentPriceDifference =
+                cloneUserStockData[displayedStockIndex].currentPrice - price;
+
+              cloneUserStockData[displayedStockIndex] = {
+                ...foundStock,
+                balance: foundStock.balance * price,
+                balanceReaction: {
+                  positive: balanceDifference > 0,
+                  negative: balanceDifference < 0,
+                  neutral: balanceDifference === 0,
+                },
+                change: changeResult,
+                changeReaction: {
+                  positive: changeResult > 0,
+                  negative: changeResult < 0,
+                  neutral: changeResult === 0,
+                },
+                currentPrice: price,
+                currentPriceReaction: {
+                  positive: currentPriceDifference > 0,
+                  negative: currentPriceDifference < 0,
+                  neutral: currentPriceDifference === 0
+                },
+                gainLoss: gainLossResult,
+                gainLossReaction: {
+                  positive: gainLossResult > 0,
+                  negative: gainLossResult < 0,
+                  neutral: gainLossResult === 0,
+                },
+              };
+              this.userOwnedStocks.data = [...cloneUserStockData];
+            }
           }
         });
     }
