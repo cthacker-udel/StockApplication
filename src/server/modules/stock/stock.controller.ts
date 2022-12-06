@@ -181,6 +181,38 @@ export class StockController implements BaseController {
 	};
 
 	/**
+	 * Bulk fetches an array of stock symbols sent via from the client
+	 *
+	 * @param request - the request sent from the client-side
+	 * @param response - the response we are sending back to the user
+	 */
+	public getBulkStockBySymbol = async (
+		request: Request,
+		response: Response,
+	): Promise<void> => {
+		const { stocks } = request.query;
+		try {
+			response.status(200);
+			response.send(
+				await this.stockService.getBulkStockBySymbol(
+					this.client,
+					(stocks as string).split(","),
+				),
+			);
+		} catch (error: unknown) {
+			console.error(
+				`Failed to bulk fetch stock ${(error as Error).stack}`,
+			);
+			response.status(400);
+			response.send(
+				generateApiMessage(
+					`Failed to bulk fetch stock with symbols ${stocks}`,
+				),
+			);
+		}
+	};
+
+	/**
 	 * Gets all stocks given a price
 	 *
 	 * @param request - The server request
@@ -514,6 +546,11 @@ export class StockController implements BaseController {
 			[
 				"dashboard",
 				this.getStockDashboardStocks,
+				[rolesValidator(Roles.USER, this.client)],
+			],
+			[
+				"get/bulk/symbol",
+				this.getBulkStockBySymbol,
 				[rolesValidator(Roles.USER, this.client)],
 			],
 		],
