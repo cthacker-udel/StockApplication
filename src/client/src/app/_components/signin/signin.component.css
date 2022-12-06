@@ -1,22 +1,13 @@
 .signin_page_main {
-    background-color: rgb(120, 147, 149);
-}
-
-.signin_page_card {
-    background-color: rgb(148, 180, 159);
-    border-color: rgb(148, 180, 159);
+    background-image: url("/assets/stock-img.jpeg");
+    background-position: center;
+    background-size: cover;
+    /* Special trick to do green overlay */
+    box-shadow: inset 0 0 0 1000px #164a41b5;
+    height: 100vh;
 }
 
 #signin_card {
-    background-color: rgb(148, 180, 159);
-}
-
-#signin_password {
-    background-color: rgb(148, 180, 159);
-    border-color: rgb(229, 227, 201);
-}
-
-#signin_username {
-    background-color: rgb(148, 180, 159);
-    border-color: rgb(229, 227, 201);
+    background-color: white;
+    box-shadow: 5px 5px 5px;
 }
