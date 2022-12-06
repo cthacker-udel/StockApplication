@@ -7,81 +7,41 @@
 }
 
 #background {
-    background-color: var(--main-background-color);
+    background-image: url("/assets/stock-img.jpeg");
+    background-position: center;
+    background-size: cover;
+    /* Special trick to do green overlay */
+    box-shadow: inset 0 0 0 1000px #164a41b5;
     height: 100vh;
 }
 
 #row_for_cards {
-    margin-top: 5%;
-}
-
-.landing_page_main {
-    background-image: url('https://cdn.mos.cms.futurecdn.net/avQoSGU9uTjFCgtCW3Rrhk.jpg');
-    background-position: center;
-    background-size: auto;
+    margin-top: 10vh;
 }
 
 #landing_page_left_card {
-    background-color: var(--sub2-background-color);
-    border-color: rgb(229, 227, 201);
+    background-color: white;
+    box-shadow: 5px 5px 5px;
+    min-width: 300px;
+    min-height: fit-content;
+    height: 75vh;
+    overflow-y: scroll;
 }
 
 .list-group > * {
-    background-color: var(--main-background-color);
-    border-color: rgb(229, 227, 201);
+    background-color: #164a41;
+    border-color: white;
     color: white;
 }
 
 #landing_page_right_card {
-    background-color: var(--main-background-color);
-    font-weight: bold;
+    background-color: white;
+    box-shadow: 5px 5px 5px;
+    margin-left: 5vw;
+    padding: 10px;
+    min-width: 350px;
+    min-height: fit-content;
+    height: 75vh;
+    overflow-y: scroll;
 }
 
-#landing_page_right_card {
-    background-color: var(--sub2-background-color);
-    border-color: var(--main-background-color);
-    color: black;
-    height: fit-content;
-}
-
-#username_landing_input {
-    background-color: var(--sub1-background-color);
-    border-color: var(--main-background-color);
-    color: white;
-}
-
-#first_name_landing_input {
-    background-color: var(--sub1-background-color);
-    border-color: var(--main-background-color);
-    color: white;
-}
-
-#last_name_landing_input {
-    background-color: var(--sub1-background-color);
-    border-color: var(--main-background-color);
-    color: white;
-}
-
-#date_of_birth_landing_input {
-    background-color: var(--sub1-background-color);
-    border-color: var(--main-background-color);
-    color: white;
-}
-
-#email_address_landing_input {
-    background-color: var(--sub1-background-color);
-    border-color: var(--main-background-color);
-    color: white;
-}
-
-#password_landing_input {
-    background-color: var(--sub1-background-color);
-    border-color: var(--main-background-color);
-    color: white;
-}
-
-#confirm_password_landing_input {
-    background-color: var(--sub1-background-color);
-    border-color: var(--main-background-color);
-    color: white;
-}

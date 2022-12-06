@@ -6,18 +6,15 @@
     <div
       class="d-flex flex-column rounded p-2 justify-content-around"
       id="landing_page_left_card"
-      style="min-width: 300px"
     >
       <div class="d-flex flex-column">
         <span class="fw-bold fs-1">
           <img
             src="assets/bullStocksLogo.png"
-            width="150px"
-            style="margin-bottom: 20px"
-          />
+            width="150px"/>
           BullStocks
         </span>
-        <span class="fs-4 fw-semibold" style="margin-top: 0px; margin: 10px">
+        <span class="fs-4 fw-semibold m-4 mt-2" >
           The stock trading playground where you can simulate a real stock
           trading experience!
         </span>
@@ -36,7 +33,7 @@
       </div>
     </div>
     <form
-      class="rounded p-3 ms-5"
+      class="rounded"
       [formGroup]="landingPageFormGroup"
       id="landing_page_right_card"
     >
@@ -271,7 +268,7 @@
               </div>
             </div>
             <button
-              class="w-25 mx-auto btn btn-secondary mt-3"
+              class="mx-auto btn btn-secondary mt-3"
               (click)="signUp()"
               [disabled]="!landingPageFormGroup.valid"
             >

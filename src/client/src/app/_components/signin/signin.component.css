@@ -1,24 +1,13 @@
 .signin_page_main {
-    background-color: var(--main-background-color);
-}
-
-.signin_page_card {
-    background-color: var(--sub2-background-color);
-    border-color: white;
+    background-image: url("/assets/stock-img.jpeg");
+    background-position: center;
+    background-size: cover;
+    /* Special trick to do green overlay */
+    box-shadow: inset 0 0 0 1000px #164a41b5;
+    height: 100vh;
 }
 
 #signin_card {
-    background-color: var(--sub2-background-color);
-}
-
-#signin_password {
-    background-color: var(--sub1-background-color);
-    border-color: var(--sub4-background-color);
-    color: white;
-}
-
-#signin_username {
-    background-color: var(--sub1-background-color);
-    border-color: var(--sub4-background-color);
-    color: white;
+    background-color: white;
+    box-shadow: 5px 5px 5px;
 }
