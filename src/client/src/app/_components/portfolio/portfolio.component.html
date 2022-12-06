@@ -5,9 +5,13 @@
     <div class="text-center fs-4" id="portfolio_header_title">Portfolio</div>
   </div>
 
-  <div id="portfolio_balance"></div>
-  <div id="portfolio_returns"></div>
-  <div id="portfolio_stocks">
+  <div id="portfolio_balance">
+    <div id="stock_balance_header">Account Balance</div>
+  </div>
+  <div id="portfolio_returns">
+    <div id="portfolio_return_header">Portfolio Returns</div>
+  </div>
+  <div class="mat-elevation-z8 w-75 mx-auto mt-3" id="portfolio_stocks">
     <div id="stock_table_header">
       <div id="stock_table_header_title">Owned Stocks</div>
     </div>
@@ -43,5 +47,10 @@
         <td class="text-center" mat-cell *matCellDef="let element"></td>
       </ng-container>
     </table>
+    <mat-paginator
+      [pageSizeOptions]="[5, 10, 20]"
+      showFirstLastButtons
+      aria-label="Select page of stocks"
+    ></mat-paginator>
   </div>
 </div>
