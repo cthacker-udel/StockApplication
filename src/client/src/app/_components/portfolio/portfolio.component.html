@@ -1,0 +1,56 @@
+<div
+  class="h-100 w-100 d-flex flex-column justify-content-center portfolio_background"
+>
+  <div class="w-25 mx-auto rounded p-3" id="portfolio_header">
+    <div class="text-center fs-4" id="portfolio_header_title">Portfolio</div>
+  </div>
+
+  <div id="portfolio_balance">
+    <div id="stock_balance_header">Account Balance</div>
+  </div>
+  <div id="portfolio_returns">
+    <div id="portfolio_return_header">Portfolio Returns</div>
+  </div>
+  <div class="mat-elevation-z8 w-75 mx-auto mt-3" id="portfolio_stocks">
+    <div id="stock_table_header">
+      <div id="stock_table_header_title">Owned Stocks</div>
+    </div>
+    <table class="w-100" mat-table [dataSource]="userOwnedStocks">
+      <ng-container matColumnDef="Symbol">
+        <th class="text-center" mat-header-cell *matHeaderCellDef>Symbol</th>
+        <td class="text-center" mat-cell *matCellDef="let element">
+          {{ element.symbol }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="Balance">
+        <th class="text-center" mat-header-cell *matHeaderCellDef>Balance</th>
+        <td class="text-center" mat-cell *matCellDef="let element"></td>
+      </ng-container>
+      <ng-container matColumnDef="gainLoss">
+        <th class="text-center" mat-header-cell *matHeaderCellDef>Gain/Loss</th>
+        <td class="text-center" mat-cell *matCellDef="let element"></td>
+      </ng-container>
+      <ng-container matColumnDef="Change">
+        <th class="text-center" mat-header-cell *matHeaderCellDef>Change</th>
+        <td class="text-center" mat-cell *matCellDef="let element"></td>
+      </ng-container>
+      <ng-container matColumnDef="Price">
+        <th class="text-center" mat-header-cell *matHeaderCellDef>Price</th>
+        <td class="text-center" mat-cell *matCellDef="let element">
+          {{ element.price }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="Owned Shares">
+        <th class="text-center" mat-header-cell *matHeaderCellDef>
+          Owned Shares
+        </th>
+        <td class="text-center" mat-cell *matCellDef="let element"></td>
+      </ng-container>
+    </table>
+    <mat-paginator
+      [pageSizeOptions]="[5, 10, 20]"
+      showFirstLastButtons
+      aria-label="Select page of stocks"
+    ></mat-paginator>
+  </div>
+</div>
