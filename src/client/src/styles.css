@@ -1,10 +1,10 @@
 body {
-    height: calc(100vh - 44px);
+    height: 95vh;
 }
 
 .stock_navbar {
     font-family: 'Roboto Condensed', sans-serif;
-    height: 44px;
+    height: 5vh;
 }
 
 .stock_navbar > div:hover {
@@ -12,7 +12,7 @@ body {
 }
 
 .stock_navbar > div {
-    width: 100%;
+    width: 100vw;
     text-align: center;
     cursor: pointer;
 }
