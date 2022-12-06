@@ -12,9 +12,7 @@
     <div id="portfolio_return_header">Portfolio Returns</div>
   </div>
   <div class="mat-elevation-z8 w-75 mx-auto mt-3" id="portfolio_stocks">
-    <div id="stock_table_header">
-      <div id="stock_table_header_title">Owned Stocks</div>
-    </div>
+    <div id="stock_table_header_title">Owned Stocks</div>
     <table class="w-100" mat-table [dataSource]="userOwnedStocks">
       <ng-container matColumnDef="Symbol">
         <th class="text-center" mat-header-cell *matHeaderCellDef>Symbol</th>
