@@ -31,12 +31,12 @@ const routes: Routes = [
     path: 'admin',
   },
   {
-    component: LandingPageComponent,
-    path: '**',
+    component: PortfolioComponent,
+    path: 'portfolio',
   },
   {
-    component: PortfolioComponent,
-    path: 'portfolio'
+    component: LandingPageComponent,
+    path: '**',
   },
 ];
 

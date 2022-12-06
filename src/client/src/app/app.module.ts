@@ -1,3 +1,4 @@
+import { PortfolioComponent } from './_components/portfolio/portfolio.component';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -49,6 +50,7 @@ import { StockAppSocketService } from './_services/stockappsocket.service';
     DeleteStockModal,
     AddStockModal,
     SidebarComponent,
+    PortfolioComponent,
   ],
   imports: [
     BrowserModule,
