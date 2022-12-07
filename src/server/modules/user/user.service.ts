@@ -86,7 +86,9 @@ export class UserService extends BaseService {
 		}
 		if (
 			email?.trim() &&
-			!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/giu.test(email.trim())
+			!/^[a-zA-Z0-9-.]+@([a-zA-Z0-9-]+\.)+[a-zA-Z0-9-]{2,4}$/giu.test(
+				email.trim(),
+			)
 		) {
 			console.log("test 4");
 			return false;
