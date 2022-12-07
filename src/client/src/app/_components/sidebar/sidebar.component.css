@@ -32,6 +32,7 @@
     min-width: 10vw;
     max-width: 20vw;
     z-index: 1000;
+    color: var(--sub2-background-color);
 }
 
 .sidebar_contents_closed {

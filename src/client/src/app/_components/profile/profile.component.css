@@ -1,6 +1,6 @@
 
 #profile_background {
-    background-color: rgb(120, 147, 149);
+    background-color: var(--main-background-color);
 }
 
 #profile_picture {
@@ -27,15 +27,42 @@
 }
 
 #profile_info {
-    background-color: rgb(148, 180, 159);
-    border-color: rgb(229, 227, 201);
+    background-color: var(--sub2-background-color);
+    border-color: var(--main-background-color);
+    width: fit-content;
+    height: fit-content;
+    color: black;
+}
+
+#recent_stock_activity {
+    background-color: var(--sub2-background-color);
+    border-color: var(--sub4-background-color);
     width: fit-content;
     height: fit-content;
 }
 
-#recent_stock_activity {
-    background-color: rgb(148, 180, 159);
-    border-color: rgb(229, 227, 201);
-    width: fit-content;
-    height: fit-content;
+.profile_display_stats_container {
+    min-height: 25vh;
+    overflow-y: auto;
+    max-height: 50vh;
+}
+
+.profile_display_user_stats {
+    text-indent: 1em;
+    font-size: 1.25em;
+}
+
+.profile_display_user_stats_container {
+    background-color: var(--sub2-background-color);
+    border-color: var(--sub4-background-color);
+    max-height: 75vh;
+    overflow: auto;
+    line-height: 1.75;
+}
+
+.user_information {
+    text-align: center;
+    font-size: .75em;
+    text-decoration: underline;
+    margin-bottom: 1em;
 }

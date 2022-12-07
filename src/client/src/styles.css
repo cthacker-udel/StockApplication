@@ -1,13 +1,18 @@
+body {
+    height: 95vh;
+}
+
 .stock_navbar {
-    font-family: 'Roboto Condensed', sans-serif
+    font-family: 'Roboto Condensed', sans-serif;
+    height: 5vh;
 }
 
 .stock_navbar > div:hover {
-    background-color: aliceblue;
+    color: #4D774E;
 }
 
 .stock_navbar > div {
-    width: 100%;
+    width: 100vw;
     text-align: center;
     cursor: pointer;
 }
@@ -19,4 +24,12 @@
 
 #toast-container > div {
     opacity: 1;
+}
+
+:root {
+    --main-background-color: #000000;
+    --sub1-background-color: #14213d;
+    --sub2-background-color: #fca311;
+    --sub3-background-color: #e5e5e5;
+    --sub4-background-color: #ffffff;
 }
