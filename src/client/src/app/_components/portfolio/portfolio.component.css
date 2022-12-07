@@ -18,6 +18,15 @@
     }
 }
 
+@keyframes appear_func {
+    0% {
+        opacity: 0%;
+    }
+    100% {
+        opacity: 100%;
+    }
+}
+
 .portfolio_background {
     background-color: rgb(120, 147, 149);
 }
@@ -41,5 +50,12 @@
     animation-name: loading_anim;
     animation-timing-function: ease-in-out;
     animation-duration: 3s;
+    animation-fill-mode: forwards;
+}
+
+.no_stocks {
+    animation-name: appear_func;
+    animation-timing-function: ease-in-out;
+    animation-duration: 1s;
     animation-fill-mode: forwards;
 }

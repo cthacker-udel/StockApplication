@@ -36,6 +36,7 @@ type UserPortfolioStock = {
 export class PortfolioComponent {
   userOwnedStocks: MatTableDataSource<UserPortfolioStock>;
   displayLoading: boolean;
+  noStocks: boolean;
 
   tableColumnDefs: any[] = [
     'Symbol',
@@ -49,6 +50,7 @@ export class PortfolioComponent {
     public configService: ConfigService,
     public stockAppSocketService: StockAppSocketService
   ) {
+    this.noStocks = false;
     this.displayLoading = true;
     this.userOwnedStocks = new MatTableDataSource<UserPortfolioStock>([]);
     const usernameHeader = localStorage.getItem(
@@ -56,11 +58,13 @@ export class PortfolioComponent {
     );
     if (usernameHeader !== null) {
       const parsedUsername = JSON.parse(usernameHeader) as SessionCookie;
-      const getUserOwnedStocks = this.configService.getConfig<OwnedStock[]>(
-        `${ROUTE_PREFIXES.user}ownedStocks?username=${parsedUsername.value}`
-      );
+      const getUserOwnedStocks = this.configService.getConfigCustomHeaders<
+        OwnedStock[]
+      >(`${ROUTE_PREFIXES.user}ownedStocks?username=${parsedUsername.value}`, {
+        'Cache-Control': 'no-cache',
+      });
       getUserOwnedStocks.subscribe((userOwnedStocks: OwnedStock[]) => {
-        if (this.userOwnedStocks) {
+        if (this.userOwnedStocks != null) {
           const convertedUserStocks: UserPortfolioStock[] = [];
           const stockSymbols = userOwnedStocks.map(
             (eachOwnedStock: OwnedStock) => eachOwnedStock.symbol
@@ -72,6 +76,9 @@ export class PortfolioComponent {
             )}`
           );
           bulkFetchRequest.subscribe((result: Stock[]) => {
+            if (result.length === 0) {
+              this.userOwnedStocks.data = [];
+            }
             result.forEach((eachStock: Stock) => {
               const matchedStock = userOwnedStocks.find(
                 (eachOwnedStock: OwnedStock) =>
@@ -120,6 +127,11 @@ export class PortfolioComponent {
               setTimeout(() => {
                 this.userOwnedStocks.data = convertedUserStocks;
               }, 3000);
+            } else {
+              setTimeout(() => {
+                this.noStocks = true;
+              }, 3100);
+              this.displayLoading = false;
             }
           });
         }
@@ -166,7 +178,7 @@ export class PortfolioComponent {
                 currentPriceReaction: {
                   positive: currentPriceDifference > 0,
                   negative: currentPriceDifference < 0,
-                  neutral: currentPriceDifference === 0
+                  neutral: currentPriceDifference === 0,
                 },
                 gainLoss: gainLossResult,
                 gainLossReaction: {

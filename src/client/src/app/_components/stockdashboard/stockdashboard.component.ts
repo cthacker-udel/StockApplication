@@ -12,6 +12,17 @@ import { SECRETS } from 'src/secrets/secrets';
 import { ROUTE_PREFIXES } from 'src/shared/constants/api';
 
 type InitialStockResponse = { stocks: Stock[] };
+
+type SubLoadingState = {
+  display: boolean;
+  animate: boolean;
+};
+
+type LoadingStates = {
+  stocks: SubLoadingState;
+  leaderboard: SubLoadingState;
+  recent: SubLoadingState;
+};
 @Component({
   selector: 'stock-dashboard',
   templateUrl: './stockdashboard.component.html',
@@ -26,6 +37,11 @@ export class StockDashboardComponent implements OnInit {
   ) {}
 
   stocks: Stock[] = [];
+  loadingState: LoadingStates = {
+    stocks: { display: true, animate: false },
+    leaderboard: { display: true, animate: false },
+    recent: { display: true, animate: false },
+  };
   username: string = '';
   leaderboardUsers: LeaderboardUser[];
   mostRecentTrades: Trade[];
@@ -53,13 +69,21 @@ export class StockDashboardComponent implements OnInit {
     );
 
     mostRecentTradesRequest.subscribe((trades: Trade[]) => {
-      this.mostRecentTrades = trades;
+      this.loadingState.recent.animate = true;
+      setTimeout(() => {
+        this.loadingState.recent.display = false;
+        this.mostRecentTrades = trades;
+      }, 1100);
     });
 
     leaderboardRequest.subscribe(
       (fetchedLeaderboardUsers: LeaderboardUser[]) => {
         if (fetchedLeaderboardUsers) {
-          this.leaderboardUsers = fetchedLeaderboardUsers;
+          this.loadingState.leaderboard.animate = true;
+          setTimeout(() => {
+            this.loadingState.leaderboard.display = false;
+            this.leaderboardUsers = fetchedLeaderboardUsers;
+          }, 1100);
         }
       }
     );
@@ -70,7 +94,11 @@ export class StockDashboardComponent implements OnInit {
 
     dashboardRequest.subscribe((value: Stock[]) => {
       const { stocks } = value as unknown as InitialStockResponse;
-      this.stocks = stocks;
+      this.loadingState.stocks.animate = true;
+      setTimeout(() => {
+        this.loadingState.stocks.display = false;
+        this.stocks = stocks;
+      }, 1100);
       const stockObservable = this.stockAppSocketService.getStockUpdated();
       stockObservable.subscribe((latestStock: Stock) => {
         const index = this.stocks.findIndex(
@@ -112,7 +140,9 @@ export class StockDashboardComponent implements OnInit {
     const dateifiedTradeTime = new Date(tradeTime);
     return `${dateifiedTradeTime.getFullYear()}-${
       dateifiedTradeTime.getMonth() + 1
-    }-${dateifiedTradeTime.getDate()} [${dateifiedTradeTime.getHours()}:${dateifiedTradeTime.getMinutes()}:${dateifiedTradeTime.getSeconds()}]`;
+    }-${dateifiedTradeTime.getDate()} | ${dateifiedTradeTime.getHours()}:${dateifiedTradeTime.getMinutes()} ${
+      dateifiedTradeTime.getHours() > 12 ? 'PM' : 'AM'
+    }`;
   }
 
   getTradeString(trade: Trade) {

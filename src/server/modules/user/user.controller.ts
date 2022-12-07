@@ -524,12 +524,8 @@ export class UserController implements BaseController {
 						this.client,
 						username as string,
 					);
-				if (result.length === 0) {
-					response.status(204);
-				} else {
-					response.status(200);
-				}
-				response.send(result);
+				response.status(200);
+				response.send(result ?? []);
 			}
 		} catch (error: unknown) {
 			console.error(
