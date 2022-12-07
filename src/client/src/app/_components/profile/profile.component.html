@@ -6,30 +6,45 @@
     <div class="h-50 my-auto w-25">
       <div class="d-flex flex-column justify-content-around h-100 p-2">
         <div class="d-flex flex-column p-3 shadow rounded" id="profile_info">
-          <div class="d-flex flex-column p-2 fs-4 text-opacity-75 justify-content-around profile_display_stats_container">
+          <div
+            class="d-flex flex-column p-2 fs-4 text-opacity-75 justify-content-around profile_display_stats_container"
+          >
             <div class="user_information">User Information</div>
-            <div class="d-flex flex-row" *ngIf="user && (user.firstName || user.lastName)">
+            <div
+              class="d-flex flex-row"
+              *ngIf="user && (user.firstName || user.lastName)"
+            >
               <i class="fa-solid fa-signature me-2 my-auto"></i>
               <span class="fs-6" *ngIf="user !== undefined" class="me-1">{{
                 user.firstName
               }}</span>
-              <span class="fs-6" *ngIf="user !== undefined">{{ user.lastName }}</span>
+              <span class="fs-6" *ngIf="user !== undefined">{{
+                user.lastName
+              }}</span>
             </div>
             <div class="d-flex flex-row">
               <i class="fa-solid fa-cake-candles me-2 my-auto"></i>
-              <span class="fs-6" *ngIf="user !== undefined">{{ user.dob }}</span>
+              <span class="fs-6" *ngIf="user !== undefined">{{
+                user.dob
+              }}</span>
             </div>
             <div class="d-flex flex-row" *ngIf="user && user.email">
               <i class="fa-solid fa-at me-2 my-auto"></i>
-              <span class="fs-6" *ngIf="user !== undefined">{{ user.email }}</span>
+              <span class="fs-6" *ngIf="user !== undefined">{{
+                user.email
+              }}</span>
             </div>
             <div class="d-flex flex-row">
               <i class="fa-solid fa-user me-2 my-auto"></i>
-              <span class="fs-6" *ngIf="user !== undefined">{{ user.username }}</span>
+              <span class="fs-6" *ngIf="user !== undefined">{{
+                user.username
+              }}</span>
             </div>
             <div class="d-flex flex-row">
               <i class="fa-solid fa-clock me-2 my-auto"></i>
-              <span class="fs-6" *ngIf="user !== undefined">{{ user.lastLogin }}</span>
+              <span class="fs-6" *ngIf="user !== undefined">{{
+                user.lastLogin
+              }}</span>
             </div>
             <div class="d-flex flex-row">
               <i class="fa-solid fa-id-badge me-2 my-auto"></i>
@@ -42,29 +57,101 @@
             <div class="text-center fw-semibold fs-6">
               Recent Stock Activity
             </div>
-            <div *ngIf="recentTrades && recentTrades.length > 0" class="list-group mt-3">
+            <div
+              *ngIf="recentTrades && recentTrades.length > 0"
+              class="list-group mt-3"
+            >
               <div *ngFor="let eachTrade of recentTrades">
                 <div class="list-group list-group-item-action">
-                    <i class="fa-solid" [ngClass]="{ 'fa-hand-holding-dollar': eachTrade.type === 1, 'fa-money-bill': eachTrade.type === 0 }"></i>
+                  <i
+                    class="fa-solid"
+                    [ngClass]="{
+                      'fa-hand-holding-dollar': eachTrade.type === 1,
+                      'fa-money-bill': eachTrade.type === 0
+                    }"
+                  ></i>
                 </div>
               </div>
             </div>
             <div *ngIf="recentTrades?.length === 0">
-                <hr />
-                <i class="fa-solid fa-circle-exclamation my-auto"></i><span class="ps-1 fs-6 fw-light">No recent trades to report</span>
+              <hr />
+              <i class="fa-solid fa-circle-exclamation my-auto"></i
+              ><span class="ps-1 fs-6 fw-light"
+                >No recent trades to report</span
+              >
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="bg-light w-25 h-75 rounded my-auto p-3" *ngIf="anyTradeData(userAggregateData)">
-      Total amount made, total amount lost, total # of stocks traded, total # of
-      of stocks sold, amount of times logged in, created account date, etc.
+    <div
+      class="w-25 h-75 rounded my-auto p-3 profile_display_user_stats_container"
+      *ngIf="anyTradeData(userAggregateData)"
+    >
+      <div class="d-flex flex-column">
+        <div *ngIf="userAggregateData && userAggregateData.avgTradesPerDay">
+          Most Profitable Day {{ userAggregateData.avgTradesPerDay }}
+        </div>
+        <div
+          *ngIf="userAggregateData && userAggregateData.mostBoughtStockSymbol"
+        >
+          Most Profitable Day {{ userAggregateData.mostBoughtStockSymbol }}
+        </div>
+        <div *ngIf="userAggregateData && userAggregateData.mostLossDay">
+          Most Profitable Day {{ userAggregateData.mostLossDay }}
+        </div>
+        <div *ngIf="userAggregateData && userAggregateData.mostProfitableDay">
+          Most Profitable Day {{ userAggregateData.mostProfitableDay }}
+        </div>
+        <div *ngIf="userAggregateData && userAggregateData.mostSoldStockSymbol">
+          Most Profitable Day {{ userAggregateData.mostSoldStockSymbol }}
+        </div>
+        <div *ngIf="userAggregateData && userAggregateData.numberStocks">
+          Number of stocks {{ userAggregateData.numberStocks }}
+        </div>
+        <div *ngIf="userAggregateData && userAggregateData.numberTrades">
+          Number of stocks {{ userAggregateData.numberTrades }}
+        </div>
+        <div
+          *ngIf="userAggregateData && userAggregateData.totalPotentialProfit"
+        >
+          Total Potential Profit
+          {{ truncateDecimal(userAggregateData.totalPotentialProfit, 2) }}
+        </div>
+        <div
+          *ngIf="
+            userAggregateData && userAggregateData.totalProfit !== undefined
+          "
+        >
+          Total Profit
+          {{ truncateDecimal(userAggregateData.totalProfit, 2) }}
+        </div>
+        <div *ngIf="userAggregateData && userAggregateData.totalSpent">
+          Total Spent
+          {{ truncateDecimal(userAggregateData.totalSpent, 2) }}
+        </div>
+      </div>
     </div>
-    <div class="w-25 h-75 rounded my-auto p-3 profile_display_user_stats_container" *ngIf="!anyTradeData(userAggregateData)">
-      <div class="profile_display_user_stats">No user trade data to display. Start using the application if you want information about your activity to be displayed here. Otherwise, get going!</div>
-      <div class="profile_display_user_stats">There's tons of stuff to do in this application! Try going to the "Stocks" tab up to the right to view all the stocks you can trade to get started!</div>
-      <div class="profile_display_user_stats">You can also view your current balance on the left hand side, where that small icon with the arrow in it is located below the home page, that displays all your current stats, and updates as stock prices fluctuate as well!</div>
+    <div
+      class="w-25 h-75 rounded my-auto p-3 profile_display_user_stats_container"
+      *ngIf="!anyTradeData(userAggregateData)"
+    >
+      <div class="profile_display_user_stats">
+        No user trade data to display. Start using the application if you want
+        information about your activity to be displayed here. Otherwise, get
+        going!
+      </div>
+      <div class="profile_display_user_stats">
+        There's tons of stuff to do in this application! Try going to the
+        "Stocks" tab up to the right to view all the stocks you can trade to get
+        started!
+      </div>
+      <div class="profile_display_user_stats">
+        You can also view your current balance on the left hand side, where that
+        small icon with the arrow in it is located below the home page, that
+        displays all your current stats, and updates as stock prices fluctuate
+        as well!
+      </div>
     </div>
   </div>
 </div>

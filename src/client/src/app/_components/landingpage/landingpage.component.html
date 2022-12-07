@@ -1,20 +1,18 @@
 <div
   id="background"
-  class="w-100 d-flex flex-row justify-content-center position-relative content_page"
+  class="w-100 d-flex flex-row justify-content-center align-items-center position-relative content_page"
 >
-  <div id="row_for_cards" class="text-center d-flex flex-row w-75 h-75 mx-auto">
-    <div
-      class="d-flex flex-column rounded p-2 justify-content-around"
-      id="landing_page_left_card"
-    >
+  <div
+    id="row_for_cards"
+    class="text-center d-flex flex-row landing_page_container"
+  >
+    <div class="d-flex flex-column rounded p-2 justify-content-around bg-light">
       <div class="d-flex flex-column">
         <span class="fw-bold fs-1">
-          <img
-            src="assets/bullStocksLogo.png"
-            width="150px"/>
+          <img class="stock_image" src="assets/bullStocksLogo.png" />
           BullStocks
         </span>
-        <span class="fs-4 fw-semibold m-4 mt-2" >
+        <span class="fs-4 fw-semibold m-4 mt-2">
           The stock trading playground where you can simulate a real stock
           trading experience!
         </span>
@@ -22,11 +20,11 @@
       <div>
         <span class="fs-5 fw-bold mb-2">Available Features</span>
         <ul class="list-group">
-          <li class="list-group-item w-75 mx-auto mt-2 disabled">
+          <li class="list-group-item mx-auto mt-2 disabled">
             Buy & Sell Stocks
           </li>
-          <li class="list-group-item w-75 mx-auto disabled">View Stocks</li>
-          <li class="list-group-item w-75 mx-auto disabled">
+          <li class="list-group-item mx-auto disabled">View Stocks</li>
+          <li class="list-group-item mx-auto disabled">
             Create a Stock Portfolio
           </li>
         </ul>
@@ -37,251 +35,250 @@
       [formGroup]="landingPageFormGroup"
       id="landing_page_right_card"
     >
-      <div class="d-flex flex-column">
-        <span class="fw-semibold" style="padding: 10px; padding-bottom: 0px"
-          >Sign up now to start trading stocks and become a stock master!</span
-        >
-        <div class="d-flex flex-row mt-3">
-          <div class="d-flex flex-column w-100" id="landing_page_signup_inputs">
-            <div class="d-flex flex-row justify-content-between">
-              <label class="m-2 fw-light" for="username_landing_input"
-                ><span class="text-danger fw-semibold pe-1">*</span
-                >Username</label
-              >
-              <div class="d-flex flex-column">
-                <input
-                  class="m-2"
-                  formControlName="username"
-                  id="username_landing_input"
-                  type="text"
-                />
-                <div
-                  *ngIf="
-                    username?.invalid && (username?.dirty || username?.touched)
-                  "
-                  class="alert alert-danger validation_fixed_width p-1 mx-auto"
+      <div class="d-flex flex-row">
+        <div class="d-flex flex-column">
+          <span class="fw-semibold" style="padding: 10px; padding-bottom: 0px"
+            >Sign up now to start trading stocks and become a stock
+            master!</span
+          >
+          <div class="d-flex flex-row">
+            <div class="d-flex flex-column" id="landing_page_signup_inputs">
+              <div class="d-flex flex-row justify-content-between">
+                <label class="m-2 fw-light" for="username_landing_input"
+                  ><span class="text-danger fw-semibold pe-1">*</span
+                  >Username</label
                 >
-                  <div *ngIf="username && username.errors?.['required']">
-                    Username is required
-                  </div>
-                  <div *ngIf="username && username.errors?.['minlength']">
-                    Username must be at least 7 characters
-                  </div>
-                  <div *ngIf="username && username.errors?.['maxlength']">
-                    Username must be at most 35 characters long
-                  </div>
-                  <div *ngIf="username && username.errors?.['pattern']">
-                    Username cannot contain spaces
-                  </div>
-                  <div
-                    *ngIf="username && username.errors?.['usernameAlreadyExists']"
-                  >
-                    Username already exists
-                  </div>
+                <div class="d-flex flex-column">
+                  <input
+                    class="m-2"
+                    formControlName="username"
+                    id="username_landing_input"
+                    type="text"
+                  />
                 </div>
               </div>
-            </div>
-            <div class="d-flex flex-row justify-content-between">
-              <label class="m-2 fw-light" for="first_name_landing_input"
-                >First Name</label
-              >
-              <div class="d-flex flex-column">
-                <input
-                  class="m-2"
-                  formControlName="firstName"
-                  id="first_name_landing_input"
-                  type="text"
-                />
-                <div
-                  *ngIf="
-                    firstName &&
-                    firstName.invalid &&
-                    (firstName.dirty || firstName.touched)
-                  "
-                  class="alert alert-danger validation_fixed_width p-1 mx-auto"
+              <div class="d-flex flex-row justify-content-between">
+                <label class="m-2 fw-light" for="first_name_landing_input"
+                  >First Name</label
                 >
-                  <div *ngIf="firstName && firstName.errors?.['maxlength']">
-                    First name must be at most 35 characters
-                  </div>
-                  <div *ngIf="firstName && firstName.errors?.['pattern']">
-                    First name cannot contain any spaces
-                  </div>
+                <div class="d-flex flex-column">
+                  <input
+                    class="m-2"
+                    formControlName="firstName"
+                    id="first_name_landing_input"
+                    type="text"
+                  />
                 </div>
               </div>
-            </div>
-            <div class="d-flex flex-row justify-content-between">
-              <label class="m-2 fw-light" for="last_name_landing_input"
-                >Last Name</label
-              >
-              <div class="d-flex flex-column">
-                <input
-                  class="m-2"
-                  formControlName="lastName"
-                  id="last_name_landing_input"
-                  tabindex="0"
-                  type="text"
-                />
-                <div
-                  *ngIf="
-                    lastName &&
-                    lastName.invalid &&
-                    (lastName.dirty || lastName.touched)
-                  "
-                  className="alert alert-danger validation_fixed_width p-1 mx-auto"
+              <div class="d-flex flex-row justify-content-between">
+                <label class="m-2 fw-light" for="last_name_landing_input"
+                  >Last Name</label
                 >
-                  <div *ngIf="lastName && lastName.errors?.['maxlength']">
-                    Last name must be at most 35 characters
-                  </div>
-                  <div *ngIf="lastName && lastName.errors?.['pattern']">
-                    Last name must not have spaces in it
-                  </div>
+                <div class="d-flex flex-column">
+                  <input
+                    class="m-2"
+                    formControlName="lastName"
+                    id="last_name_landing_input"
+                    tabindex="0"
+                    type="text"
+                  />
                 </div>
               </div>
-            </div>
-            <div class="d-flex flex-row justify-content-between">
-              <label class="m-2 fw-light" for="date_of_birth_landing_input"
-                ><span class="text-danger fw-semibold pe-1">*</span>Date of
-                Birth</label
-              >
-              <div class="d-flex flex-column">
-                <input
-                  class="m-2"
-                  formControlName="dateOfBirth"
-                  id="date_of_birth_landing_input"
-                  tabindex="0"
-                  type="date"
-                />
-                <div
-                  *ngIf="
-                    dateofbirth &&
-                    dateofbirth.invalid &&
-                    (dateofbirth.dirty || dateofbirth.touched)
-                  "
-                  className="alert alert-danger validation_fixed_width p-1 mx-auto"
+              <div class="d-flex flex-row justify-content-between">
+                <label class="m-2 fw-light" for="date_of_birth_landing_input"
+                  ><span class="text-danger fw-semibold pe-1">*</span>Date of
+                  Birth</label
                 >
-                  <div *ngIf="dateofbirth && dateofbirth.errors?.['required']">
-                    Date of Birth is required
-                  </div>
+                <div class="d-flex flex-column">
+                  <input
+                    class="m-2"
+                    formControlName="dateOfBirth"
+                    id="date_of_birth_landing_input"
+                    tabindex="0"
+                    type="date"
+                  />
                 </div>
               </div>
-            </div>
-            <div class="d-flex flex-row justify-content-between">
-              <label class="m-2 fw-light" for="email_address_landing_input"
-                >Email Address</label
-              >
-              <div class="d-flex flex-column">
-                <input
-                  class="m-2"
-                  formControlName="email"
-                  id="email_address_landing_input"
-                  tabindex="1"
-                  type="email"
-                />
-                <div
-                  *ngIf="
-                    email && email.invalid && (email.dirty || email.touched)
-                  "
-                  class="alert alert-danger validation_fixed_width p-1 mx-auto"
+              <div class="d-flex flex-row justify-content-between">
+                <label class="m-2 fw-light" for="email_address_landing_input"
+                  >Email Address</label
                 >
-                  <div *ngIf="email && email.errors?.['maxlength']">
-                    Email must be at most 35 characters
-                  </div>
-                  <div *ngIf="email && email.errors?.['email']">
-                    Email is invalid
-                  </div>
+                <div class="d-flex flex-column">
+                  <input
+                    class="m-2"
+                    formControlName="email"
+                    id="email_address_landing_input"
+                    tabindex="1"
+                    type="email"
+                  />
                 </div>
               </div>
-            </div>
-            <div class="d-flex flex-row justify-content-between">
-              <label class="m-2 fw-light" for="password_landing_input"
-                ><span class="text-danger fw-semibold pe-1">*</span
-                >Password</label
-              >
-              <div class="d-flex flex-column">
-                <input
-                  class="m-2"
-                  formControlName="password"
-                  id="password_landing_input"
-                  tabindex="2"
-                  type="password"
-                />
-                <div
-                  *ngIf="
-                    password &&
-                    password.invalid &&
-                    (password.dirty || password.touched)
-                  "
-                  class="alert alert-danger validation_fixed_width p-1 mx-auto"
+              <div class="d-flex flex-row justify-content-between">
+                <label class="m-2 fw-light" for="password_landing_input"
+                  ><span class="text-danger fw-semibold pe-1">*</span
+                  >Password</label
                 >
-                  <div *ngIf="password && password.errors?.['required']">
-                    Password is required
-                  </div>
-                  <div *ngIf="password && password.errors?.['maxlength']">
-                    Password must be at most 35 characters
-                  </div>
-                  <div *ngIf="password && password.errors?.['pattern']">
-                    Password must contain no spaces
-                  </div>
-                  <div *ngIf="password && password.errors?.['minlength']">
-                    Password must be at least 7 characters
-                  </div>
+                <div class="d-flex flex-column">
+                  <input
+                    class="m-2"
+                    formControlName="password"
+                    id="password_landing_input"
+                    tabindex="2"
+                    type="password"
+                  />
                 </div>
               </div>
-            </div>
-            <div class="d-flex flex-row justify-content-between">
-              <label class="m-2 fw-light" for="confirm_password_landing_input"
-                ><span class="text-danger fw-semibold pe-1">*</span>Confirm
-                Password</label
-              >
-              <div class="d-flex flex-column">
-                <input
-                  class="m-2"
-                  formControlName="confirmPassword"
-                  id="confirm_password_landing_input"
-                  tabindex="3"
-                  type="password"
-                />
-                <div
-                  *ngIf="
-                    confirmPassword &&
-                    confirmPassword.invalid &&
-                    (confirmPassword.dirty || confirmPassword.touched)
-                  "
-                  class="alert alert-danger validation_fixed_width p-1 mx-auto"
+              <div class="d-flex flex-row justify-content-between">
+                <label class="m-2 fw-light" for="confirm_password_landing_input"
+                  ><span class="text-danger fw-semibold pe-1">*</span>Confirm
+                  Password</label
                 >
-                  <div
-                    *ngIf="confirmPassword && confirmPassword.errors?.['required']"
-                  >
-                    Confirm password is required
-                  </div>
-                  <div
-                    *ngIf="confirmPassword && confirmPassword.errors?.['maxlength']"
-                  >
-                    Confirm password must be at most 35 characters
-                  </div>
-                  <div
-                    *ngIf="confirmPassword && confirmPassword.errors?.['passwordsDoNotMatch']"
-                  >
-                    Passwords must match
-                  </div>
+                <div class="d-flex flex-column">
+                  <input
+                    class="m-2"
+                    formControlName="confirmPassword"
+                    id="confirm_password_landing_input"
+                    tabindex="3"
+                    type="password"
+                  />
                 </div>
               </div>
+              <button
+                class="mx-auto btn btn-secondary mt-3"
+                (click)="signUp()"
+                [disabled]="!landingPageFormGroup.valid"
+              >
+                Sign Up
+              </button>
+              <a
+                class="fw-semibold mt-3 opacity-75 landing_page_already_member_link mx-auto link-primary"
+                routerLink="/login"
+                routerLinkActive="active"
+                >Already a member?</a
+              >
             </div>
-            <button
-              class="mx-auto btn btn-secondary mt-3"
-              (click)="signUp()"
-              [disabled]="!landingPageFormGroup.valid"
-            >
-              Sign Up
-            </button>
-            <a
-              class="fw-semibold mt-3 opacity-75 landing_page_already_member_link mx-auto link-primary"
-              routerLink="/login"
-              routerLinkActive="active"
-              >Already a member?</a
-            >
           </div>
         </div>
+        <ul
+          class="d-flex flex-column ms-3 border-1 pe-2 landing_page_error_container"
+        >
+          <li
+            *ngIf="username?.invalid && (username?.dirty || username?.touched)"
+            class="alert alert-danger validation_fixed_width p-1 mx-auto"
+          >
+            <div *ngIf="username && username.errors?.['required']">
+              Username is required
+            </div>
+            <div *ngIf="username && username.errors?.['minlength']">
+              Username must be at least 7 characters
+            </div>
+            <div *ngIf="username && username.errors?.['maxlength']">
+              Username must be at most 35 characters long
+            </div>
+            <div *ngIf="username && username.errors?.['pattern']">
+              Username cannot contain spaces
+            </div>
+            <div *ngIf="username && username.errors?.['usernameAlreadyExists']">
+              Username already exists
+            </div>
+          </li>
+          <li
+            *ngIf="
+              firstName &&
+              firstName.invalid &&
+              (firstName.dirty || firstName.touched)
+            "
+            class="alert alert-danger validation_fixed_width p-1 mx-auto"
+          >
+            <div *ngIf="firstName && firstName.errors?.['maxlength']">
+              First name must be at most 35 characters
+            </div>
+            <div *ngIf="firstName && firstName.errors?.['pattern']">
+              First name cannot contain any spaces
+            </div>
+          </li>
+          <li
+            *ngIf="
+              lastName &&
+              lastName.invalid &&
+              (lastName.dirty || lastName.touched)
+            "
+            class="alert alert-danger validation_fixed_width p-1 mx-auto"
+          >
+            <div *ngIf="lastName && lastName.errors?.['maxlength']">
+              Last name must be at most 35 characters
+            </div>
+            <div *ngIf="lastName && lastName.errors?.['pattern']">
+              Last name must not have spaces in it
+            </div>
+          </li>
+          <li
+            *ngIf="email && email.invalid && (email.dirty || email.touched)"
+            class="alert alert-danger validation_fixed_width p-1 mx-auto"
+          >
+            <div *ngIf="email && email.errors?.['maxlength']">
+              Email must be at most 35 characters
+            </div>
+            <div *ngIf="email && email.errors?.['email']">Email is invalid</div>
+          </li>
+          <li
+            *ngIf="
+              password &&
+              password.invalid &&
+              (password.dirty || password.touched)
+            "
+            class="alert alert-danger validation_fixed_width p-1 mx-auto"
+          >
+            <div *ngIf="password && password.errors?.['required']">
+              Password is required
+            </div>
+            <div *ngIf="password && password.errors?.['maxlength']">
+              Password must be at most 35 characters
+            </div>
+            <div *ngIf="password && password.errors?.['pattern']">
+              Password must contain no spaces
+            </div>
+            <div *ngIf="password && password.errors?.['minlength']">
+              Password must be at least 7 characters
+            </div>
+          </li>
+          <li
+            *ngIf="
+              dateofbirth &&
+              dateofbirth.invalid &&
+              (dateofbirth.dirty || dateofbirth.touched)
+            "
+            className="alert alert-danger validation_fixed_width p-1 mx-auto"
+          >
+            <div *ngIf="dateofbirth && dateofbirth.errors?.['required']">
+              Date of Birth is required
+            </div>
+          </li>
+          <li
+            *ngIf="
+              confirmPassword &&
+              confirmPassword.invalid &&
+              (confirmPassword.dirty || confirmPassword.touched)
+            "
+            class="alert alert-danger validation_fixed_width p-1 mx-auto"
+          >
+            <div
+              *ngIf="confirmPassword && confirmPassword.errors?.['required']"
+            >
+              Confirm password is required
+            </div>
+            <div
+              *ngIf="confirmPassword && confirmPassword.errors?.['maxlength']"
+            >
+              Confirm password must be at most 35 characters
+            </div>
+            <div
+              *ngIf="confirmPassword && confirmPassword.errors?.['passwordsDoNotMatch']"
+            >
+              Passwords must match
+            </div>
+          </li>
+        </ul>
       </div>
     </form>
   </div>

@@ -57,4 +57,8 @@ export class ProfileComponent implements OnInit {
       .map((eachValue: any) => Boolean(eachValue))
       .reduce((e1, e2) => e1 || e2);
   };
+
+  truncateDecimal(decimal: number, amount: number) {
+    return decimal.toFixed(amount);
+  }
 }
