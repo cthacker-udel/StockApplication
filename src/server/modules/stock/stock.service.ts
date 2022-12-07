@@ -161,7 +161,7 @@ export class StockService extends BaseService {
 	 */
 	public getStockDashboardStocks = async (
 		client: StockMongoClient,
-		sortOption: SortByOptions = "volume",
+		sortOption: SortByOptions = "price",
 	): Promise<Stock[] | undefined> => {
 		const stockCollection = client
 			.getClient()

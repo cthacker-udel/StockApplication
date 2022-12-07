@@ -65,7 +65,7 @@ export class SignInComponent implements OnInit {
           password: controls['password']?.value,
         })
         .subscribe((result: HttpResponse<Response>) => {
-          if (result.status === 400) {
+          if (result.status >= 400) {
             this.toastr.error('Failed to login');
           } else {
             this.sessionService.addSessionInformation(result.headers);

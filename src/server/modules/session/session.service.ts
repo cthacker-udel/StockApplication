@@ -78,6 +78,7 @@ export class SessionService extends BaseService {
 			.collection(this.COLLECTION_NAME);
 		const foundUser = await userCollection.findOne<User>({ username });
 		if (foundUser === null || foundUser?.sessionToken === undefined) {
+			console.log("in if 1");
 			return false;
 		}
 		// user found
@@ -100,7 +101,7 @@ export class SessionService extends BaseService {
 		const comparison = parsedCookieTime - Date.now();
 		if (comparison > 0) {
 			const result = generatedHash === parsedCookie.value;
-			if (result && validate(sessionToken)) {
+			if (result) {
 				return true;
 			}
 			await this.removeSession(username, response);
@@ -137,14 +138,12 @@ export class SessionService extends BaseService {
 		if (foundUser !== null) {
 			const { iterations, salt } = foundUser;
 			const id = v4();
-			const generatedHash =
-				token === undefined
-					? fixedPbkdf2Encryption(
-							`${username}${id}`,
-							iterations,
-							salt,
-					  )
-					: token;
+			console.log(`storing hash with ${username} and ${token}`);
+			const generatedHash = fixedPbkdf2Encryption(
+				`${username}${token ?? id}`,
+				iterations,
+				salt,
+			);
 			mockCookieManager.addCookie(
 				response,
 				SECRETS.STOCK_APP_SESSION_COOKIE_ID,
@@ -169,7 +168,7 @@ export class SessionService extends BaseService {
 			);
 			await userCollection.updateOne(
 				{ username },
-				{ $set: { ...foundUser, sessionToken: id } },
+				{ $set: { ...foundUser, sessionToken: token ?? id } },
 			);
 			return true;
 		}

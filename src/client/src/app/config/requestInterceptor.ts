@@ -1,4 +1,5 @@
 import {
+  HttpErrorResponse,
   HttpEvent,
   HttpHandler,
   HttpHeaders,
@@ -6,12 +7,13 @@ import {
   HttpRequest,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
+import { Observable, tap } from 'rxjs';
 import { SECRETS } from 'src/secrets/secrets';
 import { SessionService } from '../_services/session.service';
 
 export class RequestInterceptor implements HttpInterceptor {
-  constructor(private sessionService: SessionService) {}
+  constructor(private sessionService: SessionService, private router: Router) {}
 
   intercept(
     req: HttpRequest<any>,
@@ -22,6 +24,9 @@ export class RequestInterceptor implements HttpInterceptor {
     }
     const sessionCookie = this.sessionService.getSession();
     const sessionUsername = this.sessionService.getSessionUsername();
+    console.log(
+      `req = ${req.url} and cookie = ${sessionCookie} and sessionUsername = ${sessionUsername}`
+    );
     if (sessionCookie && sessionUsername) {
       const requestClone = req.clone();
       let headers: HttpHeaders = new HttpHeaders();
@@ -34,7 +39,8 @@ export class RequestInterceptor implements HttpInterceptor {
         sessionUsername
       );
       const finalClone = requestClone.clone({ headers });
-      return next.handle(finalClone);
+      console.log(finalClone, finalClone.headers, next);
+      return next.handle(finalClone.clone());
     }
     return next.handle(req);
   }

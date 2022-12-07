@@ -38,7 +38,7 @@ const removeCookies = (response: Response) => {
 		JSON.stringify({ value }),
 	);
 	response.header(
-		SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_ID,
+		SECRETS.STOCK_APP_SESSION_COOKIE_ID,
 		JSON.stringify({ value }),
 	);
 };
