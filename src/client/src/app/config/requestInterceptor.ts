@@ -24,9 +24,6 @@ export class RequestInterceptor implements HttpInterceptor {
     }
     const sessionCookie = this.sessionService.getSession();
     const sessionUsername = this.sessionService.getSessionUsername();
-    console.log(
-      `req = ${req.url} and cookie = ${sessionCookie} and sessionUsername = ${sessionUsername}`
-    );
     if (sessionCookie && sessionUsername) {
       const requestClone = req.clone();
       let headers: HttpHeaders = new HttpHeaders();
@@ -39,7 +36,6 @@ export class RequestInterceptor implements HttpInterceptor {
         sessionUsername
       );
       const finalClone = requestClone.clone({ headers });
-      console.log(finalClone, finalClone.headers, next);
       return next.handle(finalClone.clone());
     }
     return next.handle(req);

@@ -528,8 +528,8 @@ export class UserController implements BaseController {
 					response.status(204);
 				} else {
 					response.status(200);
-					response.send(result);
 				}
+				response.send(result);
 			}
 		} catch (error: unknown) {
 			console.error(

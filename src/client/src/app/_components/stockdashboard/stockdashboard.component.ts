@@ -64,21 +64,23 @@ export class StockDashboardComponent implements OnInit {
       }
     );
 
-    this.dashboardService
-      .getInitialMarketStatus()
-      .subscribe((value: Stock[]) => {
-        const { stocks } = value as unknown as InitialStockResponse;
-        this.stocks = stocks;
-        // const stockObservable = this.stockAppSocketService.getStockUpdated();
-        // stockObservable.subscribe((latestStock: Stock) => {
-        //   const index = this.stocks.findIndex(
-        //     (eachStock) => eachStock.symbol === latestStock.symbol
-        //   );
-        //   this.stocks = [...this.stocks].map((_, i) =>
-        //     i === index ? latestStock : _
-        //   );
-        // });
+    const dashboardRequest = this.configService.getConfig<Stock[]>(
+      `${ROUTE_PREFIXES.stock}dashboard`
+    );
+
+    dashboardRequest.subscribe((value: Stock[]) => {
+      const { stocks } = value as unknown as InitialStockResponse;
+      this.stocks = stocks;
+      const stockObservable = this.stockAppSocketService.getStockUpdated();
+      stockObservable.subscribe((latestStock: Stock) => {
+        const index = this.stocks.findIndex(
+          (eachStock) => eachStock.symbol === latestStock.symbol
+        );
+        this.stocks = [...this.stocks].map((_, i) =>
+          i === index ? latestStock : _
+        );
       });
+    });
 
     this.stockAppSocketService
       .getLeaderboardUpdated()

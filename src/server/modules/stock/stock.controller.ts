@@ -20,7 +20,7 @@ import type {
 	ChangeStreamCreateDocument,
 	ObjectId,
 } from "mongodb";
-import { rolesValidator } from "../../middleware";
+import { asyncMiddlewareHandler, cookieValidator, rolesValidator } from "../../middleware";
 import type { Server } from "socket.io";
 
 const CONSTANTS = {
@@ -368,9 +368,6 @@ export class StockController implements BaseController {
 				sortBy as SortByOptions,
 			);
 			response.status(200);
-			response.header({
-				"Cache-Control": "stale-while-revalidate=60",
-			});
 			response.send({ stocks: result });
 		} catch (error: unknown) {
 			console.error(
@@ -546,7 +543,7 @@ export class StockController implements BaseController {
 			[
 				"dashboard",
 				this.getStockDashboardStocks,
-				[rolesValidator(Roles.USER, this.client)],
+				[rolesValidator(Roles.USER, this.client), asyncMiddlewareHandler(cookieValidator, this.sessionService)],
 			],
 			[
 				"get/bulk/symbol",

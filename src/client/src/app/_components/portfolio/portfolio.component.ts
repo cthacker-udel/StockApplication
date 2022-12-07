@@ -60,7 +60,6 @@ export class PortfolioComponent {
         `${ROUTE_PREFIXES.user}ownedStocks?username=${parsedUsername.value}`
       );
       getUserOwnedStocks.subscribe((userOwnedStocks: OwnedStock[]) => {
-        console.log('owned stocks = ', userOwnedStocks);
         if (this.userOwnedStocks) {
           const convertedUserStocks: UserPortfolioStock[] = [];
           const stockSymbols = userOwnedStocks.map(
@@ -78,7 +77,6 @@ export class PortfolioComponent {
                 (eachOwnedStock: OwnedStock) =>
                   eachOwnedStock.symbol === eachStock.symbol
               );
-              console.log(matchedStock);
               if (matchedStock !== undefined) {
                 const changeResult =
                   (eachStock.price - eachStock.oldPrice) * 100;
@@ -129,7 +127,6 @@ export class PortfolioComponent {
       this.stockAppSocketService
         .getStockUpdated()
         .subscribe((_res: Partial<Stock>) => {
-          console.log('stock updated ', _res);
           const { symbol, price, oldPrice } = _res;
           if (price) {
             // price changed, begin computation
@@ -138,7 +135,6 @@ export class PortfolioComponent {
                 eachDisplayedStock.symbol === symbol
             );
             if (displayedStockIndex !== -1) {
-              console.log('updating stock');
               const foundStock = this.userOwnedStocks.data[displayedStockIndex];
               const changeResult =
                 price - (oldPrice ?? foundStock.currentPrice);

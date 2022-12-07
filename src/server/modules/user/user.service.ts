@@ -54,11 +54,9 @@ export class UserService extends BaseService {
 			username,
 		});
 		if (doesUserAlreadyExist) {
-			console.log("test 0");
 			return false;
 		}
 		if (/\W+/giu.test(username)) {
-			console.log("test 1");
 			return false;
 		}
 		if (
@@ -67,7 +65,6 @@ export class UserService extends BaseService {
 			!/\d/giu.test(password) ||
 			!/\W/giu.test(password)
 		) {
-			console.log("test 2");
 			return false;
 		}
 		if (
@@ -76,7 +73,6 @@ export class UserService extends BaseService {
 				21 ||
 			Number.isNaN(Date.parse(dob))
 		) {
-			console.log("test 3");
 			return false;
 		}
 		if (firstName && !/\S/giu.test(firstName.trim())) {
@@ -89,7 +85,6 @@ export class UserService extends BaseService {
 			email?.trim() &&
 			!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/giu.test(email.trim())
 		) {
-			console.log("test 4");
 			return false;
 		}
 		const { hash, iterations, salt } = pbkdf2Encryption(password);

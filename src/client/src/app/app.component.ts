@@ -25,7 +25,6 @@ export class AppComponent {
               SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_ID
             ) !== null)
         ) {
-          console.log('in if');
           router.navigateByUrl('/login');
           if (
             localStorage.length > 0 &&

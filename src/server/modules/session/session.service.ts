@@ -1,10 +1,7 @@
-/* eslint-disable indent -- disabled */
-/* eslint-disable @typescript-eslint/indent -- disabled */
-/* eslint-disable no-mixed-spaces-and-tabs -- disabled */
 import { mockCookieManager, BaseService } from "../../common";
 import type { Request, Response } from "express";
 import type { Collection } from "mongodb";
-import { v4, validate } from "uuid";
+import { v4 } from "uuid";
 import type { User, SessionCookie } from "../../@types";
 import { MONGO_COMMON, type StockMongoClient } from "../../mongo";
 import { SECRETS } from "../../secrets";
@@ -78,7 +75,6 @@ export class SessionService extends BaseService {
 			.collection(this.COLLECTION_NAME);
 		const foundUser = await userCollection.findOne<User>({ username });
 		if (foundUser === null || foundUser?.sessionToken === undefined) {
-			console.log("in if 1");
 			return false;
 		}
 		// user found
@@ -138,7 +134,6 @@ export class SessionService extends BaseService {
 		if (foundUser !== null) {
 			const { iterations, salt } = foundUser;
 			const id = v4();
-			console.log(`storing hash with ${username} and ${token}`);
 			const generatedHash = fixedPbkdf2Encryption(
 				`${username}${token ?? id}`,
 				iterations,
