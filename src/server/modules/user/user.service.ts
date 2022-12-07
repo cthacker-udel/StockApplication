@@ -137,7 +137,7 @@ export class UserService extends BaseService {
 				} = foundUser;
 				const sessionToken = v4();
 				const generatedLoginInformationHash = fixedPbkdf2Encryption(
-					`${username}${sessionToken}`,
+					password,
 					iterations,
 					salt,
 				);

@@ -18,7 +18,14 @@ export class AppComponent {
     this.router.events.subscribe((e) => {
       if (e instanceof NavigationEnd) {
         const isSessionValid = sessionService.validateSession();
-        if (!isSessionValid) {
+        if (
+          !isSessionValid &&
+          (localStorage.getItem(SECRETS.STOCK_APP_SESSION_COOKIE_ID) !== null ||
+            localStorage.getItem(
+              SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_ID
+            ) !== null)
+        ) {
+          console.log('in if');
           router.navigateByUrl('/login');
           if (
             localStorage.length > 0 &&

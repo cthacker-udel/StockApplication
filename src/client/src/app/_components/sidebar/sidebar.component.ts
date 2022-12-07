@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ConfigService } from 'src/app/config/config.service';
 import { OwnedStock } from 'src/app/_models/OwnedStock';
 import { SessionCookie } from 'src/app/_models/SessionCookie';
@@ -26,7 +27,8 @@ export class SidebarComponent implements OnInit {
   constructor(
     private configService: ConfigService,
     private stockAppSocketService: StockAppSocketService,
-    private userService: UserService
+    private userService: UserService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -109,6 +111,17 @@ export class SidebarComponent implements OnInit {
       this.touched = true;
     }
     this.isSidebarExpanded = !this.isSidebarExpanded;
+  }
+
+  clearFields() {
+    this.currentUser = {};
+    this.currentUserStockSymbols = [];
+  }
+
+  logOut() {
+    localStorage.clear();
+    this.clearFields();
+    this.router.navigateByUrl('/');
   }
 
   getToggleButtonTooltipText() {

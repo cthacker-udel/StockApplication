@@ -581,7 +581,7 @@ export class UserController implements BaseController {
 			} else {
 				const validationResult =
 					await this.sessionService.validateSession(
-						username as string,
+						username,
 						request,
 						response,
 					);

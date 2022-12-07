@@ -26,7 +26,7 @@
     position: absolute;
     animation-name: shift_from_left;
     animation-timing-function: ease-in-out;
-    animation-duration: 3s;
+    animation-duration: 1.5s;
     animation-fill-mode: forwards;
 }
 
