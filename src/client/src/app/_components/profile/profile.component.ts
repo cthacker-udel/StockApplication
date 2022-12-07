@@ -35,6 +35,7 @@ export class ProfileComponent implements OnInit {
           this.recentTrades = trades;
           const dateifiedDob = new Date(dob);
           const dateifiedLastLogin = new Date(lastLogin);
+          console.log(user.roles);
           const highestRole =
             this.roleMapping[Number.parseInt(user.roles[0], 10)];
           this.role = highestRole;
@@ -53,8 +54,10 @@ export class ProfileComponent implements OnInit {
   }
 
   anyTradeData = (data: UserAggregateData): boolean => {
-    return Object.values(data)
-      .map((eachValue: any) => Boolean(eachValue))
-      .reduce((e1, e2) => e1 || e2);
+    return data
+      ? Object.values(data)
+          .map((eachValue: any) => Boolean(eachValue))
+          .reduce((e1, e2) => e1 || e2)
+      : false;
   };
 }

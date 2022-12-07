@@ -11,42 +11,40 @@
           >
             <div class="user_information">User Information</div>
             <div
-              class="d-flex flex-row"
+              class="d-flex flex-row mt-1"
               *ngIf="user && (user.firstName || user.lastName)"
             >
               <i class="fa-solid fa-signature me-2 my-auto"></i>
               <span class="fs-6" *ngIf="user !== undefined" class="me-1">{{
                 user.firstName
               }}</span>
-              <span class="fs-6" *ngIf="user !== undefined">{{
-                user.lastName
-              }}</span>
+              <span *ngIf="user !== undefined">{{ user.lastName }}</span>
             </div>
-            <div class="d-flex flex-row">
+            <div class="d-flex flex-row mt-2">
               <i class="fa-solid fa-cake-candles me-2 my-auto"></i>
               <span class="fs-6" *ngIf="user !== undefined">{{
                 user.dob
               }}</span>
             </div>
-            <div class="d-flex flex-row" *ngIf="user && user.email">
+            <div class="d-flex flex-row mt-2" *ngIf="user && user.email">
               <i class="fa-solid fa-at me-2 my-auto"></i>
               <span class="fs-6" *ngIf="user !== undefined">{{
                 user.email
               }}</span>
             </div>
-            <div class="d-flex flex-row">
+            <div class="d-flex flex-row mt-2">
               <i class="fa-solid fa-user me-2 my-auto"></i>
               <span class="fs-6" *ngIf="user !== undefined">{{
                 user.username
               }}</span>
             </div>
-            <div class="d-flex flex-row">
+            <div class="d-flex flex-row mt-2">
               <i class="fa-solid fa-clock me-2 my-auto"></i>
               <span class="fs-6" *ngIf="user !== undefined">{{
                 user.lastLogin
               }}</span>
             </div>
-            <div class="d-flex flex-row">
+            <div class="d-flex flex-row mt-2">
               <i class="fa-solid fa-id-badge me-2 my-auto"></i>
               <span class="fs-6" *ngIf="role !== undefined">{{ role }}</span>
             </div>

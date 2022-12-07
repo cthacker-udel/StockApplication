@@ -299,8 +299,8 @@ export class UserService extends BaseService {
 			.map(
 				(eachRole: Role | null) => (eachRole as Role).perm,
 			) as number[];
-		const maxValue =
-			formattedRoles.length > 0 ? Math.max(...formattedRoles) : -1;
+		const minValue =
+			formattedRoles.length > 0 ? Math.min(...formattedRoles) : -1;
 
 		const {
 			password: _pass,
@@ -311,7 +311,7 @@ export class UserService extends BaseService {
 			token: _token,
 			...rest
 		} = foundUser;
-		return { ...rest, roles: [maxValue.toString()] };
+		return { ...rest, roles: [minValue.toString()] };
 	};
 
 	public getUserAggregateDataWithUsername = async (
