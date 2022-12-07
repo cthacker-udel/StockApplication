@@ -60,4 +60,8 @@ export class ProfileComponent implements OnInit {
           .reduce((e1, e2) => e1 || e2)
       : false;
   };
+
+  truncateDecimal(decimal: number, amount: number) {
+    return decimal.toFixed(amount);
+  }
 }

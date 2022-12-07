@@ -83,11 +83,52 @@
       </div>
     </div>
     <div
-      class="bg-light w-25 h-75 rounded my-auto p-3"
+      class="w-25 h-75 rounded my-auto p-3 profile_display_user_stats_container"
       *ngIf="anyTradeData(userAggregateData)"
     >
-      Total amount made, total amount lost, total # of stocks traded, total # of
-      of stocks sold, amount of times logged in, created account date, etc.
+      <div class="d-flex flex-column">
+        <div *ngIf="userAggregateData && userAggregateData.avgTradesPerDay">
+          Most Profitable Day {{ userAggregateData.avgTradesPerDay }}
+        </div>
+        <div
+          *ngIf="userAggregateData && userAggregateData.mostBoughtStockSymbol"
+        >
+          Most Profitable Day {{ userAggregateData.mostBoughtStockSymbol }}
+        </div>
+        <div *ngIf="userAggregateData && userAggregateData.mostLossDay">
+          Most Profitable Day {{ userAggregateData.mostLossDay }}
+        </div>
+        <div *ngIf="userAggregateData && userAggregateData.mostProfitableDay">
+          Most Profitable Day {{ userAggregateData.mostProfitableDay }}
+        </div>
+        <div *ngIf="userAggregateData && userAggregateData.mostSoldStockSymbol">
+          Most Profitable Day {{ userAggregateData.mostSoldStockSymbol }}
+        </div>
+        <div *ngIf="userAggregateData && userAggregateData.numberStocks">
+          Number of stocks {{ userAggregateData.numberStocks }}
+        </div>
+        <div *ngIf="userAggregateData && userAggregateData.numberTrades">
+          Number of stocks {{ userAggregateData.numberTrades }}
+        </div>
+        <div
+          *ngIf="userAggregateData && userAggregateData.totalPotentialProfit"
+        >
+          Total Potential Profit
+          {{ truncateDecimal(userAggregateData.totalPotentialProfit, 2) }}
+        </div>
+        <div
+          *ngIf="
+            userAggregateData && userAggregateData.totalProfit !== undefined
+          "
+        >
+          Total Profit
+          {{ truncateDecimal(userAggregateData.totalProfit, 2) }}
+        </div>
+        <div *ngIf="userAggregateData && userAggregateData.totalSpent">
+          Total Spent
+          {{ truncateDecimal(userAggregateData.totalSpent, 2) }}
+        </div>
+      </div>
     </div>
     <div
       class="w-25 h-75 rounded my-auto p-3 profile_display_user_stats_container"
