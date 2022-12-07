@@ -17,15 +17,11 @@
 
   <div id="portfolio_balance" *ngIf="!displayLoading">
     <div id="stock_balance_header">Account Balance</div>
-    <div
-      *ngIf="currentUser !== undefined"
-      class="fw-bold mt-1"
-      matTooltip="Current Balance"
-      matTooltipPosition="after"
-    >
-      <i class="fa-solid fa-vault mx-2"></i>${{
-        truncateDecimal(currentUser.balance ?? 0, 2)
-      }}
+    <div *ngIf="currentUser !== undefined" class="fw-bold mt-1">
+      <i class="fa-solid fa-vault mx-2"></i
+      ><span matTooltip="Current Balance" matTooltipPosition="after"
+        >${{ truncateDecimal(currentUser.balance ?? 0, 2) }}
+      </span>
     </div>
   </div>
   <div id="portfolio_returns" *ngIf="!displayLoading">
@@ -36,12 +32,11 @@
         userAggregateData?.totalPotentialProfit !== undefined
       "
       class="fw-bold mt-1"
-      matTooltip="Potential Profit"
-      matTooltipPosition="after"
     >
-      <i class="fa-solid fa-comment-dollar mx-2"></i> ${{
-        truncateDecimal(userAggregateData.totalPotentialProfit ?? 0, 2)
-      }}
+      <i class="fa-solid fa-comment-dollar mx-2"></i>
+      <span matTooltip="Potential Profit" matTooltipPosition="after"
+        >${{ truncateDecimal(userAggregateData.totalPotentialProfit ?? 0, 2) }}
+      </span>
     </div>
   </div>
   <div
