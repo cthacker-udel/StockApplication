@@ -314,8 +314,8 @@ export class TradeService {
 			.getClient()
 			.db(MONGO_COMMON.DATABASE_NAME)
 			.collection<Trade>("trade");
-		// eslint-disable-next-line newline-per-chained-call -- eslint/prettier conflict
-		const top5Trades = await tradeCollection.find({}).limit(5).toArray();
+		const allTrades = await tradeCollection.find({}).toArray();
+		const top5Trades = allTrades.slice(-5).reverse();
 		return top5Trades;
 	};
 }

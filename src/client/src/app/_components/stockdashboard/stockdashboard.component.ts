@@ -99,6 +99,7 @@ export class StockDashboardComponent implements OnInit {
     this.stockAppSocketService
       .getMostRecentTradesUpdated()
       .subscribe((result: boolean) => {
+        console.log('result = ', result);
         if (result) {
           mostRecentTradesRequest.subscribe((trades: Trade[]) => {
             this.mostRecentTrades = trades;
