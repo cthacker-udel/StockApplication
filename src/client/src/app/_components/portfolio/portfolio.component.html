@@ -1,7 +1,41 @@
 <div
   class="h-100 w-100 d-flex flex-column justify-content-center portfolio_background"
 >
+    <div class="w-25 mx-auto rounded p-3" id="portfolio_header" *ngIf="!displayLoading">
+      <div class="text-center fs-4" id="portfolio_header_title" *ngIf="!displayLoading">Portfolio</div>
+    </div>
+
+    <div id="portfolio_balance" *ngIf="!displayLoading">
+      <div id="stock_balance_header">Account Balance</div>
+      <div
+            *ngIf="currentUser !== undefined"
+            class="fw-bold mt-1"
+            matTooltip="Current Balance"
+            matTooltipPosition="after"
+          >
+            <i class="fa-solid fa-vault mx-2"></i>${{
+              truncateDecimal(currentUser.balance ?? 0, 2)
+            }}
+          </div>
+    </div>
+    <div id="portfolio_returns" *ngIf="!displayLoading">
+      <div id="portfolio_return_header">Portfolio Returns</div>
+      <div
+            *ngIf="
+              userAggregateData !== undefined &&
+              userAggregateData?.totalPotentialProfit !== undefined
+            "
+            class="fw-bold mt-1"
+            matTooltip="Potential Profit"
+            matTooltipPosition="after"
+          >
+            <i class="fa-solid fa-comment-dollar mx-2"></i> ${{
+              truncateDecimal(userAggregateData.totalPotentialProfit ?? 0, 2)
+            }}
+          </div>
+    </div>
     <div class="w-75 mx-auto position-relative" id="portfolio_stocks" *ngIf="userOwnedStocks && userOwnedStocks.data.length > 0">
+      <div id="stock_table_header_title">Owned Stocks</div>
       <table class="w-100 portfolio_table" mat-table [dataSource]="userOwnedStocks">
         <ng-container matColumnDef="Symbol">
           <th class="text-center" mat-header-cell *matHeaderCellDef>Symbol</th>
