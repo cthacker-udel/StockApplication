@@ -17,7 +17,7 @@ export class ConfigService {
     return this.http.get<T>(`${this.configUrl}${endpoint}`, {
       headers: this.corsHeaders,
       withCredentials: true,
-    });
+    }).pipe(catchError((err: any) => this.handleError(err, this)));
   }
 
   getConfigResponse<T>(endpoint: string) {
@@ -26,14 +26,16 @@ export class ConfigService {
       responseType: 'json',
       headers: this.corsHeaders,
       withCredentials: true,
-    });
+    }).pipe(catchError((err: any) => this.handleError(err, this)));
   }
 
   postConfig<T>(endpoint: string, body: any) {
-    return this.http.post<T>(`${this.configUrl}${endpoint}`, body, {
-      headers: this.corsHeaders,
-      withCredentials: true,
-    });
+    return this.http
+      .post<T>(`${this.configUrl}${endpoint}`, body, {
+        headers: this.corsHeaders,
+        withCredentials: true,
+      })
+      .pipe(catchError((err: any) => this.handleError(err, this)));
   }
 
   postConfigResponse<T>(endpoint: string, body: any) {
@@ -42,14 +44,14 @@ export class ConfigService {
       withCredentials: true,
       observe: 'response',
       responseType: 'json',
-    });
+    }).pipe(catchError((err: any) => this.handleError(err, this)));
   }
 
   deleteConfig<T>(endpoint: string) {
     return this.http.delete<T>(`${this.configUrl}${endpoint}`, {
       headers: this.corsHeaders,
       withCredentials: true,
-    });
+    }).pipe(catchError((err: any) => this.handleError(err, this)));
   }
 
   private handleError(error: HttpErrorResponse, ctx: ConfigService) {
