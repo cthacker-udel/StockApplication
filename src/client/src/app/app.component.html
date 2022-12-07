@@ -1,5 +1,4 @@
 <div class="main_component">
-  <header>
     <div
       class="d-flex flex-row justify-content-around border border-bottom-1 stock_navbar"
     >
@@ -33,12 +32,11 @@
           style="--fa-animation-duration: 3s"
         ></i>
       </div>
-      <div class="rounded p-2" routerLink="/settings" routerLinkActive="active">
+      <div class="rounded p-2" routerLink="/usersettings" routerLinkActive="active">
         <a>User Settings</a>
         <i class="fa-solid fa-gear fa-spin ms-2"></i>
       </div>
     </div>
-  </header>
-  <sidebar></sidebar>
-  <router-outlet></router-outlet>
+  <div class="position-absolute"><sidebar></sidebar></div>
+  <router-outlet class="position-absolute"></router-outlet>
 </div>

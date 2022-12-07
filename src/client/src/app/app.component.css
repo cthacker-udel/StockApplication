@@ -1,4 +1,8 @@
 .main_component {
     height: 100vh;
     width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    max-height: 100vh;
 }

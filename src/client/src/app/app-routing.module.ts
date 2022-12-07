@@ -8,6 +8,7 @@ import { SignInComponent } from './_components/signin/signin.component';
 import { StockDashboardComponent } from './_components/stockdashboard/stockdashboard.component';
 import { TradingComponent } from './_components/trading/trading.component';
 import { PortfolioComponent } from './_components/portfolio/portfolio.component';
+import { SettingsComponent } from './_components/userSettings/settings.component';
 
 const routes: Routes = [
   {
@@ -33,6 +34,10 @@ const routes: Routes = [
   {
     component: PortfolioComponent,
     path: 'portfolio',
+  },
+  {
+    component: SettingsComponent,
+    path: 'usersettings',
   },
   {
     component: LandingPageComponent,
