@@ -1,3 +1,6 @@
+/* eslint-disable indent -- disabled */
+/* eslint-disable @typescript-eslint/indent -- disabled */
+/* eslint-disable no-mixed-spaces-and-tabs -- disabled */
 import { mockCookieManager, BaseService } from "../../common";
 import type { Request, Response } from "express";
 import type { Collection } from "mongodb";
@@ -90,11 +93,11 @@ export class SessionService extends BaseService {
 			return false;
 		}
 		const parsedCookie = JSON.parse(sentCookie) as SessionCookie;
-		const parsedCookieDate = new Date(parsedCookie.expiration);
-		if (parsedCookieDate === undefined) {
+		const parsedCookieTime = Number(parsedCookie.expiration);
+		if (parsedCookieTime === undefined || Number.isNaN(parsedCookieTime)) {
 			return false;
 		}
-		const comparison = parsedCookieDate.getTime() - Date.now();
+		const comparison = parsedCookieTime - Date.now();
 		if (comparison > 0) {
 			const result = generatedHash === parsedCookie.value;
 			if (result && validate(sessionToken)) {
@@ -114,11 +117,13 @@ export class SessionService extends BaseService {
 	 *
 	 * @param username - The username to add to the cache entry
 	 * @param response - The server response, used to add cookies to the client
+	 * @param token - The optional token, can be passed in from a function that already generates one beforehand
 	 * @returns
 	 */
 	public addSession = async (
 		username: string,
 		response: Response,
+		token?: string,
 	): Promise<boolean> => {
 		const userCollection: Collection = this.stockMongoClient
 			.getClient()
@@ -132,11 +137,14 @@ export class SessionService extends BaseService {
 		if (foundUser !== null) {
 			const { iterations, salt } = foundUser;
 			const id = v4();
-			const generatedHash = fixedPbkdf2Encryption(
-				`${username}${id}`,
-				iterations,
-				salt,
-			);
+			const generatedHash =
+				token === undefined
+					? fixedPbkdf2Encryption(
+							`${username}${id}`,
+							iterations,
+							salt,
+					  )
+					: token;
 			mockCookieManager.addCookie(
 				response,
 				SECRETS.STOCK_APP_SESSION_COOKIE_ID,
