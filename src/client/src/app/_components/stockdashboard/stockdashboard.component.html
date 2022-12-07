@@ -33,13 +33,13 @@
       </div>
     </div>
 
-    <div class="row mx-auto w-75" id="middle_row">
+    <div class="row mx-auto" id="middle_row">
       <div class="card" id="top_stocks_card">
         <div class="card-body text-center fs-3 fw-bold">
           <div class="card-title d-flex flex-row justify-content-center">
-            <i class="fa-solid fa-fire text-danger fa-beat p-2"></i>
+            <i class="fa-solid fa-fire text-danger p-2"></i>
             <div class="px-3 text-dark">Top Stocks</div>
-            <i class="fa-solid fa-fire text-danger fa-beat p-2"></i>
+            <i class="fa-solid fa-fire text-danger p-2"></i>
           </div>
           <div
             *ngIf="stocks.length > 0"
@@ -63,13 +63,12 @@
       </div>
     </div>
 
-    <div class="row mx-auto w-75" id="end_row">
-      <div class="d-flex flex justify-content-around">
+    <div class="row mx-auto" id="end_row">
+      <div class="d-flex flex" id="end_row_flex">
         <div class="card border-0">
-          <div class="card-body" id="stock_dashboard_card_body">
+          <div class="card-body" id="recent_trades_card_body">
             <div class="card-title fs-4 fw-bold text-center">
               <span class="px-3 text-dark">Most Recent Trades</span>
-              <i class="p-2 ms-2 fa-solid fa-stopwatch fa-shake fa-lg text-dark"></i>
             </div>
             <div
               class="list-group list-group-flush"
@@ -98,10 +97,9 @@
           </div>
         </div>
         <div class="card border-0">
-          <div class="card-body" id="stock_dashboard_card_body">
+          <div class="card-body" id="leaderboard_card_body">
             <div class="card-title fs-4 fw-bold">
               <span class="px-3 text-dark">Leaderboard</span>
-              <i class="p-2 ms-2 fa-solid fa-trophy fa-lg text-dark"></i>
             </div>
             <div
               class="list-group list-group-flush list-group-numbered"
