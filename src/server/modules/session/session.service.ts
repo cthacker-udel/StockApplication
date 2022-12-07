@@ -1,7 +1,7 @@
 import { mockCookieManager, BaseService } from "../../common";
 import type { Request, Response } from "express";
 import type { Collection } from "mongodb";
-import { v4, validate } from "uuid";
+import { v4 } from "uuid";
 import type { User, SessionCookie } from "../../@types";
 import { MONGO_COMMON, type StockMongoClient } from "../../mongo";
 import { SECRETS } from "../../secrets";
@@ -90,14 +90,14 @@ export class SessionService extends BaseService {
 			return false;
 		}
 		const parsedCookie = JSON.parse(sentCookie) as SessionCookie;
-		const parsedCookieDate = new Date(parsedCookie.expiration);
-		if (parsedCookieDate === undefined) {
+		const parsedCookieTime = Number(parsedCookie.expiration);
+		if (parsedCookieTime === undefined || Number.isNaN(parsedCookieTime)) {
 			return false;
 		}
-		const comparison = parsedCookieDate.getTime() - Date.now();
+		const comparison = parsedCookieTime - Date.now();
 		if (comparison > 0) {
 			const result = generatedHash === parsedCookie.value;
-			if (result && validate(sessionToken)) {
+			if (result) {
 				return true;
 			}
 			await this.removeSession(username, response);
@@ -114,11 +114,13 @@ export class SessionService extends BaseService {
 	 *
 	 * @param username - The username to add to the cache entry
 	 * @param response - The server response, used to add cookies to the client
+	 * @param token - The optional token, can be passed in from a function that already generates one beforehand
 	 * @returns
 	 */
 	public addSession = async (
 		username: string,
 		response: Response,
+		token?: string,
 	): Promise<boolean> => {
 		const userCollection: Collection = this.stockMongoClient
 			.getClient()
@@ -133,7 +135,7 @@ export class SessionService extends BaseService {
 			const { iterations, salt } = foundUser;
 			const id = v4();
 			const generatedHash = fixedPbkdf2Encryption(
-				`${username}${id}`,
+				`${username}${token ?? id}`,
 				iterations,
 				salt,
 			);
@@ -161,7 +163,7 @@ export class SessionService extends BaseService {
 			);
 			await userCollection.updateOne(
 				{ username },
-				{ $set: { ...foundUser, sessionToken: id } },
+				{ $set: { ...foundUser, sessionToken: token ?? id } },
 			);
 			return true;
 		}

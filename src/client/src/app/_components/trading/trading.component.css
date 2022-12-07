@@ -1,6 +1,6 @@
 
 .trading_background {
-    background-color: #164a41;
+    background-color: var(--main-background-color);
 }
 
 .action_btn_text {
@@ -12,21 +12,20 @@
 }
 
 #trading_header {
-    position: relative;
+    background-color: var(--sub2-background-color);
 }
 
 #trading_header_title {
-    float: left;
-    color: white;
+    color: black;
     letter-spacing: .05em;
-    margin-left: 20px;
-    position: absolute;
-    top: 50%;
-    -ms-transform: translateY(-50%);
-    transform: translateY(-50%);
+    font-weight: bold;
 }
 
 #toggle_buttons {
     float: right;
     width: fit-content;
+}
+
+.trading_table {
+    height: 50vh;
 }

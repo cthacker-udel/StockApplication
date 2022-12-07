@@ -20,7 +20,7 @@ import type {
 	ChangeStreamCreateDocument,
 	ObjectId,
 } from "mongodb";
-import { rolesValidator } from "../../middleware";
+import { asyncMiddlewareHandler, cookieValidator, rolesValidator } from "../../middleware";
 import type { Server } from "socket.io";
 
 const CONSTANTS = {
@@ -175,6 +175,38 @@ export class StockController implements BaseController {
 					`Failed to find stock with symbol ${symbol}`,
 					false,
 					ERROR_CODE_ENUM.FIND_STOCK_FAILURE,
+				),
+			);
+		}
+	};
+
+	/**
+	 * Bulk fetches an array of stock symbols sent via from the client
+	 *
+	 * @param request - the request sent from the client-side
+	 * @param response - the response we are sending back to the user
+	 */
+	public getBulkStockBySymbol = async (
+		request: Request,
+		response: Response,
+	): Promise<void> => {
+		const { stocks } = request.query;
+		try {
+			response.status(200);
+			response.send(
+				await this.stockService.getBulkStockBySymbol(
+					this.client,
+					(stocks as string).split(","),
+				),
+			);
+		} catch (error: unknown) {
+			console.error(
+				`Failed to bulk fetch stock ${(error as Error).stack}`,
+			);
+			response.status(400);
+			response.send(
+				generateApiMessage(
+					`Failed to bulk fetch stock with symbols ${stocks}`,
 				),
 			);
 		}
@@ -336,9 +368,6 @@ export class StockController implements BaseController {
 				sortBy as SortByOptions,
 			);
 			response.status(200);
-			response.header({
-				"Cache-Control": "stale-while-revalidate=60",
-			});
 			response.send({ stocks: result });
 		} catch (error: unknown) {
 			console.error(
@@ -514,6 +543,11 @@ export class StockController implements BaseController {
 			[
 				"dashboard",
 				this.getStockDashboardStocks,
+				[rolesValidator(Roles.USER, this.client), asyncMiddlewareHandler(cookieValidator, this.sessionService)],
+			],
+			[
+				"get/bulk/symbol",
+				this.getBulkStockBySymbol,
 				[rolesValidator(Roles.USER, this.client)],
 			],
 		],

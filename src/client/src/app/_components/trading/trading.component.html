@@ -1,8 +1,10 @@
 <div
-  class="h-100 w-100 d-flex flex-column trading_background"
+  class="h-100 w-100 d-flex flex-column justify-content-center trading_background content_page"
 >
   <div class="w-100 mx-auto p-2 mt-3" id="trading_header">
-    <div class="text-center fw-bold fs-4" id="trading_header_title">Trading</div>
+    <div class="text-center fw-bold fs-4" id="trading_header_title">
+      Trading
+    </div>
     <div
       class="d-flex flex-row justify-content-center mx-auto p-2 rounded"
       id="toggle_buttons"
@@ -127,126 +129,143 @@
       aria-label="Select page of stocks"
     ></mat-paginator>
   </div>
+  <<<<<<< HEAD
   <div class="mat-elevation-z8 w-100 mx-auto mt-3" *ngIf="isBuying === false">
-    <table class="w-100" mat-table [dataSource]="ownedStocks">
-      <ng-container matColumnDef="Symbol">
-        <th class="text-center" mat-header-cell *matHeaderCellDef>Symbol</th>
-        <td class="text-center" mat-cell *matCellDef="let element">
-          {{ element.symbol }}
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="Amount">
-        <th class="text-center" mat-header-cell *matHeaderCellDef>Amount</th>
-        <td class="text-center" mat-cell *matCellDef="let element">
-          {{ element.amount }}
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="Sell">
-        <th class="text-center" mat-header-cell *matHeaderCellDef>
-          <span>Sell Stock</span>
-        </th>
-        <td class="text-center" mat-cell *matCellDef="let element">
-          <button
-            class="{{ actionBtnClass }} action_btn_text"
-            (click)="fireActionSell(element)"
-            data-bs-toggle="modal"
-            data-bs-target="#actionModal"
-          >
-            {{ generateActionBtnText() }}
-          </button>
-        </td>
-      </ng-container>
-      <tr mat-header-row *matHeaderRowDef="sellingColumnDefs"></tr>
-      <tr mat-row *matRowDef="let row; columns: sellingColumnDefs"></tr>
-    </table>
-    <mat-paginator
-      [pageSizeOptions]="[5, 10, 20]"
-      showFirstLastButtons
-      aria-label="Select page of stocks"
-    ></mat-paginator>
-  </div>
-  <div
-    class="modal fade"
-    id="actionModal"
-    tabIndex="-1"
-    aria-labelledby="Stock Action Modal"
-  >
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <div
-            class="modal-title fs-5 d-flex flex-row justify-content-start"
-            id="actionBtnModalTitle"
-          >
-            <div class="fs-4">{{ generateActionBtnText() }} Stock</div>
-            <div class="my-auto align-items-center ms-2" *ngIf="isBuying">
-              <i class="fa-solid fa-shopping-cart fa-shake text-primary"></i>
-            </div>
-            <div class="my-auto align-items-center ms-2" *ngIf="!isBuying">
-              <i class="fa-solid fa-dollar fa-beat text-success"></i>
+    =======
+    <div
+      class="mat-elevation-z8 w-75 mx-auto mt-3 trading_table"
+      *ngIf="isBuying === false"
+    >
+      >>>>>>> sell-improvement
+      <table class="w-100" mat-table [dataSource]="ownedStocks">
+        <ng-container matColumnDef="Symbol">
+          <th class="text-center" mat-header-cell *matHeaderCellDef>Symbol</th>
+          <td class="text-center" mat-cell *matCellDef="let element">
+            {{ element.symbol }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="Amount">
+          <th class="text-center" mat-header-cell *matHeaderCellDef>Amount</th>
+          <td class="text-center" mat-cell *matCellDef="let element">
+            {{ element.amount }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="Sell">
+          <th class="text-center" mat-header-cell *matHeaderCellDef>
+            <span>Sell Stock</span>
+          </th>
+          <td class="text-center" mat-cell *matCellDef="let element">
+            <button
+              class="{{ actionBtnClass }} action_btn_text"
+              (click)="fireActionSell(element)"
+              data-bs-toggle="modal"
+              data-bs-target="#actionModal"
+            >
+              {{ generateActionBtnText() }}
+            </button>
+          </td>
+        </ng-container>
+        <tr
+          mat-header-row
+          *matHeaderRowDef="sellingColumnDefs; sticky: true"
+        ></tr>
+        <tr mat-row *matRowDef="let row; columns: sellingColumnDefs"></tr>
+      </table>
+      <mat-paginator
+        [pageSizeOptions]="[5, 10, 20]"
+        showFirstLastButtons
+        aria-label="Select page of stocks"
+      ></mat-paginator>
+    </div>
+    <div
+      class="modal fade"
+      id="actionModal"
+      tabIndex="-1"
+      aria-labelledby="Stock Action Modal"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <div
+              class="modal-title fs-5 d-flex flex-row justify-content-start"
+              id="actionBtnModalTitle"
+            >
+              <div class="fs-4">{{ generateActionBtnText() }} Stock</div>
+              <div class="my-auto align-items-center ms-2" *ngIf="isBuying">
+                <i class="fa-solid fa-shopping-cart fa-shake text-primary"></i>
+              </div>
+              <div class="my-auto align-items-center ms-2" *ngIf="!isBuying">
+                <i class="fa-solid fa-dollar fa-beat text-success"></i>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="modal-body d-flex flex-row justify-content-center">
-          <form *ngIf="actionStock !== undefined || sellStock !== undefined">
-            <mat-form-field appearance="fill">
-              <mat-label>{{ generateActionBtnText() }}ing Stock</mat-label>
-              <input
-                class="pe-none"
-                matInput
-                readonly
-                type="text"
-                value="{{
-                  isBuying
-                    ? actionStock
-                      ? actionStock.symbol
+          <div class="modal-body d-flex flex-row justify-content-center">
+            <form *ngIf="actionStock !== undefined || sellStock !== undefined">
+              <mat-form-field appearance="fill">
+                <mat-label>{{ generateActionBtnText() }}ing Stock</mat-label>
+                <input
+                  class="pe-none"
+                  matInput
+                  readonly
+                  type="text"
+                  value="{{
+                    isBuying
+                      ? actionStock
+                        ? actionStock.symbol
+                        : ''
+                      : sellStock
+                      ? sellStock.symbol
                       : ''
+                  }}"
+                />
+              </mat-form-field>
+            </form>
+          </div>
+          <div class="d-flex flex-row justify-content-around">
+            <div
+              class="w-50"
+              *ngIf="actionStock !== undefined || sellStock !== undefined"
+            >
+              <div class="text-center">Amount</div>
+              <mat-slider
+                class="amount_slider_width"
+                (input)="selectedStockAmountChangeHandler($event)"
+                thumbLabel
+                tickInterval="100"
+                step="1"
+                min="0"
+                max="{{
+                  isBuying
+                    ? actionStock.shares
                     : sellStock
-                    ? sellStock.symbol
-                    : ''
+                    ? sellStock.amount
+                    : 1
                 }}"
-              />
-            </mat-form-field>
-          </form>
-        </div>
-        <div class="d-flex flex-row justify-content-around">
-          <div
-            class="w-50"
-            *ngIf="actionStock !== undefined || sellStock !== undefined"
-          >
-            <div class="text-center">Amount</div>
-            <mat-slider
-              class="amount_slider_width"
-              (input)="selectedStockAmountChangeHandler($event)"
-              thumbLabel
-              tickInterval="100"
-              step="1"
-              min="0"
-              max="{{ isBuying ? actionStock.shares : sellStock.amount }}"
-              aria-label="units"
-            ></mat-slider>
+                aria-label="units"
+              ></mat-slider>
+            </div>
+            <div *ngIf="actionStock !== undefined || sellStock !== undefined">
+              Total Price {{ displayPrice(isBuying ? "buy" : "sell") }}$
+            </div>
           </div>
-          <div *ngIf="actionStock !== undefined || sellStock !== undefined">
-            Total Price {{ displayPrice(isBuying ? "buy" : "sell") }}$
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              (click)="executeTrade()"
+              [disabled]="selectedStockAmount === 0"
+              data-bs-dismiss="modal"
+            >
+              {{ generateActionBtnText() }} Stock
+            </button>
           </div>
-        </div>
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-bs-dismiss="modal"
-          >
-            Close
-          </button>
-          <button
-            type="button"
-            class="btn btn-primary"
-            (click)="executeTrade()"
-            [disabled]="selectedStockAmount === 0"
-            data-bs-dismiss="modal"
-          >
-            {{ generateActionBtnText() }} Stock
-          </button>
         </div>
       </div>
     </div>

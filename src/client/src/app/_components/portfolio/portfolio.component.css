@@ -1,0 +1,83 @@
+
+@keyframes loading_anim {
+    from {
+        opacity: 100%;
+    }
+    to {
+        visibility: none;
+        opacity: 0%;
+    }
+}
+
+@keyframes shift_from_left {
+    0% {
+        right: 120%;
+    }
+    100% {
+        right: 0%;
+    }
+}
+
+@keyframes appear_func {
+    0% {
+        opacity: 0%;
+    }
+    100% {
+        opacity: 100%;
+    }
+}
+
+.portfolio_background {
+    background-color: rgb(120, 147, 149);
+}
+
+.portfolio_header_title {
+    position: absolute;
+    animation-name: shift_from_left;
+    animation-timing-function: ease-in-out;
+    animation-duration: 3s;
+    animation-fill-mode: forwards;
+}
+
+.portfolio_balance {
+    animation-name: shift_from_left;
+    animation-timing-function: ease-in-out;
+    animation-duration: 3s;
+    animation-fill-mode: forwards;
+}
+
+.portfolio_returns {
+    animation-name: shift_from_left;
+    animation-timing-function: ease-in-out;
+    animation-duration: 3s;
+    animation-fill-mode: forwards;
+}
+
+.portfolio_table {
+    position: absolute;
+    animation-name: shift_from_left;
+    animation-timing-function: ease-in-out;
+    animation-duration: 1.5s;
+    animation-fill-mode: forwards;
+}
+
+.loading_displayed {
+    display: none;
+    visibility: visible;
+    opacity: 100%;
+}
+
+.loading_disappear {
+    opacity: 100%;
+    animation-name: loading_anim;
+    animation-timing-function: ease-in-out;
+    animation-duration: 3s;
+    animation-fill-mode: forwards;
+}
+
+.no_stocks {
+    animation-name: appear_func;
+    animation-timing-function: ease-in-out;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+}

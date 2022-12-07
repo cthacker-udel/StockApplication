@@ -6,10 +6,11 @@ export enum TRADE_TYPE {
 }
 
 export type Trade = {
-	type: TRADE_TYPE;
-	profit?: number;
-	loss?: number;
-	stockAmount: number;
-	stockSymbol: string;
-	time: Date;
+  type: TRADE_TYPE;
+  profit?: number;
+  loss?: number;
+  stockAmount: number;
+  stockSymbol: string;
+  time: Date;
+  username: string;
 };

@@ -1,0 +1,23 @@
+
+@keyframes appear_anim {
+    from {
+        opacity: 0%;
+    }
+    to {
+        opacity: 100%;
+    }
+}
+
+.welcome_text {
+    width: 50%;
+    text-indent: 1em;
+    font-size: 1.15em;
+}
+
+.welcome_text_subsection {
+    text-indent: 1em;
+}
+
+.welcome_text_appear {
+    animation: appear_anim 1s ease-in-out;
+}

@@ -60,6 +60,7 @@ export class TradeService {
 			stockSymbol,
 			time: new Date(Date.now()),
 			type: TRADE_TYPE.BUY,
+			username,
 		};
 		const trades = [...portfolio.trades];
 		trades.push(tradeLog);
@@ -78,7 +79,11 @@ export class TradeService {
 			);
 			stocks[ind] = { ...stocks[ind], amount: stocks[ind].amount + amt };
 		} else {
-			stocks.push({ amount: amt, symbol: stockSymbol });
+			stocks.push({
+				amount: amt,
+				beganOwning: new Date(Date.now()),
+				symbol: stockSymbol,
+			});
 		}
 		await tradeCollection.insertOne(tradeLog);
 		const userUpdateResult = await userCollection.updateOne(
@@ -204,6 +209,7 @@ export class TradeService {
 					stockSymbol,
 					time: new Date(Date.now()),
 					type: TRADE_TYPE.SELL,
+					username,
 				};
 
 				const modifiedBalance = balance + profit;
@@ -249,18 +255,8 @@ export class TradeService {
 		const userCollection = database.collection<User>("user");
 		const leaderboardCollection =
 			database.collection<LeaderboardUser>("leaderboard");
-		const numberDocuments = await leaderboardCollection.countDocuments();
-		if (numberDocuments > 0) {
-			const allTopUsers = await leaderboardCollection
-				.find<LeaderboardUser>({})
-				.toArray();
-			const sortedAllTopUsers = allTopUsers.sort(
-				(user1: LeaderboardUser, user2: LeaderboardUser) =>
-					user1.rank - user2.rank,
-			);
-			return sortedAllTopUsers;
-		}
 		const allUsers = await userCollection.find<User>({}).toArray();
+
 		const allUsersRankIndex: [
 			username: string,
 			index: number,
@@ -274,6 +270,7 @@ export class TradeService {
 			}
 			return [eachUser.username, index, eachUser.portfolio.balance];
 		});
+
 		allUsersRankIndex.sort(
 			(
 				array1: [username: string, index: number, rank: number],
@@ -282,37 +279,32 @@ export class TradeService {
 				const user1Rank = array1[2];
 				const user2Rank = array2[2];
 				if (user1Rank === user2Rank) {
-					return array1[0].localeCompare(array2[0]);
+					return array2[0].localeCompare(array1[0]);
 				}
-				return user1Rank - user2Rank;
+				return user2Rank - user1Rank;
 			},
 		);
-		const topUserPromises = [];
-		let indAllUsersRank = 0;
-		while (indAllUsersRank < allUsersRankIndex.length) {
-			if (topUserPromises.length === 4) {
-				break;
-			}
-			const topUser = allUsersRankIndex[indAllUsersRank];
-			if (topUser.length > 0) {
-				topUserPromises.push(
-					userCollection.findOne<User>({ username: topUser[0] }),
-				);
-			}
-			indAllUsersRank += 1;
-		}
-		const topUsers = await Promise.all(topUserPromises);
+
+		const topUsers = allUsersRankIndex.slice(0, 4);
 		const formattedTopUsers: LeaderboardUser[] = topUsers.map(
-			(eachTopUser: User | null, _index: number) => ({
-				rank: _index + 1,
-				totalValue: allUsersRankIndex[_index][2],
-				username: eachTopUser ? eachTopUser.username : "",
+			(
+				eachTopUser: [username: string, index: number, rank: number],
+				_index: number,
+			) => ({
+				rank: eachTopUser[1] + 1,
+				totalValue: eachTopUser[2],
+				username: eachTopUser[0],
 			}),
 		);
-		const insertionResult = await leaderboardCollection.insertMany(
-			formattedTopUsers,
-		);
-		return insertionResult.insertedCount > 0 ? formattedTopUsers : [];
+
+		const deletionResult = await leaderboardCollection.deleteMany({});
+		if (deletionResult.acknowledged) {
+			const insertionResult = await leaderboardCollection.insertMany(
+				formattedTopUsers,
+			);
+			return insertionResult.insertedCount > 0 ? formattedTopUsers : [];
+		}
+		return [];
 	};
 
 	public getMostRecentTrades = async (
@@ -322,8 +314,8 @@ export class TradeService {
 			.getClient()
 			.db(MONGO_COMMON.DATABASE_NAME)
 			.collection<Trade>("trade");
-		// eslint-disable-next-line newline-per-chained-call -- eslint/prettier conflict
-		const top5Trades = await tradeCollection.find({}).limit(5).toArray();
+		const allTrades = await tradeCollection.find({}).toArray();
+		const top5Trades = allTrades.slice(-5).reverse();
 		return top5Trades;
 	};
 }

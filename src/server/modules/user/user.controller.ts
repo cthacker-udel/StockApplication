@@ -192,14 +192,18 @@ export class UserController implements BaseController {
 						generateApiMessage("Successful login!", true),
 					);
 				} else {
-					const canLogin = await this.userService.login(this.client, {
-						password,
-						username,
-					});
+					const { canLogin, token } = await this.userService.login(
+						this.client,
+						{
+							password,
+							username,
+						},
+					);
 					if (canLogin) {
 						await this.sessionService.addSession(
 							username,
 							response,
+							token,
 						);
 						response.status(200);
 						response.send(
@@ -326,6 +330,12 @@ export class UserController implements BaseController {
 		}
 	};
 
+	/**
+	 * Checks whether the username supplied in the request exists
+	 *
+	 * @param request - The request from the client
+	 * @param response - The response sent back to the callee
+	 */
 	public doesUserWithUsernameExist = async (
 		request: Request,
 		response: Response,
@@ -358,6 +368,12 @@ export class UserController implements BaseController {
 		}
 	};
 
+	/**
+	 * Gets the user data associated with the username
+	 *
+	 * @param request - The request from the client-side
+	 * @param response - The response sent back to the callee
+	 */
 	public getUserDataWithUsername = async (
 		request: Request,
 		response: Response,
@@ -389,6 +405,12 @@ export class UserController implements BaseController {
 		}
 	};
 
+	/**
+	 * Gets the user aggregate data for the username given in the request
+	 *
+	 * @param request - The request coming from the client-side
+	 * @param response - The response sent back to the user
+	 */
 	public getUserAggregateDataWithUsername = async (
 		request: Request,
 		response: Response,
@@ -430,6 +452,12 @@ export class UserController implements BaseController {
 		}
 	};
 
+	/**
+	 * Gets the user's potential profit associated with the username passed in
+	 *
+	 * @param request - The request coming from the user (application)
+	 * @param response - The returned response to the client
+	 */
 	public getUserPotentialProfitWithUsername = async (
 		request: Request,
 		response: Response,
@@ -471,6 +499,12 @@ export class UserController implements BaseController {
 		}
 	};
 
+	/**
+	 * Get all user owned stock with associated username
+	 *
+	 * @param request - The client-side request coming from the front-end
+	 * @param response - The response sent back to the callee
+	 */
 	public getUserOwnedStocksWithUsername = async (
 		request: Request,
 		response: Response,
@@ -490,12 +524,8 @@ export class UserController implements BaseController {
 						this.client,
 						username as string,
 					);
-				if (result.length === 0) {
-					response.status(204);
-				} else {
-					response.status(200);
-					response.send(result);
-				}
+				response.status(200);
+				response.send(result ?? []);
 			}
 		} catch (error: unknown) {
 			console.error(
@@ -507,6 +537,68 @@ export class UserController implements BaseController {
 					"Failed to fetch user owned stocks via username",
 				),
 			);
+		}
+	};
+
+	public validateToken = async (
+		request: Request,
+		response: Response,
+	): Promise<void> => {
+		try {
+			if (request.body === undefined) {
+				throw new Error(
+					"Must supply body with token and username to validate token endpoint",
+				);
+			}
+			const { token, username } = request.body as unknown as {
+				token?: string;
+				username?: string;
+			};
+			if (username === undefined) {
+				console.error(
+					"Username must be supplied to validate token method",
+				);
+				response.status(400);
+				response.send(
+					generateApiMessage(
+						"Failed to validate token with no username supplied, please supply username to validate token",
+					),
+				);
+			} else if (token === undefined) {
+				console.error(
+					"Token must be supplied to validate the session token",
+				);
+				response.status(400);
+				response.send(
+					generateApiMessage(
+						"Failed to validate session token with no token supplied, please supply token to successfully validate the token",
+					),
+				);
+			} else {
+				const validationResult =
+					await this.sessionService.validateSession(
+						username,
+						request,
+						response,
+					);
+				if (validationResult) {
+					response.status(204);
+					response.send({});
+				} else {
+					response.status(400);
+					response.send(
+						generateApiMessage(
+							"Token supplied to validation session is incorrect, causing session to be invalid",
+						),
+					);
+				}
+			}
+		} catch (error: unknown) {
+			console.error(
+				`Failed validating user token ${(error as Error).stack}`,
+			);
+			response.status(400);
+			response.send(generateApiMessage("Failed to validate user token"));
 		}
 	};
 
@@ -563,6 +655,11 @@ export class UserController implements BaseController {
 						this.sessionService,
 					),
 				],
+			],
+			[
+				"validatetoken",
+				this.validateToken,
+				[rolesValidator(Roles.USER, this.client)],
 			],
 		],
 	});

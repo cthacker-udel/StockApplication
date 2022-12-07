@@ -161,7 +161,7 @@ export class StockService extends BaseService {
 	 */
 	public getStockDashboardStocks = async (
 		client: StockMongoClient,
-		sortOption: SortByOptions = "volume",
+		sortOption: SortByOptions = "price",
 	): Promise<Stock[] | undefined> => {
 		const stockCollection = client
 			.getClient()
@@ -202,7 +202,6 @@ export class StockService extends BaseService {
 	 * @param stockPayload - The stock to add to the database
 	 * @returns - Whether or not the stock was deleted
 	 */
-
 	public deleteStock = async (
 		client: StockMongoClient,
 		symbol: string,
@@ -262,5 +261,18 @@ export class StockService extends BaseService {
 		}
 		const deleteResult = await stockCollection.deleteOne({ symbol });
 		return deleteResult.deletedCount === 1;
+	};
+
+	public getBulkStockBySymbol = async (
+		mongoClient: StockMongoClient,
+		symbols: string[],
+	): Promise<Stock[]> => {
+		const stocksWithSymbols = await mongoClient
+			.getClient()
+			.db(MONGO_COMMON.DATABASE_NAME)
+			.collection(this.COLLECTION_NAME)
+			.aggregate([{ $match: { symbol: { $in: symbols } } }])
+			.toArray();
+		return (stocksWithSymbols as Stock[]) ?? [];
 	};
 }

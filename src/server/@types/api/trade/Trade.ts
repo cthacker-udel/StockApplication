@@ -12,4 +12,5 @@ export type Trade = {
 	stockAmount: number;
 	stockSymbol: string;
 	time: Date;
+	username: string;
 };

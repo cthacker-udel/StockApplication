@@ -1,0 +1,186 @@
+<div
+  class="h-100 w-100 d-flex flex-column justify-content-center portfolio_background content_page"
+>
+  <div
+    class="w-25 mx-auto rounded p-3"
+    id="portfolio_header"
+    *ngIf="!displayLoading"
+  >
+    <div
+      class="text-center fs-3"
+      id="portfolio_header_title"
+      *ngIf="!displayLoading"
+    >
+      Portfolio
+    </div>
+  </div>
+
+  <div id="portfolio_balance" *ngIf="!displayLoading">
+    <div id="stock_balance_header">Account Balance</div>
+    <div *ngIf="currentUser !== undefined" class="fw-bold mt-1">
+      <i class="fa-solid fa-vault mx-2"></i
+      ><span matTooltip="Current Balance" matTooltipPosition="after"
+        >${{ truncateDecimal(currentUser.balance ?? 0, 2) }}
+      </span>
+    </div>
+  </div>
+  <div id="portfolio_returns" *ngIf="!displayLoading">
+    <div id="portfolio_return_header">Portfolio Returns</div>
+    <div
+      *ngIf="
+        userAggregateData !== undefined &&
+        userAggregateData?.totalPotentialProfit !== undefined
+      "
+      class="fw-bold mt-1"
+    >
+      <i class="fa-solid fa-comment-dollar mx-2"></i>
+      <span matTooltip="Potential Profit" matTooltipPosition="after"
+        >${{ truncateDecimal(userAggregateData.totalPotentialProfit ?? 0, 2) }}
+      </span>
+    </div>
+  </div>
+  <div
+    class="w-75 mx-auto position-relative"
+    id="portfolio_stocks"
+    *ngIf="userOwnedStocks && userOwnedStocks.data.length > 0"
+  >
+    <div id="stock_table_header_title">Owned Stocks</div>
+    <table
+      class="w-100 portfolio_table"
+      mat-table
+      [dataSource]="userOwnedStocks"
+    >
+      <ng-container matColumnDef="Symbol">
+        <th class="text-center" mat-header-cell *matHeaderCellDef>Symbol</th>
+        <td class="text-center" mat-cell *matCellDef="let element">
+          {{ element.symbol }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="Balance">
+        <th class="text-center" mat-header-cell *matHeaderCellDef>Balance</th>
+
+        <td class="text-center" mat-cell *matCellDef="let element">
+          <span *ngIf="element.balanceReaction.positive" class="text-success"
+            ><i class="fa-solid fa-arrow-up me-1"></i
+          ></span>
+          <span *ngIf="element.balanceReaction.negative" class="text-danger"
+            ><i class="fa-solid fa-arrow-down me-1"></i
+          ></span>
+          <span
+            [ngClass]="{
+              'text-danger': element.balanceReaction.negative,
+              'test-success': element.balanceReaction.positive,
+              'text-dark': element.balanceReaction.neutral
+            }"
+            >{{ element.balance }}</span
+          >
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="Change">
+        <th class="text-center" mat-header-cell *matHeaderCellDef>Change</th>
+        <td class="text-center" mat-cell *matCellDef="let element">
+          <span *ngIf="element.changeReaction.positive" class="text-success"
+            ><i class="fa-solid fa-arrow-up me-1"></i
+          ></span>
+          <span *ngIf="element.changeReaction.negative" class="text-danger"
+            ><i class="fa-solid fa-arrow-down me-1"></i
+          ></span>
+          <span
+            [ngClass]="{
+              'text-danger': element.changeReaction.negative,
+              'text-success': element.changeReaction.positive,
+              'text-dark': element.changeReaction.neutral
+            }"
+            >{{ element.change }}%</span
+          >
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="Current Price">
+        <th class="text-center" mat-header-cell *matHeaderCellDef>
+          Current Price
+        </th>
+        <td class="text-center" mat-cell *matCellDef="let element">
+          <span
+            *ngIf="element.currentPriceReaction.positive"
+            class="text-success"
+            ><i class="fa-solid fa-arrow-up me-1"></i
+          ></span>
+          <span
+            *ngIf="element.currentPriceReaction.negative"
+            class="text-danger"
+            ><i class="fa-solid fa-arrow-down me-1"></i
+          ></span>
+          <span
+            [ngClass]="{
+              'text-danger': element.currentPriceReaction.negative,
+              'text-success': element.currentPriceReaction.positive,
+              'text-dark': element.currentPriceReaction.neutral
+            }"
+            >{{ element.currentPrice }}</span
+          >
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="Gain/Loss">
+        <th class="text-center" mat-header-cell *matHeaderCellDef>Gain/Loss</th>
+        <td class="text-center" mat-cell *matCellDef="let element">
+          <span *ngIf="element.gainLossReaction.positive" class="text-success"
+            ><i class="fa-solid fa-arrow-up me-1"></i
+          ></span>
+          <span *ngIf="element.gainLossReaction.negative" class="text-danger"
+            ><i class="fa-solid fa-arrow-down me-1"></i
+          ></span>
+          <span
+            [ngClass]="{
+              'text-danger': element.gainLossReaction.negative,
+              'text-success': element.gainLossReaction.positive,
+              'text-dark': element.gainLossReaction.neutral
+            }"
+            >{{ element.gainLoss }}</span
+          >
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="tableColumnDefs; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: tableColumnDefs"></tr>
+    </table>
+  </div>
+  <div
+    class="w-75 mx-auto position-relative text-light no_stocks fs-3 text-center"
+    id="portfolio_stocks_no_stocks"
+    *ngIf="noStocks"
+  >
+    No portfolio to display. You don't own any stocks. Go buy some!
+  </div>
+  <div
+    class="mx-auto d-flex flex-column"
+    [ngClass]="{
+      loading_displayed: displayLoading,
+      loading_disappear: displayLoading === false
+    }"
+  >
+    <div
+      class="mx-auto d-flex flex-column"
+      [ngClass]="{
+        loading_displayed: displayLoading,
+        loading_disappear: displayLoading === false
+      }"
+    >
+      <div
+        class="fw-bold fs-4 text-center"
+        [ngClass]="{ 'text-success fa-bounce fs-4': displayLoading === false }"
+      >
+        Load<span *ngIf="displayLoading">ing</span
+        ><span *ngIf="!displayLoading">ed</span> Portfolio
+      </div>
+      <div class="text-center mt-3">
+        <i
+          class="fa-solid fa-spinner fa-2xl fa-spin"
+          *ngIf="displayLoading"
+        ></i>
+        <i
+          class="fa-solid fa-check fa-bounce text-success fa-2xl"
+          *ngIf="!displayLoading"
+        ></i>
+      </div>
+    </div>
+  </div>
+</div>

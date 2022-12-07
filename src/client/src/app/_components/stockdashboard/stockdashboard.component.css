@@ -1,3 +1,39 @@
+@keyframes disappear_anim {
+    from {
+        opacity: 100%;
+    }
+    to {
+        opacity: 0%;
+    }
+}
+
+@keyframes appear_anim {
+    from {
+        opacity: 0%;
+    }
+    to {
+        opacity: 100%;
+    }
+}
+
+@keyframes stock_appear {
+    from {
+        height: 0px;
+    }
+    to {
+        height: 150px;
+    }
+}
+
+@keyframes stock_text_appear {
+    from {
+        font-size: 0em;
+    }
+    to {
+        font-size: 1em;
+    }
+}
+
 .stock_dashboard_background {
     background-color: #164a41;
 }
@@ -80,4 +116,47 @@
 #end_row_flex {
     justify-content: space-between;
     padding: 0;
+}
+
+.stock_loading_indicator_disappear {
+    animation-name: disappear_anim;
+    animation-timing-function: ease-in-out;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+}
+
+.stock_loading_indicator {
+    opacity: 100%;
+}
+
+.top_stock_anim {
+    animation: appear_anim, stock_appear, stock_text_appear 1s ease-in-out;
+}
+
+.leaderboard_disappear {
+    animation-name: disappear_anim;
+    animation-timing-function: ease-in-out;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+}
+
+.leaderboard_display {
+    animation-name: appear_anim;
+    animation-timing-function: ease-in-out;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+}
+
+.recent_trades_display {
+    animation-name: disappear_anim;
+    animation-timing-function: ease-in-out;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+}
+
+.recent_trades_appear {
+    animation-name: appear_anim;
+    animation-timing-function: ease-in-out;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
 }

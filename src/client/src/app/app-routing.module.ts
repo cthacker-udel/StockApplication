@@ -7,11 +7,13 @@ import { ProfileComponent } from './_components/profile/profile.component';
 import { SignInComponent } from './_components/signin/signin.component';
 import { StockDashboardComponent } from './_components/stockdashboard/stockdashboard.component';
 import { TradingComponent } from './_components/trading/trading.component';
+import { PortfolioComponent } from './_components/portfolio/portfolio.component';
+import { SettingsComponent } from './_components/userSettings/settings.component';
 
 const routes: Routes = [
   {
     component: SignInComponent,
-    path: 'signin',
+    path: 'login',
   },
   {
     component: StockDashboardComponent,
@@ -28,6 +30,14 @@ const routes: Routes = [
   {
     component: AdminDashboardComponent,
     path: 'admin',
+  },
+  {
+    component: PortfolioComponent,
+    path: 'portfolio',
+  },
+  {
+    component: SettingsComponent,
+    path: 'usersettings',
   },
   {
     component: LandingPageComponent,

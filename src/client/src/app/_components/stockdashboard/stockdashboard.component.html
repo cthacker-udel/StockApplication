@@ -1,12 +1,10 @@
 <div
-  class="w-100 h-100 d-flex flex-column stock_dashboard_background"
+  class="w-100 h-100 d-flex flex-column stock_dashboard_background content_page"
 >
   <div class="containter">
     <div class="row" id="dashboard_header">
       <div class="col" id="dashboard_title">
-        <div
-          class="fw-bold fs-4 rounded text-light"
-        >
+        <div class="fw-bold fs-4 rounded text-light">
           {{ username }}'s Dashboard
         </div>
       </div>
@@ -35,7 +33,7 @@
 
     <div class="row mx-auto" id="middle_row">
       <div class="card" id="top_stocks_card">
-        <div class="card-body text-center fs-3 fw-bold">
+        <div class="card-body text-center fs-3 fw-bold top_stocks_container">
           <div class="card-title d-flex flex-row justify-content-center">
             <i class="fa-solid fa-fire text-danger p-2"></i>
             <div class="px-3 text-dark">Top Stocks</div>
@@ -46,7 +44,7 @@
             class="d-flex flex-row justify-content-around"
           >
             <div class="w-25" *ngFor="let eachStock of stocks; index as i">
-              <div class="card bg-dark p-3">
+              <div class="card bg-dark p-3 top_stock_anim">
                 <span class="text-light fs-6">#{{ i + 1 }} Stock</span>
                 <span class="text-light"
                   ><i class="fa-solid fa-arrow-trend-up fa-2xs"></i>
@@ -59,6 +57,17 @@
               </div>
             </div>
           </div>
+          <div
+            *ngIf="loadingState && loadingState.stocks.display"
+            [ngClass]="{
+              stock_loading_indicator_disappear: loadingState.stocks.animate
+            }"
+          >
+            <div class="d-flex flex-column">
+              <span>Loading Top Stocks</span>
+              <i class="fa-solid fa-spinner fa-spin"></i>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -66,24 +75,39 @@
     <div class="row mx-auto" id="end_row">
       <div class="d-flex flex" id="end_row_flex">
         <div class="card border-0">
-          <div class="card-body" id="recent_trades_card_body">
+          <div
+            class="card-body"
+            id="stock_dashboard_card_body"
+            [ngClass]="{ recent_trades_appear: !loadingState.recent.display }"
+          >
             <div class="card-title fs-4 fw-bold text-center">
               <span class="px-3 text-dark">Most Recent Trades</span>
+              <i
+                class="p-2 ms-2 fa-solid fa-stopwatch fa-shake fa-lg text-dark"
+              ></i>
             </div>
             <div
               class="list-group list-group-flush"
               *ngFor="let eachTrade of mostRecentTrades"
             >
               <div
-                class="list-group-item list-group-item-action fw-semibold" [ngClass]="{
+                class="list-group-item list-group-item-action fw-semibold bg-light border"
+                [ngClass]="{
                   'text-success': isTradeBuy(eachTrade),
                   'text-danger': isTradeBuy(eachTrade) === false
                 }"
               >
-                <i class="fa-solid fa-lg ms-2" [ngClass]="{
-                  'fa-money-bill text-success': isTradeBuy(eachTrade),
-                  'fa-hand-holding-dollar text-danger': isTradeBuy(eachTrade) === false
-                }"></i>{{ getTradeString(eachTrade) }}<i class="fa-solid fa-calendar-days ms-3 me-1"></i>{{ getTradeTimeString(eachTrade) }}
+                <i
+                  class="fa-solid fa-lg me-2"
+                  [ngClass]="{
+                    'fa-money-bill text-success': isTradeBuy(eachTrade),
+                    'fa-hand-holding-dollar text-danger':
+                      isTradeBuy(eachTrade) === false
+                  }"
+                ></i
+                >{{ getTradeString(eachTrade)
+                }}<i class="fa-solid fa-calendar-days ms-3 me-1"></i
+                >{{ getTradeTimeString(eachTrade) }}
               </div>
             </div>
             <div
@@ -94,6 +118,19 @@
                 No Trades To Report
               </div>
             </div>
+            <div *ngIf="loadingState && loadingState.recent.display">
+              <div
+                class="d-flex flex-column mt-3"
+                [ngClass]="{
+                  recent_trades_display: loadingState.recent.animate
+                }"
+              >
+                <span class="mb-2 text-center">Loading recent trades </span>
+                <span class="text-center">
+                  <i class="fa-solid fa-spinner fa-spin fa-xl"></i>
+                </span>
+              </div>
+            </div>
           </div>
         </div>
         <div class="card border-0">
@@ -102,11 +139,18 @@
               <span class="px-3 text-dark">Leaderboard</span>
             </div>
             <div
-              class="list-group list-group-flush list-group-numbered"
-              *ngFor="let user of leaderboardUsers; index as i; first as isFirst"
+              class="list-group list-group-flush"
+              *ngFor="
+                let user of leaderboardUsers;
+                index as i;
+                first as isFirst
+              "
+              [ngClass]="{
+                leaderboard_display: !loadingState.leaderboard.display
+              }"
             >
               <div class="list-group-item list-group-item-action fs-5 fw-bold">
-                {{ user.username }}
+                #{{ user.rank }} {{ user.username }}
               </div>
             </div>
             <div
@@ -115,6 +159,19 @@
             >
               <div class="list-group-item list-group-item-action fs-5 fw-bold">
                 No Users To Report
+              </div>
+            </div>
+            <div *ngIf="loadingState && loadingState.leaderboard.display">
+              <div
+                class="d-flex flex-column mt-4 mb-3"
+                [ngClass]="{
+                  leaderboard_disappear: loadingState.leaderboard.animate
+                }"
+              >
+                <span class="text-center mb-2">Loading leaderboard users</span>
+                <span class="text-center">
+                  <i class="fa-solid fa-spinner fa-spin fa-xl"></i>
+                </span>
               </div>
             </div>
           </div>

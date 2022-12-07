@@ -1,3 +1,4 @@
+import { PortfolioComponent } from './_components/portfolio/portfolio.component';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -36,6 +37,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { AddStockModal } from './_components/admin/dashboard/modals/addStock/addStockModal.component';
 import { SidebarComponent } from './_components/sidebar/sidebar.component';
 import { StockAppSocketService } from './_services/stockappsocket.service';
+import { SettingsComponent } from './_components/userSettings/settings.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +51,8 @@ import { StockAppSocketService } from './_services/stockappsocket.service';
     DeleteStockModal,
     AddStockModal,
     SidebarComponent,
+    PortfolioComponent,
+    SettingsComponent,
   ],
   imports: [
     BrowserModule,

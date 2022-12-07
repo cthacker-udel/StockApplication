@@ -12,6 +12,17 @@ import { SECRETS } from 'src/secrets/secrets';
 import { ROUTE_PREFIXES } from 'src/shared/constants/api';
 
 type InitialStockResponse = { stocks: Stock[] };
+
+type SubLoadingState = {
+  display: boolean;
+  animate: boolean;
+};
+
+type LoadingStates = {
+  stocks: SubLoadingState;
+  leaderboard: SubLoadingState;
+  recent: SubLoadingState;
+};
 @Component({
   selector: 'stock-dashboard',
   templateUrl: './stockdashboard.component.html',
@@ -26,6 +37,11 @@ export class StockDashboardComponent implements OnInit {
   ) {}
 
   stocks: Stock[] = [];
+  loadingState: LoadingStates = {
+    stocks: { display: true, animate: false },
+    leaderboard: { display: true, animate: false },
+    recent: { display: true, animate: false },
+  };
   username: string = '';
   leaderboardUsers: LeaderboardUser[];
   mostRecentTrades: Trade[];
@@ -44,41 +60,55 @@ export class StockDashboardComponent implements OnInit {
       this.username = (JSON.parse(username) as SessionCookie).value;
     }
 
-    const leaderboardRequest = this.configService.getConfig<LeaderboardUser[]>(
-      `${ROUTE_PREFIXES.trade}leaderboard`
-    );
+    const leaderboardRequest = this.configService.getConfigCustomHeaders<
+      LeaderboardUser[]
+    >(`${ROUTE_PREFIXES.trade}leaderboard`, { 'Cache-Control': 'no-cache' });
 
     const mostRecentTradesRequest = this.configService.getConfig<Trade[]>(
       `${ROUTE_PREFIXES.trade}mostRecent`
     );
 
     mostRecentTradesRequest.subscribe((trades: Trade[]) => {
-      this.mostRecentTrades = trades;
+      this.loadingState.recent.animate = true;
+      setTimeout(() => {
+        this.loadingState.recent.display = false;
+        this.mostRecentTrades = trades;
+      }, 1100);
     });
 
     leaderboardRequest.subscribe(
       (fetchedLeaderboardUsers: LeaderboardUser[]) => {
         if (fetchedLeaderboardUsers) {
-          this.leaderboardUsers = fetchedLeaderboardUsers;
+          this.loadingState.leaderboard.animate = true;
+          setTimeout(() => {
+            this.loadingState.leaderboard.display = false;
+            this.leaderboardUsers = fetchedLeaderboardUsers;
+          }, 1100);
         }
       }
     );
 
-    this.dashboardService
-      .getInitialMarketStatus()
-      .subscribe((value: Stock[]) => {
-        const { stocks } = value as unknown as InitialStockResponse;
+    const dashboardRequest = this.configService.getConfig<Stock[]>(
+      `${ROUTE_PREFIXES.stock}dashboard`
+    );
+
+    dashboardRequest.subscribe((value: Stock[]) => {
+      const { stocks } = value as unknown as InitialStockResponse;
+      this.loadingState.stocks.animate = true;
+      setTimeout(() => {
+        this.loadingState.stocks.display = false;
         this.stocks = stocks;
-        const stockObservable = this.dashboardService.getUpdates();
-        stockObservable.subscribe((latestStock: Stock) => {
-          const index = this.stocks.findIndex(
-            (eachStock) => eachStock.symbol === latestStock.symbol
-          );
-          this.stocks = [...this.stocks].map((_, i) =>
-            i === index ? latestStock : _
-          );
-        });
+      }, 1100);
+      const stockObservable = this.stockAppSocketService.getStockUpdated();
+      stockObservable.subscribe((latestStock: Stock) => {
+        const index = this.stocks.findIndex(
+          (eachStock) => eachStock.symbol === latestStock.symbol
+        );
+        this.stocks = [...this.stocks].map((_, i) =>
+          i === index ? latestStock : _
+        );
       });
+    });
 
     this.stockAppSocketService
       .getLeaderboardUpdated()
@@ -97,6 +127,7 @@ export class StockDashboardComponent implements OnInit {
     this.stockAppSocketService
       .getMostRecentTradesUpdated()
       .subscribe((result: boolean) => {
+        console.log('result = ', result);
         if (result) {
           mostRecentTradesRequest.subscribe((trades: Trade[]) => {
             this.mostRecentTrades = trades;
@@ -109,7 +140,9 @@ export class StockDashboardComponent implements OnInit {
     const dateifiedTradeTime = new Date(tradeTime);
     return `${dateifiedTradeTime.getFullYear()}-${
       dateifiedTradeTime.getMonth() + 1
-    }-${dateifiedTradeTime.getDate()} [${dateifiedTradeTime.getHours()}:${dateifiedTradeTime.getMinutes()}:${dateifiedTradeTime.getSeconds()}]`;
+    }-${dateifiedTradeTime.getDate()} | ${dateifiedTradeTime.getHours()}:${dateifiedTradeTime.getMinutes()} ${
+      dateifiedTradeTime.getHours() > 12 ? 'PM' : 'AM'
+    }`;
   }
 
   getTradeString(trade: Trade) {

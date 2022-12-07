@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Router } from '@angular/router';
 import { ConfigService } from 'src/app/config/config.service';
 import { OwnedStock } from 'src/app/_models/OwnedStock';
 import { SessionCookie } from 'src/app/_models/SessionCookie';
@@ -6,6 +7,7 @@ import { Stock } from 'src/app/_models/Stock';
 import { User } from 'src/app/_models/User';
 import { UserAggregateData } from 'src/app/_models/UserAggregateData';
 import { StockAppSocketService } from 'src/app/_services/stockappsocket.service';
+import { UserService } from 'src/app/_services/user.service';
 import { SECRETS } from 'src/secrets';
 import { ROUTE_PREFIXES } from 'src/shared/constants/api';
 import { dateToMMDDYYYY } from 'src/shared/helpers/dateToMMDDYYYY';
@@ -18,16 +20,25 @@ import { dateToMMDDYYYY } from 'src/shared/helpers/dateToMMDDYYYY';
 export class SidebarComponent implements OnInit {
   isSidebarExpanded: boolean = false;
   touched: boolean = false;
-  currentUser: Partial<User>;
+  currentUser: Partial<User> | undefined;
   currentUserStockSymbols: string[];
-  userAggregateData: UserAggregateData;
+  userAggregateData: UserAggregateData | undefined;
 
   constructor(
     private configService: ConfigService,
-    private stockAppSocketService: StockAppSocketService
+    private stockAppSocketService: StockAppSocketService,
+    private userService: UserService,
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
+    this.userService.currentUser.subscribe((value: { user: Partial<User> }) => {
+      if (value && Object.keys(value?.user).length > 0) {
+        const { user } = value;
+        this.currentUser = user;
+      }
+    });
     const storedUsername = localStorage.getItem(
       SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_ID
     );
@@ -68,8 +79,10 @@ export class SidebarComponent implements OnInit {
             potentialProfitRequest.subscribe(
               (updatedPotentialProfit: Partial<UserAggregateData>) => {
                 if (updatedPotentialProfit.totalPotentialProfit) {
-                  this.userAggregateData.totalPotentialProfit =
-                    updatedPotentialProfit.totalPotentialProfit;
+                  if (this.userAggregateData !== undefined) {
+                    this.userAggregateData.totalPotentialProfit =
+                      updatedPotentialProfit.totalPotentialProfit;
+                  }
                 }
               }
             );
@@ -82,9 +95,11 @@ export class SidebarComponent implements OnInit {
           this.currentUser = { ...this.currentUser, ...updatedUser };
           potentialProfitRequest.subscribe(
             (updatedPotentialProfit: Partial<UserAggregateData>) => {
-              if (updatedPotentialProfit.totalPotentialProfit) {
-                this.userAggregateData.totalPotentialProfit =
-                  updatedPotentialProfit.totalPotentialProfit;
+              if (updatedPotentialProfit.totalPotentialProfit !== undefined) {
+                if (this.userAggregateData !== undefined) {
+                  this.userAggregateData.totalPotentialProfit =
+                    updatedPotentialProfit.totalPotentialProfit;
+                }
               }
             }
           );
@@ -101,6 +116,19 @@ export class SidebarComponent implements OnInit {
       this.touched = true;
     }
     this.isSidebarExpanded = !this.isSidebarExpanded;
+  }
+
+  clearFields() {
+    this.currentUser = undefined;
+    this.currentUserStockSymbols = [];
+    this.userAggregateData = undefined;
+  }
+
+  logOut() {
+    localStorage.clear();
+    this.clearFields();
+    this.cdr.detectChanges();
+    this.router.navigateByUrl('/');
   }
 
   getToggleButtonTooltipText() {

@@ -68,9 +68,9 @@ export class UserService extends BaseService {
 			return false;
 		}
 		if (
-			new Date(dob).getUTCFullYear() -
-				new Date(Date.now()).getUTCFullYear() <
-				-21 ||
+			new Date(Date.now()).getUTCFullYear() -
+				new Date(dob).getUTCFullYear() <
+				21 ||
 			Number.isNaN(Date.parse(dob))
 		) {
 			return false;
@@ -83,7 +83,9 @@ export class UserService extends BaseService {
 		}
 		if (
 			email?.trim() &&
-			!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/giu.test(email.trim())
+			!/^[a-zA-Z0-9-.]+@([a-zA-Z0-9-]+\.)+[a-zA-Z0-9-]{2,4}$/giu.test(
+				email.trim(),
+			)
 		) {
 			return false;
 		}
@@ -114,7 +116,7 @@ export class UserService extends BaseService {
 	public login = async (
 		client: StockMongoClient,
 		loginInformation: Partial<User>,
-	): Promise<boolean> => {
+	): Promise<{ canLogin: boolean; token: string }> => {
 		const userCollection = client
 			.getClient()
 			.db(MONGO_COMMON.DATABASE_NAME)
@@ -130,6 +132,7 @@ export class UserService extends BaseService {
 					password: foundUserPassword,
 					salt,
 				} = foundUser;
+				const sessionToken = v4();
 				const generatedLoginInformationHash = fixedPbkdf2Encryption(
 					password,
 					iterations,
@@ -137,15 +140,18 @@ export class UserService extends BaseService {
 				);
 				const addSessionTokenResult = await userCollection.updateOne(
 					{ username },
-					{ $set: { sessionToken: v4() } },
+					{ $set: { sessionToken } },
 				);
-				return (
+				const canLogin =
 					addSessionTokenResult.modifiedCount > 0 &&
-					generatedLoginInformationHash === foundUserPassword
-				);
+					generatedLoginInformationHash === foundUserPassword;
+				return {
+					canLogin,
+					token: canLogin ? generatedLoginInformationHash : "",
+				};
 			}
 		}
-		return false;
+		return { canLogin: false, token: "" };
 	};
 
 	/**

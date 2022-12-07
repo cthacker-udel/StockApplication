@@ -1,4 +1,5 @@
 export type OwnedStock = {
-	amount: number;
-	symbol: string;
+  amount: number;
+  beganOwning: Date;
+  symbol: string;
 };

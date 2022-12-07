@@ -5,6 +5,8 @@ body {
 .stock_navbar {
     font-family: 'Roboto Condensed', sans-serif;
     height: 5vh;
+    max-height: 5vh;
+    min-height: 5vh;
 }
 
 .stock_navbar > div:hover {
@@ -24,4 +26,19 @@ body {
 
 #toast-container > div {
     opacity: 1;
+}
+
+.content_page {
+    min-height: 95vh;
+    max-height: 95.1vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+:root {
+    --main-background-color: #000000;
+    --sub1-background-color: #14213d;
+    --sub2-background-color: #fca311;
+    --sub3-background-color: #e5e5e5;
+    --sub4-background-color: #ffffff;
 }
