@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { catchError, retry, throwError } from 'rxjs';
 
 /**
- * 
+ *
  */
 @Injectable()
 export class ConfigService {
@@ -17,9 +17,9 @@ export class ConfigService {
   constructor(private http: HttpClient, private router: Router) {}
 
   /**
-   * 
-   * @param endpoint 
-   * @returns 
+   *
+   * @param endpoint
+   * @returns
    */
   getConfig<T>(endpoint: string) {
     return this.http
@@ -31,10 +31,10 @@ export class ConfigService {
   }
 
   /**
-   * 
-   * @param endpoint 
-   * @param customHeaders 
-   * @returns 
+   *
+   * @param endpoint
+   * @param customHeaders
+   * @returns
    */
   getConfigCustomHeaders<T>(
     endpoint: string,
@@ -42,16 +42,16 @@ export class ConfigService {
   ) {
     return this.http
       .get<T>(`${this.configUrl}${endpoint}`, {
-        headers: { ...customHeaders, ...this.corsHeaders,  },
+        headers: { ...customHeaders, ...this.corsHeaders },
         withCredentials: true,
       })
       .pipe(catchError((err: any) => this.handleError(err, this)));
   }
 
   /**
-   * 
-   * @param endpoint 
-   * @returns 
+   *
+   * @param endpoint
+   * @returns
    */
   getConfigResponse<T>(endpoint: string) {
     return this.http
@@ -65,10 +65,10 @@ export class ConfigService {
   }
 
   /**
-   * 
-   * @param endpoint 
-   * @param body 
-   * @returns 
+   *
+   * @param endpoint
+   * @param body
+   * @returns
    */
   postConfig<T>(endpoint: string, body: any) {
     return this.http
@@ -80,10 +80,10 @@ export class ConfigService {
   }
 
   /**
-   * 
-   * @param endpoint 
-   * @param body 
-   * @returns 
+   *
+   * @param endpoint
+   * @param body
+   * @returns
    */
   postConfigResponse<T>(endpoint: string, body: any) {
     return this.http
@@ -97,9 +97,9 @@ export class ConfigService {
   }
 
   /**
-   * 
-   * @param endpoint 
-   * @returns 
+   *
+   * @param endpoint
+   * @returns
    */
   deleteConfig<T>(endpoint: string) {
     return this.http
@@ -111,13 +111,16 @@ export class ConfigService {
   }
 
   /**
-   * 
-   * @param error 
-   * @param ctx 
-   * @returns 
+   *
+   * @param error
+   * @param ctx
+   * @returns
    */
   private handleError(error: HttpErrorResponse, ctx: ConfigService) {
     console.log('error = ', error);
+    if (ctx.router.url === '/login') {
+      console.error('Error occurred in login screen, do not redirect');
+    }
     if (error.status === 0) {
       ctx.router.navigateByUrl('/');
       console.error('Client-side error occurred ', error.error);
