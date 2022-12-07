@@ -271,6 +271,8 @@ export class TradeService {
 			return [eachUser.username, index, eachUser.portfolio.balance];
 		});
 
+		console.log(allUsersRankIndex);
+
 		allUsersRankIndex.sort(
 			(
 				array1: [username: string, index: number, rank: number],
@@ -279,11 +281,13 @@ export class TradeService {
 				const user1Rank = array1[2];
 				const user2Rank = array2[2];
 				if (user1Rank === user2Rank) {
-					return array2[0].localeCompare(array1[0]);
+					return array1[0].localeCompare(array2[0]);
 				}
 				return user2Rank - user1Rank;
 			},
 		);
+
+		console.log(allUsersRankIndex);
 
 		const topUsers = allUsersRankIndex.slice(0, 4);
 		const formattedTopUsers: LeaderboardUser[] = topUsers.map(
