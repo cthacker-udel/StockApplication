@@ -44,9 +44,9 @@ export class StockDashboardComponent implements OnInit {
       this.username = (JSON.parse(username) as SessionCookie).value;
     }
 
-    const leaderboardRequest = this.configService.getConfig<LeaderboardUser[]>(
-      `${ROUTE_PREFIXES.trade}leaderboard`
-    );
+    const leaderboardRequest = this.configService.getConfigCustomHeaders<
+      LeaderboardUser[]
+    >(`${ROUTE_PREFIXES.trade}leaderboard`, { 'Cache-Control': 'no-cache' });
 
     const mostRecentTradesRequest = this.configService.getConfig<Trade[]>(
       `${ROUTE_PREFIXES.trade}mostRecent`

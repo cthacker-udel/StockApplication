@@ -255,18 +255,8 @@ export class TradeService {
 		const userCollection = database.collection<User>("user");
 		const leaderboardCollection =
 			database.collection<LeaderboardUser>("leaderboard");
-		const numberDocuments = await leaderboardCollection.countDocuments();
-		if (numberDocuments > 0) {
-			const allTopUsers = await leaderboardCollection
-				.find<LeaderboardUser>({})
-				.toArray();
-			const sortedAllTopUsers = allTopUsers.sort(
-				(user1: LeaderboardUser, user2: LeaderboardUser) =>
-					user1.rank - user2.rank,
-			);
-			return sortedAllTopUsers;
-		}
 		const allUsers = await userCollection.find<User>({}).toArray();
+
 		const allUsersRankIndex: [
 			username: string,
 			index: number,
@@ -280,6 +270,7 @@ export class TradeService {
 			}
 			return [eachUser.username, index, eachUser.portfolio.balance];
 		});
+
 		allUsersRankIndex.sort(
 			(
 				array1: [username: string, index: number, rank: number],
@@ -288,37 +279,32 @@ export class TradeService {
 				const user1Rank = array1[2];
 				const user2Rank = array2[2];
 				if (user1Rank === user2Rank) {
-					return array1[0].localeCompare(array2[0]);
+					return array2[0].localeCompare(array1[0]);
 				}
-				return user1Rank - user2Rank;
+				return user2Rank - user1Rank;
 			},
 		);
-		const topUserPromises = [];
-		let indAllUsersRank = 0;
-		while (indAllUsersRank < allUsersRankIndex.length) {
-			if (topUserPromises.length === 4) {
-				break;
-			}
-			const topUser = allUsersRankIndex[indAllUsersRank];
-			if (topUser.length > 0) {
-				topUserPromises.push(
-					userCollection.findOne<User>({ username: topUser[0] }),
-				);
-			}
-			indAllUsersRank += 1;
-		}
-		const topUsers = await Promise.all(topUserPromises);
+
+		const topUsers = allUsersRankIndex.slice(0, 4);
 		const formattedTopUsers: LeaderboardUser[] = topUsers.map(
-			(eachTopUser: User | null, _index: number) => ({
-				rank: _index + 1,
-				totalValue: allUsersRankIndex[_index][2],
-				username: eachTopUser ? eachTopUser.username : "",
+			(
+				eachTopUser: [username: string, index: number, rank: number],
+				_index: number,
+			) => ({
+				rank: eachTopUser[1] + 1,
+				totalValue: eachTopUser[2],
+				username: eachTopUser[0],
 			}),
 		);
-		const insertionResult = await leaderboardCollection.insertMany(
-			formattedTopUsers,
-		);
-		return insertionResult.insertedCount > 0 ? formattedTopUsers : [];
+
+		const deletionResult = await leaderboardCollection.deleteMany({});
+		if (deletionResult.acknowledged) {
+			const insertionResult = await leaderboardCollection.insertMany(
+				formattedTopUsers,
+			);
+			return insertionResult.insertedCount > 0 ? formattedTopUsers : [];
+		}
+		return [];
 	};
 
 	public getMostRecentTrades = async (

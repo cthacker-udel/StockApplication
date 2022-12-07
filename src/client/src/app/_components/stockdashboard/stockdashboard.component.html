@@ -104,11 +104,11 @@
               <i class="p-2 ms-2 fa-solid fa-trophy fa-lg text-dark"></i>
             </div>
             <div
-              class="list-group list-group-flush list-group-numbered"
+              class="list-group list-group-flush"
               *ngFor="let user of leaderboardUsers; index as i; first as isFirst"
             >
               <div class="list-group-item list-group-item-action fs-5 fw-bold">
-                {{ user.username }}
+                {{ user.rank }} {{ user.username }}
               </div>
             </div>
             <div
