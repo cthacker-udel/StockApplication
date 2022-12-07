@@ -271,8 +271,6 @@ export class TradeService {
 			return [eachUser.username, index, eachUser.portfolio.balance];
 		});
 
-		console.log(allUsersRankIndex);
-
 		allUsersRankIndex.sort(
 			(
 				array1: [username: string, index: number, rank: number],
@@ -286,8 +284,6 @@ export class TradeService {
 				return user2Rank - user1Rank;
 			},
 		);
-
-		console.log(allUsersRankIndex);
 
 		const topUsers = allUsersRankIndex.slice(0, 4);
 		const formattedTopUsers: LeaderboardUser[] = topUsers.map(
