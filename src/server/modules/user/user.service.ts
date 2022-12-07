@@ -72,7 +72,8 @@ export class UserService extends BaseService {
 		}
 		if (
 			new Date(Date.now()).getUTCFullYear() -
-			new Date(dob).getUTCFullYear() < 21 ||
+				new Date(dob).getUTCFullYear() <
+				21 ||
 			Number.isNaN(Date.parse(dob))
 		) {
 			console.log("test 3");
@@ -118,7 +119,7 @@ export class UserService extends BaseService {
 	public login = async (
 		client: StockMongoClient,
 		loginInformation: Partial<User>,
-	): Promise<boolean> => {
+	): Promise<{ canLogin: boolean; token: string }> => {
 		const userCollection = client
 			.getClient()
 			.db(MONGO_COMMON.DATABASE_NAME)
@@ -134,22 +135,26 @@ export class UserService extends BaseService {
 					password: foundUserPassword,
 					salt,
 				} = foundUser;
+				const sessionToken = v4();
 				const generatedLoginInformationHash = fixedPbkdf2Encryption(
-					password,
+					`${username}${sessionToken}`,
 					iterations,
 					salt,
 				);
 				const addSessionTokenResult = await userCollection.updateOne(
 					{ username },
-					{ $set: { sessionToken: v4() } },
+					{ $set: { sessionToken } },
 				);
-				return (
+				const canLogin =
 					addSessionTokenResult.modifiedCount > 0 &&
-					generatedLoginInformationHash === foundUserPassword
-				);
+					generatedLoginInformationHash === foundUserPassword;
+				return {
+					canLogin,
+					token: canLogin ? generatedLoginInformationHash : "",
+				};
 			}
 		}
-		return false;
+		return { canLogin: false, token: "" };
 	};
 
 	/**

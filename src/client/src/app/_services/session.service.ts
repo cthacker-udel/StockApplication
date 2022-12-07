@@ -12,13 +12,24 @@ export class SessionService {
     );
     if (sessionInfo !== null) {
       const parsedSessionInfo = JSON.parse(sessionInfo) as SessionCookie;
-      localStorage.setItem(SECRETS.STOCK_APP_SESSION_COOKIE_ID, JSON.stringify({...parsedSessionInfo, expiration: new Date(parsedSessionInfo.expiration).getTime()}));
+      localStorage.setItem(
+        SECRETS.STOCK_APP_SESSION_COOKIE_ID,
+        JSON.stringify({
+          ...parsedSessionInfo,
+          expiration: new Date(parsedSessionInfo.expiration).getTime(),
+        })
+      );
     }
     if (sessionUsername !== null) {
-      const parsedSessionUsername = JSON.parse(sessionUsername) as SessionCookie;
+      const parsedSessionUsername = JSON.parse(
+        sessionUsername
+      ) as SessionCookie;
       localStorage.setItem(
         SECRETS.STOCK_APP_SESSION_COOKIE_USERNAME_ID,
-        JSON.stringify({...parsedSessionUsername, expiration: new Date(parsedSessionUsername.expiration).getTime()})
+        JSON.stringify({
+          ...parsedSessionUsername,
+          expiration: new Date(parsedSessionUsername.expiration).getTime(),
+        })
       );
     }
   };
@@ -99,7 +110,7 @@ export class SessionService {
     );
     if (sessionInfo !== null) {
       const validateSession = JSON.parse(sessionInfo) as SessionCookie;
-      if (Date.now() - new Date(validateSession.expiration).getTime() > 0) {
+      if (Date.now() - +validateSession.value > 0) {
         return false;
       }
       return true;
