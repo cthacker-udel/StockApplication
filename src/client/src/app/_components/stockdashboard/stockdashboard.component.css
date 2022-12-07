@@ -40,21 +40,44 @@
     color: #164a41;
 }
 
-#stock_dashboard_card_body {
+#leaderboard_card_body {
     background-color: white;
     color: #164a41;
     border-radius: 20%;
 }
 
-#stock_dashboard_card_body > .list-group > div {
+#recent_trades_card_body {
+    background-color: white;
+    color: #164a41;
+    border-radius: 20%;
+}
+
+#top_stocks_card_body > .list-group > div {
+    background-color: #164a41;
+    color: white;
+}
+
+#leaderboard_card_body > .list-group > div {
+    background-color: #164a41;
+    color: white;
+}
+
+#recent_trades_card_body > .list-group > div {
     background-color: #164a41;
     color: white;
 }
 
 #middle_row {
     margin-top: 40px;
+    width: 90%;
 }
 
 #end_row {
     margin-top: 40px;
+    width: 90%;
+}
+
+#end_row_flex {
+    justify-content: space-between;
+    padding: 0;
 }
