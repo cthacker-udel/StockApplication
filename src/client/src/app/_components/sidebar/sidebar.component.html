@@ -2,7 +2,7 @@
   <span>
     <span>
       <span
-        class="bg-light bg-opacity-25 bg-gradient sidebar_contents"
+        class="bg-light bg-gradient sidebar_contents"
         [ngClass]="{
           sidebar_contents_open: isSidebarExpanded === true && touched === true,
           sidebar_contents_closed:
@@ -10,7 +10,7 @@
           sidebar_contents_not_touched: touched === false
         }"
       >
-        <div>
+        <div *ngIf="currentUser !== undefined">
           <!-- Top content -->
           <div class="d-flex flex-row sidebar_text my-2">
             <i class="fa-solid fa-user my-auto mx-2"></i>
@@ -167,7 +167,10 @@
             {{ truncateDecimal(userAggregateData.avgTradesPerDay, 2) }}
           </div>
         </div>
-        <div>
+        <div class="ms-2 fw-bold" *ngIf="currentUser === undefined">
+          Login to an account to display statistics!
+        </div>
+        <div *ngIf="currentUser !== undefined">
           <!-- Bottom content -->
           <button
             type="button"

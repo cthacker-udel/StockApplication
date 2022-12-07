@@ -3,6 +3,7 @@
  */
 export type Stock = {
   symbol: string;
+  oldPrice: number;
   price: number;
   shares: number;
   volume: number;

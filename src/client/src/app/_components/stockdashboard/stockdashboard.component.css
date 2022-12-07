@@ -1,23 +1,60 @@
 .stock_dashboard_background {
-    background-color: rgb(120, 147, 149);
+    background-color: #164a41;
+}
+
+#dashboard_header {
+    position: relative;
+    padding: 20px;
+    height: 100px;
+    border-bottom: thin solid white;
+}
+
+#dashboard_title {
+    width: fit-content;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+#stock_dashboard_icon_buttons {
+    right: 20px;
+    width: fit-content;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
 }
 
 #stock_dashboard_icon_buttons > div > div {
-    background-color: rgb(148, 180, 159);
-    border-color: rgb(148, 180, 159);
+    background-color: white;
 }
 
 #stock_dashboard_icon_buttons > div > div:hover {
-    background-color: rgb(180, 207, 176);
-    border-color: rgb(180, 207, 176);
+    background-color: #c8ffc9;
+    box-shadow: 5px 5px 5px;
+}
+
+#top_stocks_card {
+    background-color: white;
+    color: #164a41;
 }
 
 #stock_dashboard_card_body {
-    background-color: rgb(148, 180, 159);
-    color: rgb(229, 227, 201);
+    background-color: white;
+    color: #164a41;
+    border-radius: 20%;
 }
 
 #stock_dashboard_card_body > .list-group > div {
-    background-color: rgb(148, 180, 159);
-    color: rgb(229, 227, 201);
+    background-color: #164a41;
+    color: white;
+}
+
+#middle_row {
+    margin-top: 40px;
+}
+
+#end_row {
+    margin-top: 40px;
 }

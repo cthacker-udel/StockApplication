@@ -1,54 +1,56 @@
 <div
   class="h-100 w-100 d-flex flex-column justify-content-center portfolio_background"
 >
-  <div class="w-25 mx-auto rounded p-3" id="portfolio_header">
-    <div class="text-center fs-4" id="portfolio_header_title">Portfolio</div>
-  </div>
+    <div class="w-75 mx-auto position-relative" id="portfolio_stocks" *ngIf="userOwnedStocks && userOwnedStocks.data.length > 0">
+      <table class="w-100 portfolio_table" mat-table [dataSource]="userOwnedStocks">
+        <ng-container matColumnDef="Symbol">
+          <th class="text-center" mat-header-cell *matHeaderCellDef>Symbol</th>
+          <td class="text-center" mat-cell *matCellDef="let element">
+            {{ element.symbol }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="Balance">
+          <th class="text-center" mat-header-cell *matHeaderCellDef>Balance</th>
 
-  <div id="portfolio_balance">
-    <div id="stock_balance_header">Account Balance</div>
-  </div>
-  <div id="portfolio_returns">
-    <div id="portfolio_return_header">Portfolio Returns</div>
-  </div>
-  <div class="mat-elevation-z8 w-75 mx-auto mt-3" id="portfolio_stocks">
-    <div id="stock_table_header_title">Owned Stocks</div>
-    <table class="w-100" mat-table [dataSource]="userOwnedStocks">
-      <ng-container matColumnDef="Symbol">
-        <th class="text-center" mat-header-cell *matHeaderCellDef>Symbol</th>
-        <td class="text-center" mat-cell *matCellDef="let element">
-          {{ element.symbol }}
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="Balance">
-        <th class="text-center" mat-header-cell *matHeaderCellDef>Balance</th>
-        <td class="text-center" mat-cell *matCellDef="let element"></td>
-      </ng-container>
-      <ng-container matColumnDef="gainLoss">
-        <th class="text-center" mat-header-cell *matHeaderCellDef>Gain/Loss</th>
-        <td class="text-center" mat-cell *matCellDef="let element"></td>
-      </ng-container>
-      <ng-container matColumnDef="Change">
-        <th class="text-center" mat-header-cell *matHeaderCellDef>Change</th>
-        <td class="text-center" mat-cell *matCellDef="let element"></td>
-      </ng-container>
-      <ng-container matColumnDef="Price">
-        <th class="text-center" mat-header-cell *matHeaderCellDef>Price</th>
-        <td class="text-center" mat-cell *matCellDef="let element">
-          {{ element.price }}
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="Owned Shares">
-        <th class="text-center" mat-header-cell *matHeaderCellDef>
-          Owned Shares
-        </th>
-        <td class="text-center" mat-cell *matCellDef="let element"></td>
-      </ng-container>
-    </table>
-    <mat-paginator
-      [pageSizeOptions]="[5, 10, 20]"
-      showFirstLastButtons
-      aria-label="Select page of stocks"
-    ></mat-paginator>
+          <td class="text-center" mat-cell *matCellDef="let element">
+            <span *ngIf="element.balanceReaction.positive" class="text-success"><i class="fa-solid fa-arrow-up me-1"></i></span>
+            <span *ngIf="element.balanceReaction.negative" class="text-danger"><i class="fa-solid fa-arrow-down me-1"></i></span>
+            <span [ngClass]="{ 'text-danger': element.balanceReaction.negative, 'test-success': element.balanceReaction.positive, 'text-dark': element.balanceReaction.neutral }">{{ element.balance }}</span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="Change">
+          <th class="text-center" mat-header-cell *matHeaderCellDef>Change</th>
+          <td class="text-center" mat-cell *matCellDef="let element">
+            <span *ngIf="element.changeReaction.positive" class="text-success"><i class="fa-solid fa-arrow-up me-1"></i></span>
+            <span *ngIf="element.changeReaction.negative" class="text-danger"><i class="fa-solid fa-arrow-down me-1"></i></span>
+            <span [ngClass]="{ 'text-danger': element.changeReaction.negative, 'text-success': element.changeReaction.positive, 'text-dark': element.changeReaction.neutral }">{{ element.change }}%</span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="Current Price">
+          <th class="text-center" mat-header-cell *matHeaderCellDef>Current Price</th>
+          <td class="text-center" mat-cell *matCellDef="let element">
+            <span *ngIf="element.currentPriceReaction.positive" class="text-success"><i class="fa-solid fa-arrow-up me-1"></i></span>
+            <span *ngIf="element.currentPriceReaction.negative" class="text-danger"><i class="fa-solid fa-arrow-down me-1"></i></span>
+            <span [ngClass]="{ 'text-danger': element.currentPriceReaction.negative, 'text-success': element.currentPriceReaction.positive, 'text-dark': element.currentPriceReaction.neutral }">{{ element.currentPrice }}</span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="Gain/Loss">
+          <th class="text-center" mat-header-cell *matHeaderCellDef>Gain/Loss</th>
+          <td class="text-center" mat-cell *matCellDef="let element">
+            <span *ngIf="element.gainLossReaction.positive" class="text-success"><i class="fa-solid fa-arrow-up me-1"></i></span>
+            <span *ngIf="element.gainLossReaction.negative" class="text-danger"><i class="fa-solid fa-arrow-down me-1"></i></span>
+            <span [ngClass]="{ 'text-danger': element.gainLossReaction.negative, 'text-success': element.gainLossReaction.positive, 'text-dark': element.gainLossReaction.neutral }">{{ element.gainLoss }}</span>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="tableColumnDefs; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: tableColumnDefs"></tr>
+      </table>
+    </div>
+  <div class="mx-auto d-flex flex-column" [ngClass]="{ loading_displayed: displayLoading, loading_disappear: displayLoading === false }">
+    <div class="fw-bold fs-4 text-center" [ngClass]="{ 'text-success fa-bounce fs-4': displayLoading === false }">Load<span *ngIf="displayLoading">ing</span><span *ngIf="!displayLoading">ed</span> Portfolio</div>    
+    <div class="text-center mt-3">
+      <i class="fa-solid fa-spinner fa-2xl fa-spin" *ngIf="displayLoading"></i>
+      <i class="fa-solid fa-check fa-bounce text-success fa-2xl" *ngIf="!displayLoading"></i>
+    </div>
   </div>
 </div>

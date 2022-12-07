@@ -127,7 +127,7 @@
       aria-label="Select page of stocks"
     ></mat-paginator>
   </div>
-  <div class="mat-elevation-z8 w-75 mx-auto mt-3" *ngIf="isBuying === false">
+  <div class="mat-elevation-z8 w-75 mx-auto mt-3 trading_table" *ngIf="isBuying === false">
     <table class="w-100" mat-table [dataSource]="ownedStocks">
       <ng-container matColumnDef="Symbol">
         <th class="text-center" mat-header-cell *matHeaderCellDef>Symbol</th>
@@ -156,7 +156,7 @@
           </button>
         </td>
       </ng-container>
-      <tr mat-header-row *matHeaderRowDef="sellingColumnDefs"></tr>
+      <tr mat-header-row *matHeaderRowDef="sellingColumnDefs; sticky: true"></tr>
       <tr mat-row *matRowDef="let row; columns: sellingColumnDefs"></tr>
     </table>
     <mat-paginator
@@ -222,7 +222,7 @@
               tickInterval="100"
               step="1"
               min="0"
-              max="{{ isBuying ? actionStock.shares : sellStock.amount }}"
+              max="{{ isBuying ? actionStock.shares : sellStock ? sellStock.amount : 1 }}"
               aria-label="units"
             ></mat-slider>
           </div>

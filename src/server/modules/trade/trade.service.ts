@@ -60,6 +60,7 @@ export class TradeService {
 			stockSymbol,
 			time: new Date(Date.now()),
 			type: TRADE_TYPE.BUY,
+			username,
 		};
 		const trades = [...portfolio.trades];
 		trades.push(tradeLog);
@@ -78,7 +79,11 @@ export class TradeService {
 			);
 			stocks[ind] = { ...stocks[ind], amount: stocks[ind].amount + amt };
 		} else {
-			stocks.push({ amount: amt, symbol: stockSymbol });
+			stocks.push({
+				amount: amt,
+				beganOwning: new Date(Date.now()),
+				symbol: stockSymbol,
+			});
 		}
 		await tradeCollection.insertOne(tradeLog);
 		const userUpdateResult = await userCollection.updateOne(
@@ -204,6 +209,7 @@ export class TradeService {
 					stockSymbol,
 					time: new Date(Date.now()),
 					type: TRADE_TYPE.SELL,
+					username,
 				};
 
 				const modifiedBalance = balance + profit;

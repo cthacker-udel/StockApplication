@@ -12,7 +12,7 @@ import { PortfolioComponent } from './_components/portfolio/portfolio.component'
 const routes: Routes = [
   {
     component: SignInComponent,
-    path: 'signin',
+    path: 'login',
   },
   {
     component: StockDashboardComponent,
