@@ -14,7 +14,7 @@ import { Trade } from 'src/app/_models/Trade';
 export class ProfileComponent implements OnInit {
   constructor(private userService: UserService) {}
 
-  roleMapping: string[] = ['User', 'Admin', 'Super Admin'];
+  roleMapping: string[] = ['Super Admin', 'Admin', 'User'];
   user: User;
   role: string;
   userAggregateData: UserAggregateData;
